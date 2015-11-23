@@ -1,0 +1,2 @@
+class AttendrequestsController < ApplicationController
+end
