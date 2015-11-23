@@ -19,7 +19,7 @@ class AttendrequestsController < ApplicationController
 
   def update
     @attendrequest = Attendrequest.find(params[:id])
-    @attendrequest.update(params.require(:attendrequest).permit(:response))
+    @attendrequest.change_response(params.require(:attendrequest).permit(:response))
     expose({})
   end
 
