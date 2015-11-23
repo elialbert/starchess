@@ -6,7 +6,7 @@ class UsersController < ApplicationController
     expose User.paginate(:page => params[:page]), :include => :ratings
   end
   def show
-    expose User.find(params[:id]), :include => [:ratings, :attending, :created_events]
+    expose User.find(params[:id]), :include => [:ratings, :attending, :created_events, :attend_requests]
   end
 
   def create
