@@ -1,12 +1,11 @@
 class EventsController < ApplicationController
   version 1
-  caches :index, :show, :cache_for => 5.seconds
 
   def index
-    expose Event.paginate(:page => params[:page])
+    expose Event.paginate(:page => params[:page]), :include => :attendees
   end
   def show
-    expose Event.find(params[:id])
+    expose Event.find(params[:id]), :include => :attendees
   end
 
   def create

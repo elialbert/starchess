@@ -3,10 +3,10 @@ class UsersController < ApplicationController
   caches :index, :show, :cache_for => 5.seconds
 
   def index
-    expose User.paginate(:page => params[:page])
+    expose User.paginate(:page => params[:page]), :include => :ratings
   end
   def show
-    expose User.find(params[:id])
+    expose User.find(params[:id]), :include => [:ratings, :attending, :created_events]
   end
 
   def create
