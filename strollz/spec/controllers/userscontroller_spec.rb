@@ -1,22 +1,29 @@
 require "spec_helper"
 
 describe UsersController, :type => :controller do   
-  u1,u2=nil
+  u1,u2,e1=nil
   before :each do
     User.delete_all
+    Event.delete_all
     u1 = User.create({
       :email => 'test1@test.com',
-      :first_name => 'testname1'
+      :first_name => 'testname1',
+      :lat => 41.928249,
+      :lng => -87.717069
     })
     u2 = User.create({
       :email => 'test2@test.com',
-      :first_name => 'testname2'
+      :first_name => 'testname2',
+      :lat => 40.92680,
+      :lng => -86.718957
     })
 
     e1 = Event.create({
       :title => "test event",
       :description => "test description",
-      :creator => u1
+      :creator => u1,
+      :lat => 41.92680,
+      :lng => -87.718957
     })
   end
   it "can get users" do
@@ -46,6 +53,12 @@ describe UsersController, :type => :controller do
     expect(response).to be_successful
     response = get :show, :version => 1, :id => new_user['id']
     expect(response.parsed_body['response']['first_name']).to eq('poo')
-
   end 
+
+  it "can handle location awareness" do
+    # find events near user 1
+    expect(Event.within(1, :origin => u1).count).to eq(1)
+    expect(Event.within(1, :origin => u2).count).to eq(0)
+  end
+
 end       
