@@ -11,9 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151124154846) do
+ActiveRecord::Schema.define(version: 20151124173104) do
 
-  create_table "Attendrequests", force: :cascade do |t|
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
+  create_table "attendrequests", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer  "response"
@@ -33,18 +36,20 @@ ActiveRecord::Schema.define(version: 20151124154846) do
     t.datetime "start_time"
     t.datetime "end_time"
     t.integer  "creator_id"
+    t.float    "lat"
+    t.float    "lng"
   end
 
-  add_index "events", ["creator_id"], name: "index_events_on_creator_id"
+  add_index "events", ["creator_id"], name: "index_events_on_creator_id", using: :btree
 
   create_table "events_users", id: false, force: :cascade do |t|
     t.integer "event_id"
     t.integer "user_id"
   end
 
-  add_index "events_users", ["event_id", "user_id"], name: "by event and user", unique: true
-  add_index "events_users", ["event_id"], name: "index_events_users_on_event_id"
-  add_index "events_users", ["user_id"], name: "index_events_users_on_user_id"
+  add_index "events_users", ["event_id", "user_id"], name: "by event and user", unique: true, using: :btree
+  add_index "events_users", ["event_id"], name: "index_events_users_on_event_id", using: :btree
+  add_index "events_users", ["user_id"], name: "index_events_users_on_user_id", using: :btree
 
   create_table "ratings", force: :cascade do |t|
     t.datetime "created_at",   null: false
@@ -57,8 +62,8 @@ ActiveRecord::Schema.define(version: 20151124154846) do
     t.boolean  "from_creator"
   end
 
-  add_index "ratings", ["user_from_id"], name: "index_ratings_on_user_from_id"
-  add_index "ratings", ["user_to_id"], name: "index_ratings_on_user_to_id"
+  add_index "ratings", ["user_from_id"], name: "index_ratings_on_user_from_id", using: :btree
+  add_index "ratings", ["user_to_id"], name: "index_ratings_on_user_to_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email"
@@ -67,6 +72,8 @@ ActiveRecord::Schema.define(version: 20151124154846) do
     t.string   "default_location_string"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
+    t.float    "lat"
+    t.float    "lng"
   end
 
 end

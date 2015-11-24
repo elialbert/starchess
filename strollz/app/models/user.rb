@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  acts_as_mappable
   include RocketPants::Cacheable
   has_and_belongs_to_many :attending, -> { uniq }, class_name: "Event"
   has_many :created_events, class_name: "Event", foreign_key: "creator_id"

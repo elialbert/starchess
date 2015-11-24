@@ -1,6 +1,6 @@
 class AttendrequestMessage < ActiveRecord::Migration
   def change
-    change_table(:Attendrequests) do |t|
+    change_table(:attendrequests) do |t|
       t.text :message
     end
   end
