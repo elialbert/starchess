@@ -14,7 +14,6 @@ class Attendrequest < ActiveRecord::Base
 
   validates_presence_of :user, :event
 
-  # todo: need fk integrity on join table to prevent dupes
   def change_response(response)
     response = response['response'].to_i
     update(:response => response)

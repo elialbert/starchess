@@ -45,6 +45,10 @@ describe AttendrequestsController, :type => :controller do
     e1 = Event.find(e1.id)
     expect(e1.attendees.length).to eq(1)
 
+    response = patch :update, data 
+    e1 = Event.find(e1.id)
+    expect(e1.attendees.length).to eq(1)
+
     data = {"version" => 1, "id" => new_id, "attendrequest" => {"response" => 5}} 
     response = patch :update, data 
     expect(response).to be_api_error(RocketPants::BadRequest)

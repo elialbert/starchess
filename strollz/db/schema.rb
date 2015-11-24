@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151123215927) do
+ActiveRecord::Schema.define(version: 20151124154846) do
 
   create_table "Attendrequests", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(version: 20151123215927) do
     t.integer "user_id"
   end
 
+  add_index "events_users", ["event_id", "user_id"], name: "by event and user", unique: true
   add_index "events_users", ["event_id"], name: "index_events_users_on_event_id"
   add_index "events_users", ["user_id"], name: "index_events_users_on_user_id"
 
