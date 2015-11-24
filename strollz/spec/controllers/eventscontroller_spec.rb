@@ -26,7 +26,6 @@ describe EventsController, :type => :controller do
   it "can return events with pagination and attendees" do
     response = get :index, :version => 1 
     expect(response).to be_successful
-    puts response.parsed_body
     expect(response.parsed_body['response'].length).to eq(1)
     expect(response.parsed_body['pagination']['pages']).to eq(1)
     expect(response.parsed_body['response'][0]['title']).to eq('test event')
