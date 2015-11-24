@@ -1,11 +1,14 @@
 class Attendrequest < ActiveRecord::Base
   include RocketPants::Cacheable
 
-  # move to own file
-  UNREPLIED = 0
-  ACCEPTED = 1
-  REJECTED = 2
-
+  def self.responses
+    {
+      :UNREPLIED => 0,
+      :ACCEPTED => 1,  
+      :REJECTED => 2
+    }
+  end
+   
   belongs_to :user
   belongs_to :event
 
@@ -15,10 +18,10 @@ class Attendrequest < ActiveRecord::Base
   def change_response(response)
     response = response['response']
     update(:response => response)
-    if response == ACCEPTED
+    if response == Attendrequest.responses[:ACCEPTED]
       user.attending << event
     end
-    if response == REJECTED
+    if response == Attendrequest.responses[:REJECTED]
       user.attending.delete event
     end
   end
