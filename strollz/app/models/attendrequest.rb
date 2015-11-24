@@ -16,7 +16,7 @@ class Attendrequest < ActiveRecord::Base
 
   # todo: need fk integrity on join table to prevent dupes
   def change_response(response)
-    response = response['response']
+    response = response['response'].to_i
     update(:response => response)
     if response == Attendrequest.responses[:ACCEPTED]
       user.attending << event

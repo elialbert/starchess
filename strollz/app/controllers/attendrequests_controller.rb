@@ -21,7 +21,7 @@ class AttendrequestsController < ApplicationController
     @attendrequest = Attendrequest.find(params[:id])
     params = attendrequest_update_params
     if !Attendrequest.responses.values.include? params['response'].to_i
-      error!(:invalid_resource, "response can only be 0, 1 or 2")
+      error! :bad_request, :metadata => {:note => "response can only be 0, 1 or 2"}
     end
     @attendrequest.change_response(params)
     expose({})
