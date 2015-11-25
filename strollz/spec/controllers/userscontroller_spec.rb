@@ -3,7 +3,7 @@ require "spec_helper"
 describe UsersController, :type => :controller do   
   u1,u2,e1=nil
   before :each do
-    # request.env['omniauth.auth'] = set_omniauth()
+    # request.env['omniauth.auth'] = set_omniauth() # not working - using sign_in
     User.delete_all
     Event.delete_all
     u1 = User.create({
