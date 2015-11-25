@@ -9,6 +9,8 @@ describe EventsController, :type => :controller do
       :email => 'test1@test.com',
       :first_name => 'testname1'
     })
+    sign_in :user, u1
+
     u2 = User.create({
       :email => 'test2@test.com',
       :first_name => 'testname2'

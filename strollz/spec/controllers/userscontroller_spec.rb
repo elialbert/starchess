@@ -3,6 +3,7 @@ require "spec_helper"
 describe UsersController, :type => :controller do   
   u1,u2,e1=nil
   before :each do
+    # request.env['omniauth.auth'] = set_omniauth()
     User.delete_all
     Event.delete_all
     u1 = User.create({
@@ -11,6 +12,7 @@ describe UsersController, :type => :controller do
       :lat => 41.928249,
       :lng => -87.717069
     })
+    sign_in :user, u1
     u2 = User.create({
       :email => 'test2@test.com',
       :first_name => 'testname2',
@@ -26,7 +28,14 @@ describe UsersController, :type => :controller do
       :lng => -87.718957
     })
   end
+
+  it "mostly has authentication" do
+    sign_out u1
+    expect { get :index, :version => 1 }.to raise_error
+  end
+
   it "can get users" do
+
     response = get :index, :version => 1
     expect(response).to be_successful
     expect(response.parsed_body['response'].length).to eq(2)
