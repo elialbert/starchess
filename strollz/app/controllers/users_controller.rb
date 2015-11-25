@@ -1,7 +1,5 @@
-class UsersController < RocketPants::Base
-  version 1
-  caches :index, :show, :cache_for => 5.seconds
-
+class UsersController < ApiController
+ 
   def index
     expose User.paginate(:page => params[:page]), :include => :ratings
   end

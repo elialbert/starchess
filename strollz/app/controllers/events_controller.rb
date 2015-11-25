@@ -1,5 +1,4 @@
-class EventsController < RocketPants::Base
-  version 1
+class EventsController < ApiController
 
   def index
     expose Event.paginate(:page => params[:page]), :include => :attendees

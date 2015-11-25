@@ -1,6 +1,5 @@
-class RatingsController < RocketPants::Base
-  version 1
-
+class RatingsController < ApiController
+  
   def index
     expose Rating.paginate(:page => params[:page])
   end

@@ -1,5 +1,4 @@
-class AttendrequestsController < RocketPants::Base
-   version 1
+class AttendrequestsController < ApiController
 
   def index
     expose Attendrequest.paginate(:page => params[:page])
