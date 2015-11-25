@@ -1,4 +1,4 @@
-class AttendrequestsController < ApplicationController
+class AttendrequestsController < RocketPants::Base
    version 1
 
   def index

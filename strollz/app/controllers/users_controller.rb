@@ -1,4 +1,4 @@
-class UsersController < ApplicationController
+class UsersController < RocketPants::Base
   version 1
   caches :index, :show, :cache_for => 5.seconds
 

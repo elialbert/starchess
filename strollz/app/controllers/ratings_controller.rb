@@ -1,4 +1,4 @@
-class RatingsController < ApplicationController
+class RatingsController < RocketPants::Base
   version 1
 
   def index

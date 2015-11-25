@@ -1,4 +1,4 @@
-class EventsController < ApplicationController
+class EventsController < RocketPants::Base
   version 1
 
   def index
