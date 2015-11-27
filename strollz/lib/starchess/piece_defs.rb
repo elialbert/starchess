@@ -1,0 +1,10 @@
+module StarChess
+  PAWN_SPACES = {:white => [5, 12, 18, 23, 29], 
+    :black => [9, 15, 20, 26, 33]
+    }
+  CHOSEN_SPACES = {:white => [4, 11, 17, 22, 28],
+    :black => [10, 16, 21, 27, 34]}
+
+  PIECE_TYPES = [:pawn, :king, :queen, :bishop, :rook, :knight]
+  CHOSEN_PIECE_TYPES = [:king, :queen, :bishop, :rook, :knight]
+end
