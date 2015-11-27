@@ -80,6 +80,29 @@ module StarChess
     end
 
     def get_king_moves
+      result = []
+      takeable_pieces = []
+      StarChess::DIRECTIONS.each do |direction|
+        new_space = @space.get_adjacent(direction)
+        next if new_space.nil?
+        if new_space.piece.nil?
+          result << new_space.id
+        else
+          next if new_space.piece.color == @color
+          result << new_space.id
+          takeable_pieces << new_space.piece
+        end
+      end
+      # first remove opponent's moves
+      opposite_color = (@color == :black) ? :white : :black
+      result = result - @board.get_available_moves(opposite_color).values.flatten
+      # temporarily change color of takeable pieces and recalculate opp moves
+      takeable_pieces.each do |piece|
+        piece.color = @color
+        result = result - @board.get_available_moves(opposite_color).values.flatten
+        piece.color = opposite_color
+      end
+      result
     end
 
     def get_standard_moves directions
