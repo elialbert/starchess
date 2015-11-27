@@ -37,4 +37,13 @@ describe "StarChess Pieces" do
     moves = b.pieces[:black][1].get_available_moves
     expect(moves).to eq([])
   end
+
+  it "should know pawn take moves" do
+    board_state = {:white => {18 => :pawn}, :black => {13 => :pawn}}
+    b = StarChess::Board.new board_state
+    moves = b.pieces[:white][0].get_available_moves
+    expect(moves).to eq([19,20,13])
+    moves = b.pieces[:black][0].get_available_moves
+    expect(moves).to eq([12,18])
+  end
 end
