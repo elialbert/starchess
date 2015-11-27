@@ -2,7 +2,7 @@ require "spec_helper"
 require "starchess/board"
 require "starchess/piece"
 
-describe "StarChess Pieces" do 
+describe "StarChess Pawns" do 
   it "should know starting pawn moves" do
     board_state = {:white => {5 => :pawn, 12 => :pawn}, 
       :black => {9 => :pawn, 15 => :pawn}}
