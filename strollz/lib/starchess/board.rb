@@ -1,4 +1,5 @@
 require 'starchess/space'
+require 'starchess/space_defs'
 
 module StarChess
   class Board
@@ -14,7 +15,15 @@ module StarChess
       (1..37).each do |id|
         @spaces[id] = StarChess::Space.new(id)
       end
-      @spaces[1].northeast = @spaces[3]
+      StarChess::SPACE_DEFS.each do |space_id, space_def|
+        [:north, :northwest, :southwest, 
+        :south, :southeast, :northeast].each_with_index do |direction, index|
+          if not space_def[index].nil?
+            referent_space =  @spaces[space_def[index]]
+            @spaces[space_id].public_send("#{direction}=", referent_space) 
+          end
+        end
+      end 
     end
   end
 end
