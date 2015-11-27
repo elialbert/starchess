@@ -6,5 +6,9 @@ module StarChess
     def initialize space_id
       @id = space_id
     end  
+
+    def get_piece_color
+      return @piece.color if @piece 
+    end
   end
 end

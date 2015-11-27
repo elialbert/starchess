@@ -14,7 +14,14 @@ module StarChess
       self.setup_pawns
     end
 
-    
+    def get_available_moves color
+      result = {}
+      @pieces[color].each do |piece|
+        # dict of space id => list of space ids
+        result[piece.space.id] = piece.get_available_moves 
+      end
+      result
+    end    
 
     def construct_spaces
       (1..37).each do |id|
@@ -35,7 +42,7 @@ module StarChess
       StarChess::PAWN_SPACES.each do |color, space_list|
         space_list.each do |space_id|
           space = @spaces[space_id]
-          pawn = StarChess::Piece.new :pawn, color, space
+          pawn = StarChess::Piece.new self, :pawn, color, space
           space.piece = pawn
           @pieces[color] << pawn
         end
@@ -48,7 +55,7 @@ module StarChess
         space.piece == nil
       raise StarChess::SpaceError, "#{space_id} not a choosable space" unless 
         StarChess::CHOSEN_SPACES[color].include? space_id
-      piece = StarChess::Piece.new piece_type, color, space
+      piece = StarChess::Piece.new self, piece_type, color, space
       space.piece = piece
       @pieces[color] << piece
     end

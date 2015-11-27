@@ -42,5 +42,11 @@ describe "StarChess Board" do
     }.to raise_error(StarChess::SpaceError)
   end
 
+  it "should get available starting pawn moves" do
+    result = b.get_available_moves :white
+    expect(result[5]).to eq([6,7])
+    result = b.get_available_moves :black
+    expect(result[9]).to eq([8,7])
+  end
 
 end
