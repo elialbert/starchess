@@ -8,5 +8,8 @@ module StarChess
       @taken = false
       @space = space
     end
+
+    def get_available_moves
+    end
   end
 end

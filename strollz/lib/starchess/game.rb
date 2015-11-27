@@ -1,3 +1,5 @@
+require 'starchess/board'
+
 module StarChess
   class Game
     attr_reader :board

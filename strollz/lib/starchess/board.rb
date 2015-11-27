@@ -1,5 +1,7 @@
 require 'starchess/space'
+require 'starchess/piece'
 require 'starchess/space_defs'
+require 'starchess/piece_defs'
 
 module StarChess
   class Board
@@ -9,7 +11,10 @@ module StarChess
       @pieces = {:white => [], :black => []}
       @taken_pieces = {:white => [], :black => []}
       self.construct_spaces
+      self.setup_pawns
     end
+
+    
 
     def construct_spaces
       (1..37).each do |id|
@@ -24,6 +29,18 @@ module StarChess
           end
         end
       end 
+    end
+
+    def setup_pawns
+      StarChess::PAWN_SPACES.each do |color, space_list|
+        space_list.each do |space_id|
+          space = @spaces[space_id]
+          pawn = StarChess::Piece.new :pawn, color, space
+          space.piece = pawn
+          @pieces[color] << pawn
+        end
+      end
+
     end
   end
 end
