@@ -6,12 +6,23 @@ require 'starchess/piece_defs'
 module StarChess
   class Board
     attr_accessor :spaces, :pieces, :taken_pieces
-    def initialize
+    def initialize board_state
       @spaces = {} # int ID to Space instance
       @pieces = {:white => [], :black => []}
       @taken_pieces = {:white => [], :black => []}
       self.construct_spaces
-      self.setup_pawns
+      board_state ? self.reconstruct(board_state) : self.setup_pawns
+    end
+
+    def inspect
+      s = "\n"
+      @pieces.each do |color, color_pieces|
+        s << "#{color.to_s}: \n"
+        color_pieces.each do |piece|
+          s << "#{piece.space.id.to_s}: #{piece.piece_type.to_s}\n" 
+        end
+      end
+      s
     end
 
     def get_available_moves color
@@ -22,6 +33,21 @@ module StarChess
       end
       result
     end    
+
+    # board state should be 
+    # {:white => {1 => :pawn, 2 => :pawn}, :black => [etc]}
+    # todo: taken, maybe
+    # todo: error handling on bad input here (or maybe do it in game)
+    def reconstruct board_state
+      board_state.each do |color, positions|
+        positions.each do |space_id, piece_type|
+          space = @spaces[space_id]
+          piece = StarChess::Piece.new self, piece_type, color, space
+          space.piece = piece
+          @pieces[color] << piece
+        end
+      end
+    end
 
     def construct_spaces
       (1..37).each do |id|

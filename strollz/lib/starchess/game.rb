@@ -4,8 +4,8 @@ require 'starchess/piece_defs'
 module StarChess
   class Game
     attr_reader :board
-    def initialize
-      @board = StarChess::Board.new
+    def initialize board_state
+      @board = StarChess::Board.new board_state
       @chosen_pieces = {:white => [], :black => []}
     end
 
