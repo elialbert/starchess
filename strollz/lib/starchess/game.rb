@@ -13,7 +13,7 @@ module StarChess
       raise StarChess::PieceError unless 
         StarChess::CHOSEN_PIECE_TYPES.include? piece_type
       raise StarChess::PieceError if 
-        @chosen_pieces[color].contains piece_type
+        @chosen_pieces[color].include? piece_type
       @board.add_chosen_piece color, piece_type, space_id
       @chosen_pieces[color] << piece_type
     end
@@ -22,7 +22,6 @@ module StarChess
   end
 
   class PieceError < RuntimeError
-    to_s "invalid piece"
   end
 
 end
