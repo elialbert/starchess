@@ -40,7 +40,21 @@ module StarChess
           @pieces[color] << pawn
         end
       end
-
     end
+
+    def add_chosen_piece color, piece_type, space_id
+      space = @spaces[space_id]
+      raise StarChess::SpaceError unless space.piece == nil
+      raise StarChess::SpaceError unless 
+        StarChess::CHOSEN_SPACES[color].include? space_id
+      piece = StarChess::Piece.new piece_type, color, space
+      space.piece = piece
+      @pieces[color] << piece
+    end
+
   end
+
+  class SpaceError < RuntimeError
+  end
+
 end
