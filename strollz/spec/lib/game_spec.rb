@@ -4,7 +4,7 @@ require "starchess/game"
 describe "StarChess Game" do 
   g=nil
   before do
-    g = StarChess::Game.new
+    g = StarChess::Game.new :choose_mode
   end
 
   it "should initialize board" do

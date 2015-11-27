@@ -3,10 +3,11 @@ require 'starchess/piece_defs'
 
 module StarChess
   class Game
-    attr_reader :board
-    def initialize(board_state = nil)
+    attr_reader :board, :game_state
+    def initialize(game_mode, board_state = nil, chosen_pieces = nil)
       @board = StarChess::Board.new board_state
-      @chosen_pieces = {:white => [], :black => []}
+      @mode = game_mode
+      @chosen_pieces ||= {:white => [], :black => []}
     end
 
     def add_piece color, piece_type, space_id
