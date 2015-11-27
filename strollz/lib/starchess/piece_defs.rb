@@ -9,4 +9,12 @@ module StarChess
   CHOSEN_PIECE_TYPES = [:king, :queen, :bishop, :rook, :knight]
   DIRECTIONS = [:north, :northwest, :southwest, 
       :south, :southeast, :northeast]
+
+  KNIGHT_MOVES = {:north => [:northeast, :northwest],
+                  :northwest => [:north, :southwest],
+                  :southwest => [:northwest, :south],
+                  :south => [:southwest, :southeast],
+                  :southeast => [:south, :northeast],
+                  :northeast => [:southeast, :north]
+  }    
 end

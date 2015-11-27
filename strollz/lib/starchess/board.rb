@@ -6,7 +6,7 @@ require 'starchess/piece_defs'
 module StarChess
   class Board
     attr_accessor :spaces, :pieces, :taken_pieces
-    def initialize board_state
+    def initialize(board_state = nil)
       @spaces = {} # int ID to Space instance
       @pieces = {:white => [], :black => []}
       @taken_pieces = {:white => [], :black => []}
@@ -58,7 +58,7 @@ module StarChess
         :south, :southeast, :northeast].each_with_index do |direction, index|
           if not space_def[index].nil?
             referent_space =  @spaces[space_def[index]]
-            @spaces[space_id].public_send("#{direction}=", referent_space) 
+            @spaces[space_id].set_adjacent(direction, referent_space) 
           end
         end
       end 

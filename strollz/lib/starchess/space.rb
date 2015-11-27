@@ -10,5 +10,13 @@ module StarChess
     def get_piece_color
       return @piece.color if @piece 
     end
+
+    def get_adjacent direction
+      self.send("#{direction}")
+    end
+
+    def set_adjacent direction, space_obj
+      self.send("#{direction}=", space_obj)
+    end 
   end
 end
