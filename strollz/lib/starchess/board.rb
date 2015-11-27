@@ -44,8 +44,9 @@ module StarChess
 
     def add_chosen_piece color, piece_type, space_id
       space = @spaces[space_id]
-      raise StarChess::SpaceError unless space.piece == nil
-      raise StarChess::SpaceError unless 
+      raise StarChess::SpaceError, "space #{space_id} already has a piece" unless 
+        space.piece == nil
+      raise StarChess::SpaceError, "#{space_id} not a choosable space" unless 
         StarChess::CHOSEN_SPACES[color].include? space_id
       piece = StarChess::Piece.new piece_type, color, space
       space.piece = piece
