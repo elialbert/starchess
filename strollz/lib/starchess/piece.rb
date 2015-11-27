@@ -50,8 +50,26 @@ module StarChess
     end
 
     def get_queen_moves
+      return self.get_standard_moves StarChess::DIRECTIONS
+    end
+
+    def get_rook_moves
+      return self.get_standard_moves [:north, :south]
+    end
+
+    def get_knight_moves
+    end
+
+    def get_bishop_moves
+      return self.get_standard_moves [:northwest, :southwest, :southeast, :northeast]
+    end
+
+    def get_king_moves
+    end
+
+    def get_standard_moves directions
       result = []
-      StarChess::DIRECTIONS.each do |direction|
+      directions.each do |direction|
         cur_space = @space
         while true
           cur_space = cur_space.public_send("#{direction}")
@@ -66,18 +84,6 @@ module StarChess
         end 
       end
       result
-    end
-
-    def get_king_moves
-    end
-
-    def get_rook_moves
-    end
-
-    def get_knight_moves
-    end
-
-    def get_bishop_moves
     end
   end
 end
