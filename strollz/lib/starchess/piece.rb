@@ -50,6 +50,22 @@ module StarChess
     end
 
     def get_queen_moves
+      result = []
+      StarChess::DIRECTIONS.each do |direction|
+        cur_space = @space
+        while true
+          cur_space = cur_space.public_send("#{direction}")
+          break if cur_space.nil? 
+          if cur_space.piece.nil?  
+            result << cur_space.id 
+          else
+            break if cur_space.piece.color == @color
+            result << cur_space.id 
+            break             
+          end
+        end 
+      end
+      result
     end
 
     def get_king_moves

@@ -1,6 +1,5 @@
 require "spec_helper"
 require "starchess/board"
-require "starchess/piece"
 
 describe "StarChess Pawns" do 
   it "should know starting pawn moves" do

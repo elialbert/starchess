@@ -7,4 +7,6 @@ module StarChess
 
   PIECE_TYPES = [:pawn, :king, :queen, :bishop, :rook, :knight]
   CHOSEN_PIECE_TYPES = [:king, :queen, :bishop, :rook, :knight]
+  DIRECTIONS = [:north, :northwest, :southwest, 
+      :south, :southeast, :northeast]
 end
