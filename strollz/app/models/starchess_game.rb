@@ -25,9 +25,9 @@ class StarchessGame < ActiveRecord::Base
 
   def set_board_attrs
     @logic = StarChess::Game.new :choose_mode, nil, nil
-    self.turn = "black" # next move's color
+    self.turn = "white" # next move's color
     self.mode = "choose_mode"
-    info = @logic.get_game_info :black # get game info for next call
+    info = @logic.get_game_info :white # get game info for next call
     self.board_state = ActiveSupport::JSON.encode(info[:state])
     @available_moves = ActiveSupport::JSON.encode(info[:available_moves])
   end
@@ -47,6 +47,7 @@ class StarchessGame < ActiveRecord::Base
         attributes[:chosen_piece][:space_id]
       if @logic.chosen_pieces.values.flatten.length == 10
         self.mode = "play_mode"
+        @logic.mode = :play_mode
       end
       attributes[:chosen_pieces] = ActiveSupport::JSON.encode(@logic.chosen_pieces)
     end 
