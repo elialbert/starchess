@@ -7,7 +7,7 @@ module StarChess
     def initialize(game_mode, board_state = nil, chosen_pieces = nil)
       @board = StarChess::Board.new board_state
       @mode = game_mode
-      @chosen_pieces ||= {:white => [], :black => []}
+      @chosen_pieces = chosen_pieces || {:white => [], :black => []}.with_indifferent_access
     end
 
     def get_game_info color

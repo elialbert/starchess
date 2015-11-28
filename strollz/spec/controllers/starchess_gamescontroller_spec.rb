@@ -3,6 +3,15 @@ require "spec_helper"
 describe StarchessGamesController, :type => :controller do  
   u1,u2=nil
 
+  def make_choose_update response, turn, piece_type, space_id, game_id
+    board_state = response.parsed_body['response']['board_state']
+    data = {"starchess_game" => {"board_state" => board_state,
+      "turn" => turn,
+      "chosen_piece" => '{"piece_type": "'+piece_type.to_s+'", "space_id": '+space_id.to_s+'}'},
+      "id" => game_id, "version" => 1}
+    patch :update, data
+  end 
+
   before do
     User.delete_all
     StarchessGame.delete_all
@@ -51,6 +60,24 @@ describe StarchessGamesController, :type => :controller do
     board_state = ActiveSupport::JSON.decode(response.parsed_body['response']['board_state'])
     expect(board_state['black']['10']).to eq('rook')
     expect(response.parsed_body['response']['available_moves']).to eq("[4,11,17,22,28]")
+
+    response=make_choose_update response, "white", "rook", 4, g1.id
+    response=make_choose_update response, "black", "bishop", 16, g1.id
+    response=make_choose_update response, "white", "bishop", 17, g1.id
+    response=make_choose_update response, "black", "knight", 21, g1.id
+    response=make_choose_update response, "white", "knight", 11, g1.id
+    cloned_response = response.deep_dup
+    expect {
+      make_choose_update response, "black", "king", 17, g1.id
+      }.to raise_error(StarChess::SpaceError)
+    response=make_choose_update cloned_response, "black", "king", 27, g1.id
+    response=make_choose_update response, "white", "queen", 22, g1.id
+    response=make_choose_update response, "black", "queen", 34, g1.id
+    response=make_choose_update response, "white", "king", 28, g1.id
+
+    expect(response.parsed_body['response']['mode']).to eq('play_mode')
+    puts(response.parsed_body['response'])
+
   end
 
 end

@@ -8,8 +8,8 @@ module StarChess
     attr_accessor :spaces, :pieces
     attr_reader :special_state
     def initialize(board_state = nil)
-      @spaces = {} # int ID to Space instance
-      @pieces = {:white => [], :black => []}
+      @spaces = {}.with_indifferent_access # int ID to Space instance
+      @pieces = {:white => [], :black => []}.with_indifferent_access
       @special_state = nil
       self.construct_spaces
       board_state ? self.reconstruct(board_state) : self.setup_pawns
@@ -27,7 +27,7 @@ module StarChess
     end
 
     def get_state
-      state = {:white => {}, :black => {}}
+      state = {:white => {}, :black => {}}.with_indifferent_access
       @pieces.each do |color, pieces| 
         pieces.each do |piece|
           state[color][piece.space.id] = piece.piece_type

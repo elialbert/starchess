@@ -25,7 +25,7 @@ class StarchessGame < ActiveRecord::Base
 
   def set_board_attrs
     @logic = StarChess::Game.new :choose_mode, nil, nil
-    self.turn = "white" # current move's color, next call must be different
+    self.turn = "black" # next move's color
     self.mode = "choose_mode"
     info = @logic.get_game_info :black # get game info for next call
     self.board_state = ActiveSupport::JSON.encode(info[:state])
@@ -35,16 +35,19 @@ class StarchessGame < ActiveRecord::Base
   def update(attributes={})
     attributes[:board_state] = ActiveSupport::JSON.decode(attributes[:board_state])
     chosen_pieces = (self.mode == "choose_mode" && self.chosen_pieces) ? 
-      ActiveSupport::JSON.decode(self.chosen_pieces) : nil
+      ActiveSupport::JSON.decode(self.chosen_pieces).with_indifferent_access : nil
     @logic = StarChess::Game.new self.mode, attributes[:board_state], chosen_pieces
     color = attributes[:turn]
-    raise StarChess::TurnError, "it is #{color}'s turn" unless color != self.turn
+    raise StarChess::TurnError, "it is #{color}'s turn" unless color == self.turn
 
     # handle errors here / check integrity too
     if self.mode == "choose_mode"
       attributes[:chosen_piece] = ActiveSupport::JSON.decode(attributes[:chosen_piece])
       @logic.add_piece color.to_sym, attributes[:chosen_piece][:piece_type].to_sym,
         attributes[:chosen_piece][:space_id]
+      if @logic.chosen_pieces.values.flatten.length == 10
+        self.mode = "play_mode"
+      end
       attributes[:chosen_pieces] = ActiveSupport::JSON.encode(@logic.chosen_pieces)
     end 
     attributes.delete :chosen_piece
