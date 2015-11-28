@@ -76,7 +76,6 @@ describe StarchessGamesController, :type => :controller do
     response=make_choose_update response, "black", "king", 34, g1.id
 
     expect(response.parsed_body['response']['mode']).to eq('play_mode')
-    puts(response.parsed_body['response'])
     expect(response.parsed_body['response']['turn']).to eq('white')
     avail = ActiveSupport::JSON.decode(response.parsed_body['response']['available_moves'])
     expect(avail['5']).to eq([6,7])

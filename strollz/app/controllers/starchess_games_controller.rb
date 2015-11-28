@@ -17,7 +17,7 @@ class StarchessGamesController < ApiController
   def update
     @game = StarchessGame.find(params[:id])
     @game.update(game_update_params)
-    expose(@game, {:include => :available_moves, :status => :updated})
+    expose(@game, {:include => [:available_moves,:special_state], :status => :updated})
   end
 
   private

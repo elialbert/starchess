@@ -6,21 +6,23 @@ class StarchessGame < ActiveRecord::Base
   has_one :player2, class_name: "User", foreign_key: "id"
 
   attr_reader :logic
-  # attr_accessor :mode, :turn, :board_state, :chosen_pieces, :available_moves
-  attr_accessor :available_moves
+  attr_accessor :available_moves, :special_state
   before_create :set_board_attrs
 
   def available_moves
     @available_moves
   end
+  def special_state
+    @special_state
+  end
 
   def attributes
-    info = {:available_moves => @available_moves}
+    info = {:available_moves => @available_moves, :special_state => @special_state}
     super.merge info
   end
 
   def serializable_hash(options = {})
-    super methods: :available_moves
+    super methods: [:available_moves, :special_state]
   end
 
   def set_board_attrs

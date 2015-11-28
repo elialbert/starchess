@@ -14,7 +14,6 @@ module StarChess
     def get_game_info color
       info = {:state => @board.get_state, :mode => @mode, :special_state => @board.special_state}
       if @mode == :play_mode
-        puts "getting play mode avail"
         info[:available_moves] = @board.get_available_moves color
       else
         info[:available_moves] = self.get_choose_moves color, info[:state]
