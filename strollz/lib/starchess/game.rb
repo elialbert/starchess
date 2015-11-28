@@ -10,8 +10,12 @@ module StarChess
       @chosen_pieces ||= {:white => [], :black => []}
     end
 
-    def get_board_state 
-      @board.get_state
+    def get_game_info color
+      info = {:state => @board.get_state}
+      if @mode == :play_mode
+        info[:available_moves] = @board.get_available_moves color
+      end
+      info
     end
 
     def add_piece color, piece_type, space_id

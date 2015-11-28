@@ -30,20 +30,20 @@ describe "StarChess Game" do
     expect(g.board.spaces[21].piece.piece_type).to eq(:king)
   end
 
-  def do_game(mode, board_state)
-    g = StarChess::Game.new :choose_mode, board_state=board_state, chosen_pieces=nil
-    return g.get_board_state
+  def do_game(mode, board_state, color)
+    g = StarChess::Game.new mode, board_state=board_state, chosen_pieces=nil
+    return g.get_game_info color
   end
 
   # simulate db interaction that will normally drive this
   def do_choose_game(mode, board_state, chosen_pieces, new_selection)
     g = StarChess::Game.new :choose_mode, board_state=board_state, chosen_pieces=chosen_pieces
     g.add_piece new_selection[:color], new_selection[:piece_type], new_selection[:space_id]
-    return g.chosen_pieces, g.get_board_state
+    return g.chosen_pieces, g.get_game_info(new_selection[:color])[:state]
   end
 
   it "should be able to play a game" do
-    board_state = do_game(:choose_mode, nil)
+    board_state = do_game(:choose_mode, nil, nil)[:state]
     expect(board_state[:white].length).to eq(5)
     chosen_pieces, board_state = do_choose_game(:choose_mode, board_state, nil, 
                                   {:color => :white, :piece_type => :rook, :space_id => 11})
@@ -73,6 +73,12 @@ describe "StarChess Game" do
     expect(board_state[:black].length).to eq(10)
 
     expect(board_state[:white][28]).to eq(:king)
+
+    info = do_game(:play_mode, board_state, :white)
+    puts "info is #{info}"
+    expect(info[:state][:white][5]).to eq(:pawn)
+    expect(info[:available_moves][5]).to eq([6,7])
+
   end
 
 end

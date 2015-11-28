@@ -35,11 +35,13 @@ module StarChess
       state
     end
 
-    def get_available_moves color
+    def get_available_moves(color, recursed = nil)
       result = {}
       @pieces[color].each do |piece|
         # dict of space id => list of space ids
-        result[piece.space.id] = piece.get_available_moves 
+        result[piece.space.id] = (piece.piece_type == :king) ? 
+          piece.get_king_moves(recursed=recursed) :
+          piece.get_available_moves 
       end
       result
     end    
