@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151125165436) do
+ActiveRecord::Schema.define(version: 20151128045957) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,6 +64,22 @@ ActiveRecord::Schema.define(version: 20151125165436) do
 
   add_index "ratings", ["user_from_id"], name: "index_ratings_on_user_from_id", using: :btree
   add_index "ratings", ["user_to_id"], name: "index_ratings_on_user_to_id", using: :btree
+
+  create_table "starchess_games", force: :cascade do |t|
+    t.string   "turn"
+    t.string   "mode"
+    t.string   "board_state"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.integer  "winner_id"
+    t.integer  "player1_id"
+    t.integer  "player2_id"
+    t.text     "chosen_pieces"
+  end
+
+  add_index "starchess_games", ["player1_id"], name: "index_starchess_games_on_player1_id", using: :btree
+  add_index "starchess_games", ["player2_id"], name: "index_starchess_games_on_player2_id", using: :btree
+  add_index "starchess_games", ["winner_id"], name: "index_starchess_games_on_winner_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email"

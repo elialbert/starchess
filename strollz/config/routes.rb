@@ -18,6 +18,7 @@ Rails.application.routes.draw do
     resources :events
     resources :ratings
     resources :attendrequests
+    resources :starchess_games
   end
 
   # Example of regular route:
