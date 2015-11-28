@@ -17,4 +17,6 @@ module StarChess
                   :southeast => [:south, :northeast],
                   :northeast => [:southeast, :north]
   }    
+
+
 end

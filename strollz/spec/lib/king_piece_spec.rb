@@ -58,4 +58,29 @@ describe "StarChess Kings" do
     expect(moves).to eq([22,23])
   end
 
+  it "should be able to be put into check and have limited moves" do
+    board_state = {:white => {17 => :king, 18 => :pawn}, 
+      :black => {6 => :bishop}}
+    b = StarChess::Board.new board_state
+    moves = b.get_available_moves :white
+    expect(moves[18]).to eq([])
+    expect(moves[17]).to eq([11,23])
+
+
+    board_state = {:white => {17 => :king}, 
+      :black => {6 => :bishop, 24 => :pawn, 18 => :pawn}}
+    b = StarChess::Board.new board_state
+    moves = b.get_available_moves :white
+    expect(moves[18]).to eq([])
+    expect(moves[17]).to eq([11])
+  end
+
+  it "should be able to block check with other pieces" do
+    board_state = {:white => {17 => :king, 36 => :bishop}, 
+      :black => {6 => :bishop}}
+    b = StarChess::Board.new board_state
+    moves = b.get_available_moves :white
+    expect(moves[17]).to eq([18,11,23])
+    expect(moves[36]).to eq([12])
+  end
 end

@@ -79,7 +79,7 @@ module StarChess
       return self.get_standard_moves [:northwest, :southwest, :southeast, :northeast]
     end
 
-    def get_king_moves recursed=nil
+    def get_king_moves opponents_flattened_avail=nil, recursed=nil
       result = []
       takeable_pieces = []
       StarChess::DIRECTIONS.each do |direction|
@@ -96,11 +96,12 @@ module StarChess
       return result if recursed == true
       # first remove opponent's moves
       opposite_color = (@color == :black) ? :white : :black
-      result = result - @board.get_available_moves(opposite_color, recursed=true).values.flatten
+      opponents_flattened_avail ||= @board.get_available_moves(opposite_color, true).values.flatten
+      result = result - opponents_flattened_avail
       # temporarily change color of takeable pieces and recalculate opp moves
       takeable_pieces.each do |piece|
         piece.color = @color
-        result = result - @board.get_available_moves(opposite_color, recursed=true).values.flatten
+        result = result - @board.get_available_moves(opposite_color, true).values.flatten
         piece.color = opposite_color
       end
       result

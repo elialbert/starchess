@@ -5,11 +5,10 @@ require 'starchess/piece_defs'
 
 module StarChess
   class Board
-    attr_accessor :spaces, :pieces, :taken_pieces
+    attr_accessor :spaces, :pieces
     def initialize(board_state = nil)
       @spaces = {} # int ID to Space instance
       @pieces = {:white => [], :black => []}
-      @taken_pieces = {:white => [], :black => []}
       self.construct_spaces
       board_state ? self.reconstruct(board_state) : self.setup_pawns
     end
@@ -37,20 +36,65 @@ module StarChess
 
     def get_available_moves(color, recursed = nil)
       result = {}
+      king = nil
+      opposite_color = (@color == :black) ? :white : :black
+      opponents_flattened_avail = get_available_moves(
+        opposite_color, true).values.flatten if not recursed
       @pieces[color].each do |piece|
         # dict of space id => list of space ids
-        result[piece.space.id] = (piece.piece_type == :king) ? 
-          piece.get_king_moves(recursed=recursed) :
-          piece.get_available_moves 
+        if (piece.piece_type == :king)
+          result[piece.space.id] = piece.get_king_moves(
+                                          opponents_flattened_avail=opponents_flattened_avail,
+                                          recursed)
+          king = piece
+        else
+          result[piece.space.id] = piece.get_available_moves 
+        end          
+      end
+      # find other color moves
+      # if king's square is in the flattened values
+      if king && recursed.nil? && opponents_flattened_avail.include?(king.space.id) 
+        result = compute_check_moves(color, opposite_color, result, king.space.id)
       end
       result
     end    
 
+    #   for each avail move for this color
+    #     find other color moves again
+    #     is king's square still in flattened values
+    def compute_check_moves color, opp_color, available_moves, king_space_id
+      new_available_moves = Hash.new {|h,k| h[k] = []}
+      cur_board_state = self.get_state
+      original_spaces = @spaces.deep_dup
+
+      available_moves.each do |from, to|
+        to.each do |to_space_id|
+          # always look at real king space ID unless simulating new one        
+          new_king_space_id = (from == king_space_id) ? to_space_id : king_space_id
+          change_board_state(cur_board_state.deep_dup, original_spaces, color, opp_color, from, to_space_id)
+          opponents_new_moves = get_available_moves(opp_color,recursed=true).values.flatten
+          new_available_moves[from] << to_space_id if not opponents_new_moves.include? new_king_space_id
+        end
+      end
+      self.reconstruct cur_board_state
+      return new_available_moves
+    end
+
+    def change_board_state(board_state, original_spaces, color, opp_color, from, to)
+      from_piece_type = original_spaces[from].piece.piece_type
+      board_state[color].delete(from)
+      board_state[color][to] = from_piece_type
+      board_state[opp_color].delete(to)
+      self.reconstruct(board_state)
+    end
+
     # board state should be 
     # {:white => {1 => :pawn, 2 => :pawn}, :black => [etc]}
-    # todo: taken, maybe
     # todo: error handling on bad input here (or maybe do it in game)
     def reconstruct board_state
+      @spaces = {}
+      self.construct_spaces
+      @pieces = {:white => [], :black => []}
       board_state.each do |color, positions|
         positions.each do |space_id, piece_type|
           space = @spaces[space_id]
