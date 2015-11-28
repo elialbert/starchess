@@ -83,4 +83,14 @@ describe "StarChess Kings" do
     expect(moves[17]).to eq([18,11,23])
     expect(moves[36]).to eq([12])
   end
+
+  it "should know when it's checkmate" do
+    board_state = {:white => {4 => :king, 23 => :pawn}, 
+      :black => {6 => :rook, 12 => :queen}}
+    b = StarChess::Board.new board_state
+    moves = b.get_available_moves :white
+    expect(moves[6]).to eq([])
+    expect(moves[23]).to eq([])
+    expect(b.special_state).to eq(:checkmate)
+  end 
 end

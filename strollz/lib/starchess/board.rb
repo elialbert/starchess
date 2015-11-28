@@ -6,9 +6,11 @@ require 'starchess/piece_defs'
 module StarChess
   class Board
     attr_accessor :spaces, :pieces
+    attr_reader :special_state
     def initialize(board_state = nil)
       @spaces = {} # int ID to Space instance
       @pieces = {:white => [], :black => []}
+      @special_state = nil
       self.construct_spaces
       board_state ? self.reconstruct(board_state) : self.setup_pawns
     end
@@ -54,6 +56,7 @@ module StarChess
       # find other color moves
       # if king's square is in the flattened values
       if king && recursed.nil? && opponents_flattened_avail.include?(king.space.id) 
+        @special_state = :check if @special_state != :checkmate
         result = compute_check_moves(color, opposite_color, result, king.space.id)
       end
       result
@@ -77,6 +80,7 @@ module StarChess
         end
       end
       self.reconstruct cur_board_state
+      @special_state = :checkmate if new_available_moves.values.flatten.length == 0
       return new_available_moves
     end
 
