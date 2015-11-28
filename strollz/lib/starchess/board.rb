@@ -101,10 +101,10 @@ module StarChess
       @pieces = {:white => [], :black => []}
       board_state.each do |color, positions|
         positions.each do |space_id, piece_type|
-          space = @spaces[space_id]
-          piece = StarChess::Piece.new self, piece_type, color, space
+          space = @spaces[space_id.to_i]
+          piece = StarChess::Piece.new self, piece_type.to_sym, color.to_sym, space
           space.piece = piece
-          @pieces[color] << piece
+          @pieces[color.to_sym] << piece
         end
       end
     end

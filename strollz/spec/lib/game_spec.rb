@@ -31,14 +31,14 @@ describe "StarChess Game" do
   end
 
   def do_game(mode, board_state, color) # color is who just moved
-    g = StarChess::Game.new mode, board_state=board_state, chosen_pieces=nil
+    g = StarChess::Game.new mode, board_state, nil
     opposite_color = (color == :black) ? :white : :black
     return g.get_game_info opposite_color
   end
 
   # simulate db interaction that will normally drive this
   def do_choose_game(mode, board_state, chosen_pieces, new_selection)
-    g = StarChess::Game.new :choose_mode, board_state=board_state, chosen_pieces=chosen_pieces
+    g = StarChess::Game.new :choose_mode, board_state, chosen_pieces
     g.add_piece new_selection[:color], new_selection[:piece_type], new_selection[:space_id]
     return g.chosen_pieces, g.get_game_info(new_selection[:color])[:state]
   end
