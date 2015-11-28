@@ -30,9 +30,10 @@ describe "StarChess Game" do
     expect(g.board.spaces[21].piece.piece_type).to eq(:king)
   end
 
-  def do_game(mode, board_state, color)
+  def do_game(mode, board_state, color) # color is who just moved
     g = StarChess::Game.new mode, board_state=board_state, chosen_pieces=nil
-    return g.get_game_info color
+    opposite_color = (color == :black) ? :white : :black
+    return g.get_game_info opposite_color
   end
 
   # simulate db interaction that will normally drive this
@@ -74,11 +75,35 @@ describe "StarChess Game" do
 
     expect(board_state[:white][28]).to eq(:king)
 
-    info = do_game(:play_mode, board_state, :white)
-    puts "info is #{info}"
+    info = do_game(:play_mode, board_state, :black)
     expect(info[:state][:white][5]).to eq(:pawn)
     expect(info[:available_moves][5]).to eq([6,7])
 
+    board_state = info[:state]
+    board_state[:white].delete(5)
+    board_state[:white][7] = :pawn
+    info = do_game(:play_mode, board_state, :white) # white moves 
+    # and now we have black's avail in info
+    expect(info[:state][:white][7]).to eq(:pawn)
+    expect(info[:available_moves][9]).to eq([8])
+
+    board_state = info[:state]
+    board_state[:black].delete(20)
+    board_state[:black][19] = :pawn
+    info = do_game(:play_mode, board_state, :black) # black moves
+    expect(info[:available_moves][18]).to eq([])    
+
+    board_state = info[:state]
+    board_state[:white].delete(12)
+    board_state[:white][13] = :pawn
+    info = do_game(:play_mode, board_state, :white) # white moves 
+
+    board_state = info[:state]
+    board_state[:black].delete(19)
+    board_state[:white].delete(13)
+    board_state[:black][13] = :pawn
+    info = do_game(:play_mode, board_state, :black) # black moves
+    expect(info[:available_moves]).not_to include(13)
   end
 
 end
