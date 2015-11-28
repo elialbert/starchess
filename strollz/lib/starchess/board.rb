@@ -25,6 +25,16 @@ module StarChess
       s
     end
 
+    def get_state
+      state = {:white => {}, :black => {}}
+      @pieces.each do |color, pieces| 
+        pieces.each do |piece|
+          state[color][piece.space.id] = piece.piece_type
+        end
+      end
+      state
+    end
+
     def get_available_moves color
       result = {}
       @pieces[color].each do |piece|
