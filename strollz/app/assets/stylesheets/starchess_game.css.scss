@@ -60,6 +60,6 @@ $height: $width*sin(60deg);
 .row {
      margin-bottom: -55px;   
 }
-.row:nth-child(odd) {
-    margin-left:70px;
+.row:nth-child(even) {
+    margin-top:53px;
 }

@@ -1,3 +1,4 @@
+#= depend_on_asset "starchess_game.html"
 @strollz = angular.module('strollz', ['ngRoute','restangular'])
 
 @strollz.config(['RestangularProvider', (RestangularProvider) ->
@@ -15,11 +16,11 @@
 ])
 @strollz.config(['$routeProvider', ($routeProvider) ->
   $routeProvider.when('/StarchessGames/', {
-      templateUrl: '../templates/starchess_games.html',
+      templateUrl: '<%= asset_path("starchess_game.html")',
       controller: 'StarchessGamesCtrl'
     })
   $routeProvider.when('/StarchessGames/:gameId', {
-      templateUrl: '../templates/starchess_game.html',
+      templateUrl: '../assets/starchess_game.html',
       controller: 'StarchessGameCtrl'
     })
   $routeProvider.otherwise({
