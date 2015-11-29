@@ -3,48 +3,11 @@ game: {{game.id}}
 
 
 
-<div class="row">
-    <div class="outerclip">
+<div class="row" ng-repeat="row in row_range">
+    <div class="outerclip" ng-repeat="col in col_range" ng-class='need_to_remove_space(row,col)'>
         <div class="innerclip">
+            <span class="space_id">{{row}}: {{col}} </span>
             <%= image_tag "Chess_klt60.png" %>
-        </div>
-    </div><div class="outerclip">
-        <div class="innerclip">
-            <%= image_tag "Chess_pictogram.svg.png" %>
-        </div>
-    </div><div class="outerclip">
-        <div class="innerclip">
-            <%= image_tag "Chess_pictogram.svg.png" %>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="outerclip">
-        <div class="innerclip">
-            <%= image_tag "Chess_pictogram.svg.png" %>
-        </div>
-    </div><div class="outerclip">
-        <div class="innerclip">
-            <%= image_tag "Chess_pictogram.svg.png" %>
-        </div>
-    </div><div class="outerclip">
-        <div class="innerclip">
-            <%= image_tag "Chess_pictogram.svg.png" %>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="outerclip">
-        <div class="innerclip">
-            <%= image_tag "Chess_pictogram.svg.png" %>
-        </div>
-    </div><div class="outerclip">
-        <div class="innerclip">
-            <%= image_tag "Chess_pictogram.svg.png" %>
-        </div>
-    </div><div class="outerclip">
-        <div class="innerclip">
-            <%= image_tag "Chess_pictogram.svg.png" %>
         </div>
     </div>
 </div>
