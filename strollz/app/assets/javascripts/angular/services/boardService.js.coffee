@@ -9,7 +9,7 @@
     6: [0,1,3,4,5,7,8],
   }
   # space row/col to space id
-  @space_lookup = {
+  @space_id_lookup = {
     0: {2:10,3:16,5:27,6:34},
     1: {2:9,3:15,4:21,5:26,6:33},
     2: {1:3,2:8,3:14,4:20,5:25,6:32,7:36},
@@ -18,8 +18,17 @@
     5: {2:5,3:11,4:17,5:22,6:29},
     6: {2:4,6:28},
   }
+  @space_rowcol_lookup = {
+  }
+  for row,col_hash of @space_id_lookup
+    for col,space_id of @space_id_lookup[row]
+      @space_rowcol_lookup[space_id] = [row,col]
+
   return {
     remove_spaces: @remove_spaces,
-    space_lookup: @space_lookup
+    space_id_lookup: @space_id_lookup,
+    space_rowcol_lookup: @space_rowcol_lookup
+    row_range: _.range(7)
+    col_range: _.range(9)
   }
 ]   
