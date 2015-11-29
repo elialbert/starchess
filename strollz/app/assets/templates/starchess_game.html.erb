@@ -7,7 +7,7 @@ game: {{game.id}}
     <div class="outerclip" ng-repeat="col in col_range" ng-class='need_to_remove_space(row,col)'>
         <div class="innerclip">
             <span class="space_id">{{get_debug_text(row,col)}}</span>
-            <%= image_tag "Chess_klt60.png" %>
+            <img src="{{get_piece_image(row,col)}}"></img>
         </div>
     </div>
 </div>

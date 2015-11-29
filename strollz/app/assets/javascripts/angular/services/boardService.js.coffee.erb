@@ -24,10 +24,16 @@
     for col,space_id of @space_id_lookup[row]
       @space_rowcol_lookup[space_id] = [row,col]
 
+  @piece_type_to_image = {
+    'king': "<%= asset_path('Chess_klt60.png') %>"
+    'pawn': "<%= asset_path('Chess_klt60.png') %>"
+  }
+
   return {
-    remove_spaces: @remove_spaces,
-    space_id_lookup: @space_id_lookup,
+    remove_spaces: @remove_spaces
+    space_id_lookup: @space_id_lookup
     space_rowcol_lookup: @space_rowcol_lookup
+    piece_type_to_image: @piece_type_to_image
     row_range: _.range(7)
     col_range: _.range(9)
   }
