@@ -25,8 +25,24 @@
       @space_rowcol_lookup[space_id] = [row,col]
 
   @piece_type_to_image = {
-    'king': "<%= asset_path('Chess_klt60.png') %>"
-    'pawn': "<%= asset_path('Chess_klt60.png') %>"
+    'white': {
+      'king': "<%= asset_path('chess_pieces/Chess_klt60.png') %>"
+      'pawn': "<%= asset_path('chess_pieces/Chess_plt60.png') %>"
+      'queen': "<%= asset_path('chess_pieces/Chess_qlt60.png') %>"
+      'rook': "<%= asset_path('chess_pieces/Chess_rlt60.png') %>"
+      'knight': "<%= asset_path('chess_pieces/Chess_nlt60.png') %>"
+      'bishop': "<%= asset_path('chess_pieces/Chess_blt60.png') %>"
+      'empty': "<%= asset_path('chess_pieces/empty.png') %>"
+    }
+    'black': {
+      'king': "<%= asset_path('chess_pieces/Chess_kdt60.png') %>"
+      'pawn': "<%= asset_path('chess_pieces/Chess_pdt60.png') %>"
+      'queen': "<%= asset_path('chess_pieces/Chess_qdt60.png') %>"
+      'rook': "<%= asset_path('chess_pieces/Chess_rdt60.png') %>"
+      'knight': "<%= asset_path('chess_pieces/Chess_ndt60.png') %>"
+      'bishop': "<%= asset_path('chess_pieces/Chess_bdt60.png') %>"
+      'empty': "<%= asset_path('chess_pieces/empty.png') %>"
+    }
   }
 
   return {
