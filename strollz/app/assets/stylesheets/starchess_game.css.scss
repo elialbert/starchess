@@ -1,0 +1,65 @@
+@import "compass/css3";
+
+$width: 80px;
+$fillColor: #CCC;
+$height: $width*sin(60deg);
+.hexagon {
+  display: inline-block;
+  position: relative;
+  width: $width;
+}
+.hexagon:before, .hexagon:after {
+  content: '';
+  display: block;
+  width: 50%;
+  border: 0 solid transparent;
+}
+.hexagon:before {
+  border-bottom-color: $fillColor;
+  border-width: 0 $width/4 $height/2;
+}
+.hexagon:after {
+  border-top-color: $fillColor;
+  border-width: $height/2 $width/4 0;
+}
+.hexagon > .contents {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 25%; right: 25%; 
+}
+#myimg {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 0; right: 0; 
+  margin: auto;
+  width: 50%;
+}
+
+   .outerclip {
+        -webkit-transform: skew(-30deg);
+        -ms-transform: skew(-30deg);
+        -transform: skew(-30deg);
+        overflow: hidden;
+        display: inline-block;
+        height: 100px;
+        margin-right: 40px;
+    }
+    .innerclip {
+        -webkit-transform: skew(50deg);
+        -ms-transform: skew(50deg);
+        transform: skew(50deg);
+        overflow: hidden;
+        display: inline-block;
+        height: 100px;
+    }
+    img {
+        -webkit-transform: skew(-30deg);
+        -ms-transform: skew(-30deg);
+        transform: skew(-30deg);
+    }
+.row {
+     margin-bottom: -55px;   
+}
+.row:nth-child(odd) {
+    margin-left:70px;
+}
