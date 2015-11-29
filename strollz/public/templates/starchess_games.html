@@ -1,1 +1,17 @@
-<h2>testing: {{test}}</h2>
+<h2>Current Starchess Games:</h2>
+<div ng-repeat="game in games">
+  <ul>
+    <li>
+      player1: {{game.player1_id}}
+    </li>
+    <li>
+      player2: {{game.player2_id}}
+    </li>
+    <li>
+      turn: {{game.turn}}
+    </li>
+    <li>
+    <a href="#/StarchessGames/{{game.id}}">Go to game</a>
+    </li>
+  </ul>
+</div>

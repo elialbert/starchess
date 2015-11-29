@@ -13,6 +13,7 @@
 //= require angular
 //= require angular-route
 //= require main
-
+//= require restangular
+//= require underscore-min.js
 //= require_tree .
 
