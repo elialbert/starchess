@@ -9,7 +9,7 @@
       extractedData.count = data.count
       extractedData.pagination = data.pagination
     else 
-      extractedData = data
+      extractedData = data.response
     return extractedData
   )
 ])
