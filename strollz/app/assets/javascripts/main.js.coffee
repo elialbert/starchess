@@ -5,8 +5,11 @@
 # might seem somewhat awkward, but it will make more
 # sense as we add more routes to our application.
 @strollz.config(['$routeProvider', ($routeProvider) ->
-  $routeProvider.
-    otherwise({
+  $routeProvider.when('/StarchessGames/', {
+      templateUrl: '../templates/starchess_games.html',
+      controller: 'StarchessGamesCtrl'
+    })
+  $routeProvider.otherwise({
       templateUrl: '../templates/home.html',
       controller: 'HomeCtrl'
     }) 
