@@ -24,6 +24,9 @@
           game: () -> return $scope.game
         }
       }
+      @modalInstance.result.then (selectedPiece) =>
+        $scope.selected = selectedPiece
+        console.log $scope.selected
 
 
   $scope.get_piece_image = (row,col) =>
