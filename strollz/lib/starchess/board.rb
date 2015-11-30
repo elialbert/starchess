@@ -109,7 +109,7 @@ module StarChess
     def reconstruct board_state
       @spaces = {}
       self.construct_spaces
-      @pieces = {:white => [], :black => []}
+      @pieces ||= {:white => [], :black => []}.with_indifferent_access
       board_state.each do |color, positions|
         positions.each do |space_id, piece_type|
           space = @spaces[space_id.to_i]

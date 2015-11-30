@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151128045957) do
+ActiveRecord::Schema.define(version: 20151130203219) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -69,12 +69,13 @@ ActiveRecord::Schema.define(version: 20151128045957) do
     t.string   "turn"
     t.string   "mode"
     t.string   "board_state"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
     t.integer  "winner_id"
     t.integer  "player1_id"
     t.integer  "player2_id"
     t.text     "chosen_pieces"
+    t.string   "available_moves", limit: 700
   end
 
   add_index "starchess_games", ["player1_id"], name: "index_starchess_games_on_player1_id", using: :btree

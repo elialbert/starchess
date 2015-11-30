@@ -12,6 +12,14 @@ describe StarchessGamesController, :type => :controller do
     patch :update, data
   end 
 
+  def make_play_update board_state, selected, turn, game_id
+    data = {"starchess_game" => {"board_state" => board_state,
+        "turn" => turn,
+        "selected_move" => selected},
+        "id" => game_id, "version" => 1}
+    patch :update, data
+  end
+
   before do
     User.delete_all
     StarchessGame.delete_all
@@ -79,6 +87,18 @@ describe StarchessGamesController, :type => :controller do
     expect(response.parsed_body['response']['turn']).to eq('white')
     avail = ActiveSupport::JSON.decode(response.parsed_body['response']['available_moves'])
     expect(avail['5']).to eq([6,7])
+    board_state = ActiveSupport::JSON.decode(response.parsed_body['response']['board_state'])
+    selected = '["5","9"]' # this is a fake move
+    board_state['white'].delete('5')
+    board_state['white']['7'] = 'pawn'    
+    expect {
+      make_play_update ActiveSupport::JSON.encode(board_state), selected, "white", g1.id
+    }.to raise_error(StarChess::TurnError)
+
+    selected = '["5","7"]'
+    response = make_play_update ActiveSupport::JSON.encode(board_state), selected, "white", g1.id
+    expect(response.parsed_body['response']['turn']).to eq('black')
+    
   end
 
 end

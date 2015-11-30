@@ -27,6 +27,6 @@ class StarchessGamesController < ApiController
       params.require(:starchess_game).permit(:player1_id, :player2_id)
     end
     def game_update_params
-      params.require(:starchess_game).permit(:board_state, :turn, :chosen_piece)
+      params.require(:starchess_game).permit(:board_state, :turn, :chosen_piece, :selected_move)
     end
 end

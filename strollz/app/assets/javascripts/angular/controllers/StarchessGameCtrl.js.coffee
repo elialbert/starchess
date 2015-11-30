@@ -38,6 +38,7 @@
     delete @boardState[$scope.game.turn][original_selected]
     @boardState[$scope.game.turn][$scope.selected] = piece_to_move
     $scope.game.board_state = JSON.stringify(@boardState)
+    $scope.game.selected_move = [original_selected,$scope.selected]
     $scope.selected = null
 
     $scope.game.put().then (response) =>
