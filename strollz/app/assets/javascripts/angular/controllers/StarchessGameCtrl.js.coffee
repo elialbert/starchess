@@ -56,7 +56,7 @@
       $scope.selected = space_id
 
     if $scope.game.mode == 'choose_mode' and $scope.selected
-      @handle_choose_mode_choice
+      @handle_choose_mode_choice()
     else if $scope.game.mode == 'play_mode' and $scope.selected and original_selected
       if $scope.selected in $scope.available_moves[original_selected]
         @handle_play_mode_choice original_selected
@@ -86,7 +86,7 @@
     hex_class += @check_available_moves_key space_id
     if $scope.selected == space_id
       hex_class += 'selected'  
-    if $scope.selected
+    if $scope.selected and $scope.game.mode == 'play_mode'
       if space_id in $scope.available_moves[$scope.selected]
         hex_class += 'available_move'
     return hex_class
