@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
   has_many :created_events, class_name: "Event", foreign_key: "creator_id"
   has_many :ratings, class_name: "Rating", foreign_key: "user_to_id"
   has_many :attend_requests, class_name: "Attendrequest", foreign_key: "user_id"
+  has_many :games, class_name: "StarchessGame", foreign_key: "id"
 
   def self.from_omniauth(auth)
     where(provider: auth.provider, uid: auth.uid).first_or_create do |user|

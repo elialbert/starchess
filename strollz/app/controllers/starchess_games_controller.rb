@@ -13,13 +13,13 @@ class StarchessGamesController < ApiController
   
   def create
     @game = StarchessGame.create(game_create_params)
-    expose(@game, {:include => :available_moves, :status => :created})
+    expose(@game, {:include => [:available_moves,:extra_state], :status => :created})
   end
 
   def update
     @game = StarchessGame.find(params[:id])
     @game.update(game_update_params)
-    expose(@game, {:include => [:available_moves,:special_state]})
+    expose(@game, {:include => [:available_moves,:extra_state]})
   end
 
   private

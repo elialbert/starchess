@@ -2,27 +2,27 @@ require 'starchess/game'
 
 class StarchessGame < ActiveRecord::Base
   include RocketPants::Cacheable
-  has_one :player1, class_name: "User", foreign_key: "id"
-  has_one :player2, class_name: "User", foreign_key: "id"
+  belongs_to :player1, class_name: "User", foreign_key: "player1_id"
+  belongs_to :player2, class_name: "User", foreign_key: "player2_id"
 
   attr_reader :logic
-  attr_accessor :available_moves, :special_state
+  attr_accessor :available_moves, :extra_state
   before_create :set_board_attrs
 
   def available_moves
     @available_moves
   end
-  def special_state
-    @special_state
+  def extra_state
+    @extra_state
   end
 
   def attributes
-    info = {:available_moves => @available_moves, :special_state => @special_state}
+    info = {:available_moves => @available_moves, :extra_state => @extra_state}
     super.merge info
   end
 
   def serializable_hash(options = {})
-    super methods: [:available_moves, :special_state]
+    super methods: [:available_moves, :extra_state]
   end
 
   def set_board_attrs
@@ -32,6 +32,11 @@ class StarchessGame < ActiveRecord::Base
     info = @logic.get_game_info :white # get game info for next call
     self.board_state = ActiveSupport::JSON.encode(info[:state])
     @available_moves = ActiveSupport::JSON.encode(info[:available_moves])
+    self.prepare_extra_state
+  end
+
+  def prepare_extra_state
+    @extra_state = {:player1 => self.player1.email, :player2 => self.player2.email, :special_state => @logic.board.special_state}
   end
 
   def prepare_logic board_state
@@ -43,11 +48,11 @@ class StarchessGame < ActiveRecord::Base
   end
 
   def get_available_moves
+    puts "EMAIL", self.player1.email
     self.prepare_logic self.board_state
-    puts "about to get game info"
     info = @logic.get_game_info self.turn.to_sym
+    self.prepare_extra_state
     @available_moves = ActiveSupport::JSON.encode(info[:available_moves])
-    puts "GOT AVAIL: ", @available_moves
   end
 
   def update(attributes={})
@@ -72,6 +77,7 @@ class StarchessGame < ActiveRecord::Base
     info = @logic.get_game_info opposite_color
     attributes[:board_state] = ActiveSupport::JSON.encode(info[:state])
     @available_moves = ActiveSupport::JSON.encode(info[:available_moves])    
+    self.prepare_extra_state    
     super
   end
 

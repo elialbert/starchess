@@ -45,6 +45,17 @@
     }
   }
 
+  @get_opposite_color = (color) ->
+    if color is 'white' then 'black' else 'white'
+
+  @get_game_status = (game) ->
+    if game.extra_state.special_mode
+      return "#{game.turn} is in #{game.extra_state.special_mode}!"
+    else if game.mode == 'choose_mode'
+      return "This is the board setup phase"
+    else
+      return "Game is in progress!"
+
   return {
     remove_spaces: @remove_spaces
     space_id_lookup: @space_id_lookup
@@ -52,5 +63,7 @@
     piece_type_to_image: @piece_type_to_image
     row_range: _.range(7)
     col_range: _.range(9)
+    get_opposite_color: @get_opposite_color
+    get_game_status: @get_game_status
   }
 ]   
