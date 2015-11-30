@@ -5,7 +5,7 @@ game: {{game.id}}
 
 <div class="row" ng-repeat="row in row_range">
     <div class="outerclip" ng-repeat="col in col_range" ng-class='need_to_remove_space(row,col)'>
-        <div class="innerclip">
+        <div class="innerclip" ng-class='check_available_moves_key(row,col)'>
             <span class="space_id">{{get_debug_text(row,col)}}</span>
             <img src="{{get_piece_image(row,col)}}"></img>
         </div>

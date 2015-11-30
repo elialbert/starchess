@@ -6,7 +6,9 @@ class StarchessGamesController < ApiController
   end
 
   def show
-    expose StarchessGame.find(params[:id])
+    game = StarchessGame.find(params[:id])
+    game.get_available_moves
+    expose game
   end
   
   def create

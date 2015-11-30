@@ -18,6 +18,8 @@ class StarchessGame < ActiveRecord::Base
 
   def attributes
     info = {:available_moves => @available_moves, :special_state => @special_state}
+    puts "GOT AVAIL MOVES "
+    puts @available_moves
     super.merge info
   end
 
@@ -34,11 +36,22 @@ class StarchessGame < ActiveRecord::Base
     @available_moves = ActiveSupport::JSON.encode(info[:available_moves])
   end
 
-  def update(attributes={})
-    attributes[:board_state] = ActiveSupport::JSON.decode(attributes[:board_state])
+  def prepare_logic board_state
+    board_state = ActiveSupport::JSON.decode(board_state)
     chosen_pieces = (self.mode == "choose_mode" && self.chosen_pieces) ? 
       ActiveSupport::JSON.decode(self.chosen_pieces).with_indifferent_access : nil
     @logic = StarChess::Game.new self.mode, attributes[:board_state], chosen_pieces
+    return board_state
+  end
+
+  def get_available_moves
+    self.prepare_logic self.board_state
+    info = @logic.get_game_info self.turn.to_sym
+    @available_moves = ActiveSupport::JSON.encode(info[:available_moves])
+  end
+
+  def update(attributes={})
+    attributes[:board_state] = prepare_logic attributes[:board_state]
     color = attributes[:turn]
     raise StarChess::TurnError, "it is #{color}'s turn" unless color == self.turn
 
