@@ -5,7 +5,17 @@
   @boardState = JSON.parse(game.board_state)
   $scope.row_range = boardService.row_range
   $scope.col_range = boardService.col_range
+  $scope.selected = null # space_id of selected hex
   
+  $scope.do_click = (row,col) =>
+    space_id = boardService.space_id_lookup[row][col]
+    if not $scope.selected
+      $scope.selected = space_id
+    else if $scope.selected == space_id
+      $scope.selected = null
+    else
+      $scope.selected = space_id
+
   $scope.get_piece_image = (row,col) =>
     space_id = boardService.space_id_lookup[row][col]
     if piece_type=@boardState['white'][space_id]
@@ -23,10 +33,18 @@
     else
       return ""
 
-  $scope.check_available_moves_key = (row,col) =>
+  $scope.get_hex_class = (row, col) =>
     space_id = boardService.space_id_lookup[row][col]
+    hex_class = ''
+    hex_class += @check_available_moves_key space_id
+    if $scope.selected == space_id
+      hex_class += 'selected'  
+    return hex_class
+
+  @check_available_moves_key = (space_id) =>
     if (space_id in $scope.available_moves)
-      return "available"
+      return "available "
+    return ''
       
   $scope.get_debug_text = (row,col) =>
     # return row + ": " + col + ", " + boardService.space_id_lookup[row][col]
