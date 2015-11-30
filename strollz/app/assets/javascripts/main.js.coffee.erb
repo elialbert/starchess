@@ -1,5 +1,5 @@
 #= depend_on_asset "starchess_game.html"
-@strollz = angular.module('strollz', ['ngRoute','restangular'])
+@strollz = angular.module('strollz', ['ngRoute','restangular','ui.bootstrap'])
 
 @strollz.config(['RestangularProvider', (RestangularProvider) ->
   RestangularProvider.setBaseUrl('/1')

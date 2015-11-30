@@ -1,4 +1,4 @@
-@strollz.controller 'StarchessGameCtrl', ['$scope','game','$routeParams','Restangular','boardService', ($scope, game, $routeParams, Restangular, boardService) ->
+@strollz.controller 'StarchessGameCtrl', ['$scope','game','$routeParams','Restangular','boardService','$uibModal', ($scope, game, $routeParams, Restangular, boardService, $uibModal) ->
   $scope.game = game
   $scope.available_moves = JSON.parse(game.available_moves)
   console.log game
@@ -15,6 +15,16 @@
       $scope.selected = null
     else
       $scope.selected = space_id
+
+    if $scope.game.mode == 'choose_mode'
+      @modalInstance = $uibModal.open {
+        controller: 'chooseModeModal',
+        templateUrl: 'templates/chooseModeModalTemplate.html'
+        resolve: {
+          game: () -> return $scope.game
+        }
+      }
+
 
   $scope.get_piece_image = (row,col) =>
     space_id = boardService.space_id_lookup[row][col]
