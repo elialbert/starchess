@@ -20,7 +20,7 @@
       controller: 'StarchessGamesCtrl'
     })
   $routeProvider.when('/StarchessGames/:gameId', {
-      templateUrl: '../assets/starchess_game.html',
+      templateUrl: '<%= asset_path("starchess_game.html") %>',
       controller: 'StarchessGameCtrl'
     })
   $routeProvider.otherwise({
