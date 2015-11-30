@@ -3,14 +3,14 @@
 <div ng-repeat="game in games">
   <ul>
     <li>
-      player1: {{game.player1_id}}
+      player1: {{game.meta_info.player1}}
     </li>
     <li>
     <div ng-if="game.player2_id == 0">
       <a href="" ng-click="joinGame(game.id)">Join this game!</a>
     </div>
     <div ng-if="game.player2_id != 0">
-      player2: {{game.player2_id}}
+      player2: {{game.meta_info.player2}}
     </div>
     </li>
     <li>

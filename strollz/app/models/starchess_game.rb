@@ -19,7 +19,7 @@ class StarchessGame < ActiveRecord::Base
   end
 
   def serializable_hash(options = {})
-    super methods: [:available_moves, :extra_state]
+    super methods: [:available_moves, :extra_state, :meta_info]
   end
 
   def set_board_attrs
@@ -29,12 +29,13 @@ class StarchessGame < ActiveRecord::Base
     info = @logic.get_game_info :white # get game info for next call
     self.board_state = ActiveSupport::JSON.encode(info[:state])
     self.available_moves = ActiveSupport::JSON.encode(info[:available_moves])
-    self.prepare_extra_state
+    self.meta_info
   end
 
-  def prepare_extra_state
+  def meta_info
     player2_email = self.player2 ? self.player2.email : "Waiting for opponent"
-    @extra_state = {:player1 => self.player1.email, :player2 => player2_email, :special_state => @logic.board.special_state}
+    @extra_state = {:player1 => self.player1.email, :player2 => player2_email, 
+      :special_state => @logic ? @logic.board.special_state : 'not started yet'}
   end
 
   def prepare_logic board_state
@@ -48,7 +49,7 @@ class StarchessGame < ActiveRecord::Base
   def get_available_moves
     self.prepare_logic self.board_state
     info = @logic.get_game_info self.turn.to_sym
-    self.prepare_extra_state
+    self.meta_info
     self.available_moves = ActiveSupport::JSON.encode(info[:available_moves])
   end
 
@@ -78,7 +79,7 @@ class StarchessGame < ActiveRecord::Base
     info = @logic.get_game_info opposite_color
     attributes[:board_state] = ActiveSupport::JSON.encode(info[:state])
     self.available_moves = ActiveSupport::JSON.encode(info[:available_moves])    
-    self.prepare_extra_state    
+    self.meta_info    
     super
   end
 
