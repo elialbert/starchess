@@ -48,7 +48,6 @@ class StarchessGame < ActiveRecord::Base
   end
 
   def get_available_moves
-    puts "EMAIL", self.player1.email
     self.prepare_logic self.board_state
     info = @logic.get_game_info self.turn.to_sym
     self.prepare_extra_state

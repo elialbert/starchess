@@ -49,8 +49,8 @@
     if color is 'white' then 'black' else 'white'
 
   @get_game_status = (game) ->
-    if game.extra_state.special_mode
-      return "#{game.turn} is in #{game.extra_state.special_mode}!"
+    if game.extra_state.special_state
+      return "#{game.turn} is in #{game.extra_state.special_state}!"
     else if game.mode == 'choose_mode'
       return "This is the board setup phase"
     else

@@ -58,7 +58,10 @@
     if $scope.game.mode == 'choose_mode' and $scope.selected
       @handle_choose_mode_choice
     else if $scope.game.mode == 'play_mode' and $scope.selected and original_selected
-      @handle_play_mode_choice original_selected
+      if $scope.selected in $scope.available_moves[original_selected]
+        @handle_play_mode_choice original_selected
+      else
+        $scope.selected = null
   
   $scope.get_piece_image = (row,col) =>
     space_id = boardService.space_id_lookup[row][col]
