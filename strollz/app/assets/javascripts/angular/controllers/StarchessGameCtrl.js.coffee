@@ -5,7 +5,7 @@
   @setState = (game) =>
     $scope.game = game
     $scope.available_moves = JSON.parse(game.available_moves)
-    console.log game
+    console.log "setstate: ", game
     @boardState = JSON.parse(game.board_state)
     $scope.selected = null # space_id of selected hex
   
@@ -61,11 +61,19 @@
     hex_class += @check_available_moves_key space_id
     if $scope.selected == space_id
       hex_class += 'selected'  
+    if $scope.selected
+      if space_id in $scope.available_moves[$scope.selected]
+        hex_class += 'available_move'
     return hex_class
 
   @check_available_moves_key = (space_id) =>
-    if (space_id in $scope.available_moves)
-      return "available "
+    if $scope.game.mode == 'choose_mode'
+      if (space_id in $scope.available_moves)
+        return "available "
+    if $scope.game.mode == 'play_mode'
+      if not $scope.selected
+        if $scope.available_moves[space_id] and $scope.available_moves[space_id].length > 0
+          return "available "
     return ''
       
   $scope.get_debug_text = (row,col) =>

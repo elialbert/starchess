@@ -42,6 +42,12 @@ img {
 .row .outerclip .innerclip.available.selected {
   background: yellow;  
 } 
+.row .outerclip .innerclip.selected {
+  background: yellow;  
+} 
+.row .outerclip .innerclip.available_move {
+  background: yellow;  
+} 
 
 .space_id {
   transform:rotate(-45deg) skew(-16.5deg,-15.5deg);  

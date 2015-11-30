@@ -38,14 +38,16 @@ class StarchessGame < ActiveRecord::Base
     board_state = ActiveSupport::JSON.decode(board_state)
     chosen_pieces = (self.mode == "choose_mode" && self.chosen_pieces) ? 
       ActiveSupport::JSON.decode(self.chosen_pieces).with_indifferent_access : nil
-    @logic = StarChess::Game.new self.mode, board_state, chosen_pieces
+    @logic = StarChess::Game.new self.mode.to_sym, board_state, chosen_pieces
     return board_state
   end
 
   def get_available_moves
     self.prepare_logic self.board_state
+    puts "about to get game info"
     info = @logic.get_game_info self.turn.to_sym
     @available_moves = ActiveSupport::JSON.encode(info[:available_moves])
+    puts "GOT AVAIL: ", @available_moves
   end
 
   def update(attributes={})
