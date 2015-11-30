@@ -35,7 +35,8 @@ class StarchessGame < ActiveRecord::Base
   def meta_info
     player2_email = self.player2 ? self.player2.email : "Waiting for opponent"
     @extra_state = {:player1 => self.player1.email, :player2 => player2_email, 
-      :special_state => @logic ? @logic.board.special_state : 'not started yet'}
+      :special_state => @logic ? @logic.board.special_state : 'not started yet',
+    }
   end
 
   def prepare_logic board_state

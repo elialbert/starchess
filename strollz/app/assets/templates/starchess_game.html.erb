@@ -1,5 +1,6 @@
 <div id="gamewrapper">
-<h2>Starchess: {{game.extra_state.player1}} vs {{game.extra_state.player2}} - {{game_status}}</h2>
+<h3>Starchess: {{game.extra_state.player1}} vs {{game.extra_state.player2}} - {{game_status}}</h3>
+<h3>current turn: {{game.turn}} - you are: {{game.extra_state.current_user_player}}</h3>
 
 <div class="row" ng-repeat="row in row_range">
     <div class="outerclip" ng-repeat="col in col_range" ng-class='need_to_remove_space(row,col)'>

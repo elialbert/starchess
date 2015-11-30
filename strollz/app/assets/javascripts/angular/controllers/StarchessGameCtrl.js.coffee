@@ -51,8 +51,13 @@
     )
   
   $scope.do_click = (row,col) =>
-    original_selected = null
+    if $scope.game.turn != $scope.game.extra_state.current_user_player
+      return
     space_id = boardService.space_id_lookup[row][col]
+    if @check_available_moves_key(space_id) != 'available '
+      return
+    console.log("in do click")
+    original_selected = null
 
     if not $scope.selected
       $scope.selected = space_id
@@ -88,6 +93,8 @@
       return ""
 
   $scope.get_hex_class = (row, col) =>
+    if $scope.game.turn != $scope.game.extra_state.current_user_player
+      return ''
     space_id = boardService.space_id_lookup[row][col]
     hex_class = ''
     hex_class += @check_available_moves_key space_id
