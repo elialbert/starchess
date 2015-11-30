@@ -60,12 +60,15 @@ module StarChess
       end
       # find other color moves
       # if king's square is in the flattened values
-      if king && recursed.nil? && opponents_flattened_avail.include?(king.space.id) 
-        # puts "IN CHECK, so far moves are ", result
-        @special_state = :check if @special_state != :checkmate
+      if king && recursed.nil? 
+        if opponents_flattened_avail.include?(king.space.id) 
+          @special_state = :check if @special_state != :checkmate
+        end  
         result = compute_check_moves(color, opposite_color, result, king.space.id)
-        # puts "now moves are ", result
       end
+      
+      # puts "now moves are ", result
+      
       result
     end    
 

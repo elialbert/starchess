@@ -120,4 +120,11 @@ describe "StarChess Game" do
     expect(info[:special_state]).to eq(:check)
   end
 
+  it "should not allow to move a piece putting your king in check" do
+    board_state = '{"white":{"4":"bishop","8":"queen","17":"rook","30":"king","32":"pawn"},"black":{"5":"queen","9":"pawn","18":"pawn","20":"rook","21":"bishop","33":"pawn","34":"king"}}'
+    board_state = ActiveSupport::JSON.decode(board_state)
+    info = do_game(:play_mode, board_state, :white)
+    expect(info[:available_moves][21]).not_to include(32)
+  end
+
 end
