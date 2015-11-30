@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :omniauthable, :omniauth_providers => [:github]
+  devise :omniauthable, :omniauth_providers => [:github, :facebook]
 
   acts_as_mappable
   include RocketPants::Cacheable
@@ -12,18 +12,20 @@ class User < ActiveRecord::Base
   has_many :games, class_name: "StarchessGame", foreign_key: "id"
 
   def self.from_omniauth(auth)
+    # crazy testing hack
+    if auth.info.email == 'elialbert@gmail.com' and auth.provider == 'facebook'
+      auth.info.email = "testeli@gmail.com"
+    end
     where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
       user.email = auth.info.email
       user.encrypted_password = Devise.friendly_token[0,20]
-      # user.first_name = auth.info.name.split(' ')[0]   # assuming the user model has a name
-      # user.image = auth.info.image # assuming the user model has an image
     end
   end
   def self.new_with_session(params, session)
-    puts "running new with session"
     super.tap do |user|
-      puts session['devise.github_data']
       if data = session["devise.github_data"] && session["devise.github_data"]["extra"]["raw_info"]
+        user.email = data["email"] if user.email.blank?
+      elsif data = session["devise.facebook_data"] && session["devise.facebook_data"]["extra"]["raw_info"]
         user.email = data["email"] if user.email.blank?
       end
     end

@@ -10,7 +10,13 @@ class StarchessGamesController < ApiController
 
   def show
     game = StarchessGame.find(params[:id])
-    if game.player1_id != current_user.id or game.player2_id != current_user.id
+    # quick hack to make it easy to join an open game
+    if game.player2_id == 0 and current_user.id != game.player1_id 
+      game.player2_id = current_user.id
+      game.save!
+    end
+
+    if (game.player1_id != current_user.id) and (game.player2_id != current_user.id)
       error!(:forbidden)
     end
     game.get_available_moves
