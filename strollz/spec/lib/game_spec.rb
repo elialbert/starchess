@@ -110,9 +110,8 @@ describe "StarChess Game" do
     board_state = '{"white":{"4":"bishop","5":"pawn","17":"rook","19":"pawn","28":"queen","29":"king","31":"pawn"},"black":{"9":"pawn","10":"bishop","20":"rook","23":"pawn","25":"pawn","27":"queen","30":"knight","33":"pawn","34":"king"}}'
     board_state = ActiveSupport::JSON.decode(board_state)
     info = do_game(:play_mode, board_state, :black)
-    puts "GOT BACK AVAIL MOVES"
-    puts info[:available_moves]
-    expect(info[:available_moves][29]).to include(22)
+
+    expect(info[:available_moves][29]).to eq([30,23,22])
   end
 
 end

@@ -49,6 +49,8 @@ module StarChess
                                           opponents_flattened_avail=opponents_flattened_avail,
                                           recursed)
           king = piece
+        elsif (piece.piece_type == :pawn)
+          result[piece.space.id] = piece.get_pawn_moves recursed
         else
           result[piece.space.id] = piece.get_available_moves 
         end          
@@ -56,6 +58,7 @@ module StarChess
       # find other color moves
       # if king's square is in the flattened values
       if king && recursed.nil? && opponents_flattened_avail.include?(king.space.id) 
+        # puts "IN CHECK, so far moves are ", result
         @special_state = :check if @special_state != :checkmate
         result = compute_check_moves(color, opposite_color, result, king.space.id)
       end

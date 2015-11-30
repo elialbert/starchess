@@ -14,15 +14,15 @@ module StarChess
       self.send("get_#{@piece_type}_moves")
     end
 
-    def get_pawn_moves
+    def get_pawn_moves recursed=nil
       result = []
       case @color
       when :white
         if @space.north && @space.north.piece.nil?
-          result << @space.north.id
+          result << @space.north.id if recursed.nil?
           if StarChess::PAWN_SPACES[@color].include?(@space.id) &&
             @space.north.north && @space.north.north.piece.nil?           
-            result << @space.north.north.id
+            result << @space.north.north.id if recursed.nil?
           end
         end
         if @space.northwest && @space.northwest.get_piece_color == :black
@@ -33,10 +33,10 @@ module StarChess
         end
       when :black 
         if @space.south && @space.south.piece.nil?
-          result << @space.south.id
+          result << @space.south.id if recursed.nil?
           if StarChess::PAWN_SPACES[@color].include?(@space.id) && 
             @space.south.south && @space.south.south.piece.nil?
-            result << @space.south.south.id
+            result << @space.south.south.id if recursed.nil?
           end
         end
         if @space.southwest && @space.southwest.get_piece_color == :white
@@ -93,17 +93,24 @@ module StarChess
           takeable_pieces << new_space.piece
         end
       end
+      # puts "in get king moves with recursed #{recursed} and result #{result}"
       return result if recursed == true
       # first remove opponent's moves
       opposite_color = (@color == :black) ? :white : :black
       opponents_flattened_avail ||= @board.get_available_moves(opposite_color, true).values.flatten
       result = result - opponents_flattened_avail
+      # puts "now result is ", result
       # temporarily change color of takeable pieces and recalculate opp moves
       takeable_pieces.each do |piece|
         piece.color = @color
+        @board.pieces[opposite_color].delete(piece)
+        @board.pieces[color] << piece
         result = result - @board.get_available_moves(opposite_color, true).values.flatten
         piece.color = opposite_color
+        @board.pieces[color].delete(piece)
+        @board.pieces[opposite_color] << piece
       end
+      # puts "now result is ", result
       result
     end
 
