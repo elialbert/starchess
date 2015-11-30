@@ -12,12 +12,14 @@
   @setState game
 
   $scope.do_click = (row,col) =>
+    original_selected = null
     space_id = boardService.space_id_lookup[row][col]
     if not $scope.selected
       $scope.selected = space_id
     else if $scope.selected == space_id
       $scope.selected = null
     else
+      original_selected = $scope.selected
       $scope.selected = space_id
 
     if $scope.game.mode == 'choose_mode'
@@ -36,7 +38,12 @@
             @setState response
         () =>
           $scope.selected = null
-      )  
+      ) 
+    else if $scope.selected and $scope.game.mode == 'play_mode' and original_selected
+      $scope.selected = null
+      # STOPPED HERE!
+      @boardState[]
+      console.log "move ", $scope.selected, "from, ", original_selected  
 
   $scope.get_piece_image = (row,col) =>
     space_id = boardService.space_id_lookup[row][col]
