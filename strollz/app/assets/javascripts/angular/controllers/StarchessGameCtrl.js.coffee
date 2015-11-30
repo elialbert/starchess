@@ -1,5 +1,6 @@
 @strollz.controller 'StarchessGameCtrl', ['$scope','$routeParams','Restangular','boardService', ($scope, $routeParams, Restangular, boardService) ->
-  Restangular.one('starchess_games',$routeParams.gameId).get().then (game) ->
+
+  Restangular.one('starchess_games',$routeParams.gameId).get().then (game) =>
     $scope.game = game
     @boardState = JSON.parse(game.board_state)
     $scope.row_range = boardService.row_range
@@ -26,6 +27,5 @@
       # space_id = boardService.space_id_lookup[row][col]
       # return @boardState['white'][space_id] || @boardState['black'][space_id] || 'empty'
       return ''
-    console.log game
-    console.log boardService.space_rowcol_lookup
+
 ]

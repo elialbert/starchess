@@ -16,7 +16,7 @@
 ])
 @strollz.config(['$routeProvider', ($routeProvider) ->
   $routeProvider.when('/StarchessGames/', {
-      templateUrl: '<%= asset_path("starchess_game.html")',
+      templateUrl: '../templates/starchess_games.html',
       controller: 'StarchessGamesCtrl'
     })
   $routeProvider.when('/StarchessGames/:gameId', {
