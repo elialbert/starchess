@@ -2,6 +2,8 @@ require "starchess/game"
 
 class StarchessGamesController < ApiController
   def index
+    #  in case we only want to show games for authed user
+    #  .where("player1_id = ? or player2_id = ?", current_user.id, current_user.id)
     expose StarchessGame.paginate(:page => params[:page])
   end
 
@@ -18,6 +20,10 @@ class StarchessGamesController < ApiController
 
   def update
     @game = StarchessGame.find(params[:id])
+    player_id_field = (@game.turn == 'white') ? 'player1_id' : 'player2_id'
+    if current_user.id != @game[player_id_field]
+      error!(:forbidden)
+    end
     begin 
       @game.update(game_update_params)
     rescue Exception => e
