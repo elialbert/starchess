@@ -2,19 +2,37 @@ require "starchess/game"
 
 class StarchessGamesController < ApiController
   def index
-    #  in case we only want to show games for authed user
-    #  .where("player1_id = ? or player2_id = ?", current_user.id, current_user.id)
-    expose StarchessGame.paginate(:page => params[:page])
+    expose StarchessGame.where("player1_id = ? or player2_id = ?", current_user.id, current_user.id).paginate(:page => params[:page])
   end
 
   def show
     game = StarchessGame.find(params[:id])
+    if game.player1_id != current_user.id or game.player2_id != current_user.id
+      error!(:forbidden)
+    end
     game.get_available_moves
     expose game
   end
   
   def create
-    @game = StarchessGame.create(game_create_params)
+    params = game_create_params
+    if params[:join]
+      begin
+        game = StarchessGame.find(params[:join])
+      rescue 
+        error!(:forbidden)
+      end
+      if game.player1_id != 0 and game.player2_id == 0
+        game.player2_id = current_user.id
+        game.save
+        return expose(game)
+      else
+        error!(:forbidden)
+      end
+    end
+    params[:player1_id] = current_user.id
+    params[:player2_id] = 0
+    @game = StarchessGame.create(params)
     expose(@game, {:include => [:available_moves,:extra_state], :status => :created})
   end
 
@@ -34,7 +52,7 @@ class StarchessGamesController < ApiController
 
   private
     def game_create_params
-      params.require(:starchess_game).permit(:player1_id, :player2_id)
+      params.require(:starchess_game).permit(:player1_id, :player2_id, :join)
     end
     def game_update_params
       params.require(:starchess_game).permit(:board_state, :turn, :chosen_piece, :selected_move)

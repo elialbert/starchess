@@ -6,7 +6,12 @@
       player1: {{game.player1_id}}
     </li>
     <li>
+    <div ng-if="game.player2_id == 0">
+      <a href="" ng-click="joinGame(game.id)">Join this game!</a>
+    </div>
+    <div ng-if="game.player2_id != 0">
       player2: {{game.player2_id}}
+    </div>
     </li>
     <li>
       turn: {{game.turn}}

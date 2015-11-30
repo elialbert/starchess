@@ -1,9 +1,13 @@
 class UsersController < ApiController
  
   def index
-    expose User.paginate(:page => params[:page]), :include => :ratings
+    expose User.where(id:current_user.id).paginate(:page => params[:page]), :include => :ratings
   end
+  
   def show
+    if current_user.id != params[:id].to_i
+      error!(:forbidden)
+    end
     expose User.find(params[:id]), :include => [:ratings, :attending, :created_events, :attend_requests]
   end
 
@@ -14,6 +18,9 @@ class UsersController < ApiController
   end
 
   def update
+    if current_user.id != params[:id].to_i
+      error!(:forbidden)
+    end
     @user = User.find(params[:id])
     @user.update(user_params)
     expose({})

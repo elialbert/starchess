@@ -38,11 +38,13 @@ describe UsersController, :type => :controller do
 
     response = get :index, :version => 1
     expect(response).to be_successful
-    expect(response.parsed_body['response'].length).to eq(2)
+    expect(response.parsed_body['response'].length).to eq(1)
     expect(response.parsed_body['response'][0]['email']).to eq('test1@test.com')
   end
 
   it "can get a particular user" do
+    sign_out u1
+    sign_in :user, u2
     response = get :show, :version => 1, :id => u2.id
     expect(response).to be_successful
     expect(response.parsed_body['response']['first_name']).to eq('testname2')
@@ -53,8 +55,10 @@ describe UsersController, :type => :controller do
     response = post :create, data
     expect(response).to be_successful
 
+    u3 = User.where(email:'test3@test.com')[0]
+    sign_in :user, u3
     response = get :index, :version => 1
-    new_user = response.parsed_body['response'][2]
+    new_user = response.parsed_body['response'][0]
     expect(new_user['email']).to eq('test3@test.com')
 
     data = {"user" => {"first_name"=>"poo"}, "version" => 1, "id" => new_user['id']}

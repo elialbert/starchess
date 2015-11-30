@@ -33,7 +33,8 @@ class StarchessGame < ActiveRecord::Base
   end
 
   def prepare_extra_state
-    @extra_state = {:player1 => self.player1.email, :player2 => self.player2.email, :special_state => @logic.board.special_state}
+    player2_email = self.player2 ? self.player2.email : "Waiting for opponent"
+    @extra_state = {:player1 => self.player1.email, :player2 => player2_email, :special_state => @logic.board.special_state}
   end
 
   def prepare_logic board_state

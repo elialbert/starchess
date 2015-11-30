@@ -4,6 +4,7 @@ describe StarchessGamesController, :type => :controller do
   u1,u2=nil
 
   def make_choose_update response, turn, piece_type, space_id, game_id
+    return response if response.parsed_body['response'].nil?
     board_state = response.parsed_body['response']['board_state']
     data = {"starchess_game" => {"board_state" => board_state,
       "turn" => turn,
@@ -50,9 +51,15 @@ describe StarchessGamesController, :type => :controller do
   end
 
   it "can update in choose mode for both players, switch to play, and play" do
-    data = {"starchess_game" => {"player1_id" => u1.id, "player2_id" => u2.id}, "version" => 1}
+    data = {"starchess_game" => {"player1_id" => u1.id, "player2_id" => u1.id}, "version" => 1}
     response = post :create, data
     game_id = response.parsed_body['response']['id']
+
+    # join the game for u1 again, now as player2
+    sign_in :user, u1
+    data = {"starchess_game" => {"player1_id" => u1.id, "player2_id" => u1.id, "join" => game_id}, "version" => 1}
+    response = post :create, data
+
     g1 = StarchessGame.find(game_id)
     expect(g1.mode).to eq('choose_mode')
     data = {"starchess_game" => {"board_state" => 
@@ -75,9 +82,8 @@ describe StarchessGamesController, :type => :controller do
     response=make_choose_update response, "white", "knight", 17, g1.id
     response=make_choose_update response, "black", "knight", 16, g1.id
     cloned_response = response.deep_dup
-    expect {
-      make_choose_update response, "white", "king", 21, g1.id
-      }.to raise_error(StarChess::SpaceError)
+    error_response = make_choose_update response, "white", "king", 21, g1.id
+    expect(error_response.status).to eq(400)
     response=make_choose_update cloned_response, "white", "king", 22, g1.id
     response=make_choose_update response, "black", "queen", 27, g1.id
     response=make_choose_update response, "white", "queen", 28, g1.id
@@ -91,9 +97,9 @@ describe StarchessGamesController, :type => :controller do
     selected = '["5","9"]' # this is a fake move
     board_state['white'].delete('5')
     board_state['white']['7'] = 'pawn'    
-    expect {
-      make_play_update ActiveSupport::JSON.encode(board_state), selected, "white", g1.id
-    }.to raise_error(StarChess::TurnError)
+    
+    error_response = make_play_update ActiveSupport::JSON.encode(board_state), selected, "white", g1.id
+    expect(error_response.status).to eq(400)
 
     selected = '["5","7"]'
     response = make_play_update ActiveSupport::JSON.encode(board_state), selected, "white", g1.id
