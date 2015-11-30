@@ -21,7 +21,11 @@
     })
   $routeProvider.when('/StarchessGames/:gameId', {
       templateUrl: '<%= asset_path("starchess_game.html") %>',
-      controller: 'StarchessGameCtrl'
+      controller: 'StarchessGameCtrl',
+      resolve: {
+        game: ($route, Restangular) ->
+          return Restangular.one('starchess_games',$route.current.params.gameId).get()
+      }
     })
   $routeProvider.otherwise({
       templateUrl: '../templates/home.html',
