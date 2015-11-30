@@ -25,8 +25,11 @@
       (selectedPiece) =>
         $scope.game.chosen_piece = JSON.stringify(
           {piece_type:selectedPiece, space_id:$scope.selected})
-        $scope.game.put().then (response) =>
+        $scope.game.put().then( (response) =>
           @setState response
+        (error) =>
+          $scope.game_status = "#{error.data.error} - #{error.data.error_description}"
+        )
       () =>
         $scope.selected = null
     ) 
@@ -38,12 +41,14 @@
     delete @boardState[$scope.game.turn][original_selected]
     @boardState[$scope.game.turn][$scope.selected] = piece_to_move
     $scope.game.board_state = JSON.stringify(@boardState)
-    # $scope.game.selected_move = JSON.stringify([original_selected,$scope.selected])
-    $scope.game.selected_move = JSON.stringify([77,$scope.selected])
+    $scope.game.selected_move = JSON.stringify([original_selected,$scope.selected])
     $scope.selected = null
 
-    $scope.game.put().then (response) =>
+    $scope.game.put().then( (response) =>
       @setState response
+    (error) =>
+      $scope.game_status = "#{error.data.error} - #{error.data.error_description}"
+    )
   
   $scope.do_click = (row,col) =>
     original_selected = null
