@@ -1,12 +1,16 @@
 @strollz.controller 'StarchessGameCtrl', ['$scope','game','$routeParams','Restangular','boardService','$uibModal', ($scope, game, $routeParams, Restangular, boardService, $uibModal) ->
-  $scope.game = game
-  $scope.available_moves = JSON.parse(game.available_moves)
-  console.log game
-  @boardState = JSON.parse(game.board_state)
   $scope.row_range = boardService.row_range
   $scope.col_range = boardService.col_range
-  $scope.selected = null # space_id of selected hex
+
+  @setState = (game) =>
+    $scope.game = game
+    $scope.available_moves = JSON.parse(game.available_moves)
+    console.log game
+    @boardState = JSON.parse(game.board_state)
+    $scope.selected = null # space_id of selected hex
   
+  @setState game
+
   $scope.do_click = (row,col) =>
     space_id = boardService.space_id_lookup[row][col]
     if not $scope.selected
@@ -26,13 +30,10 @@
       }
       @modalInstance.result.then(
         (selectedPiece) =>
-          console.log selectedPiece
           $scope.game.chosen_piece = JSON.stringify(
             {piece_type:selectedPiece, space_id:$scope.selected})
           $scope.game.put().then (response) =>
-            console.log "GOT RESP", response
-          $scope.selected = null
-
+            @setState response
         () =>
           $scope.selected = null
       )  
