@@ -24,7 +24,7 @@ module StarChess
 
     def check_move_validity(selected_move, available_moves)
       return true if @mode.to_sym == :choose_mode or selected_move[0] == 'just_switched_modes'
-      return (available_moves[selected_move[0]] || []).include? selected_move[1].to_i 
+      return (available_moves[selected_move[0].to_s] || []).include? selected_move[1].to_i 
     end
 
     def get_choose_moves color, board_state

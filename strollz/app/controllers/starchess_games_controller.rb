@@ -18,7 +18,11 @@ class StarchessGamesController < ApiController
 
   def update
     @game = StarchessGame.find(params[:id])
-    @game.update(game_update_params)
+    begin 
+      @game.update(game_update_params)
+    rescue Exception => e
+      error!(:bad_request, :metadata => {:error_description => e.message, :error => e.class.to_s})
+    end
     expose(@game, {:include => [:available_moves,:extra_state]})
   end
 

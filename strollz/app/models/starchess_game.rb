@@ -56,7 +56,6 @@ class StarchessGame < ActiveRecord::Base
     color = attributes[:turn]
     raise StarChess::TurnError, "it is #{color}'s turn" unless color == self.turn
 
-    # handle errors here / check integrity too
     if self.mode == "choose_mode"
       attributes[:chosen_piece] = ActiveSupport::JSON.decode(attributes[:chosen_piece])
       @logic.add_piece color.to_sym, attributes[:chosen_piece][:piece_type].to_sym,
