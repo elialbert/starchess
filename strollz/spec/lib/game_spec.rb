@@ -110,8 +110,14 @@ describe "StarChess Game" do
     board_state = '{"white":{"4":"bishop","5":"pawn","17":"rook","19":"pawn","28":"queen","29":"king","31":"pawn"},"black":{"9":"pawn","10":"bishop","20":"rook","23":"pawn","25":"pawn","27":"queen","30":"knight","33":"pawn","34":"king"}}'
     board_state = ActiveSupport::JSON.decode(board_state)
     info = do_game(:play_mode, board_state, :black)
-
     expect(info[:available_moves][29]).to eq([30,23,22])
+  end
+
+  it "should not miss random checks" do
+    board_state = '{"white":{"4":"bishop","8":"queen","17":"rook","30":"king","31":"pawn"},"black":{"5":"queen","9":"pawn","10":"bishop","18":"pawn","20":"rook","33":"pawn","34":"king"}}'
+    board_state = ActiveSupport::JSON.decode(board_state)
+    info = do_game(:play_mode, board_state, :white)
+    expect(info[:special_state]).to eq(:check)
   end
 
 end

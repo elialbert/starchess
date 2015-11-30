@@ -39,7 +39,10 @@ module StarChess
     def get_available_moves(color, recursed = nil)
       result = {}
       king = nil
-      opposite_color = (@color == :black) ? :white : :black
+      opposite_color = (color == :black) ? :white : :black
+      # opp_extra = get_available_moves(
+      #   opposite_color, true) if not recursed
+      # opponents_flattened_avail = opp_extra.values.flatten if not recursed
       opponents_flattened_avail = get_available_moves(
         opposite_color, true).values.flatten if not recursed
       @pieces[color].each do |piece|
@@ -61,6 +64,7 @@ module StarChess
         # puts "IN CHECK, so far moves are ", result
         @special_state = :check if @special_state != :checkmate
         result = compute_check_moves(color, opposite_color, result, king.space.id)
+        # puts "now moves are ", result
       end
       result
     end    
