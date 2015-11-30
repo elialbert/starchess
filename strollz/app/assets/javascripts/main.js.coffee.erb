@@ -13,6 +13,12 @@
       extractedData = data.response
     return extractedData
   )
+  RestangularProvider.addRequestInterceptor( (element, operation, what, url) ->
+    if operation == "put"
+      console.log "in interceptor with ", element, operation
+      element = {'starchess_game':element}
+    return element
+  )                                          
 ])
 @strollz.config(['$routeProvider', ($routeProvider) ->
   $routeProvider.when('/StarchessGames/', {

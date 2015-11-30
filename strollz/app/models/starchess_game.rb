@@ -18,8 +18,6 @@ class StarchessGame < ActiveRecord::Base
 
   def attributes
     info = {:available_moves => @available_moves, :special_state => @special_state}
-    puts "GOT AVAIL MOVES "
-    puts @available_moves
     super.merge info
   end
 
