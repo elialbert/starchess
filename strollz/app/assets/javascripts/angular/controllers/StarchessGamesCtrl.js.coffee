@@ -7,5 +7,5 @@
     @starchessGames.post({starchess_game: {player1_id:0, player2_id:0, join:gameId}}).then (game) =>
       $location.path('StarchessGames/'+game.id)
   @starchessGames.getList().then (games) ->
-    $scope.games = games.slice().reverse()  
+    $scope.games = games
 ]

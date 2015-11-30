@@ -2,7 +2,9 @@ require "starchess/game"
 
 class StarchessGamesController < ApiController
   def index
-    expose StarchessGame.where("player1_id = ? or player2_id = ?", current_user.id, current_user.id).paginate(:page => params[:page])
+    expose StarchessGame.where("player1_id = ? or player2_id = ?", current_user.id, current_user.id).
+      paginate(:page => params[:page]).
+        order('updated_at desc')
   end
 
   def show
