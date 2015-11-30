@@ -61,14 +61,15 @@ module StarChess
       # find other color moves
       # if king's square is in the flattened values
       if king && recursed.nil? 
-        if opponents_flattened_avail.include?(king.space.id) 
-          @special_state = :check if @special_state != :checkmate
-        end  
         result = compute_check_moves(color, opposite_color, result, king.space.id)
+        if opponents_flattened_avail.include?(king.space.id) 
+          if @special_state.nil?
+            @special_state = :check
+          elsif @special_state == :stalemate
+            @special_state = :checkmate
+          end 
+        end  
       end
-      
-      # puts "now moves are ", result
-      
       result
     end    
 
@@ -90,7 +91,7 @@ module StarChess
         end
       end
       self.reconstruct cur_board_state
-      @special_state = :checkmate if new_available_moves.values.flatten.length == 0
+      @special_state = :stalemate if new_available_moves.values.flatten.length == 0
       return new_available_moves
     end
 

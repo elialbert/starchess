@@ -127,4 +127,11 @@ describe "StarChess Game" do
     expect(info[:available_moves][21]).not_to include(32)
   end
 
+  it "should understand a stalemate" do
+    board_state = '{"white":{"25":"king","32":"pawn"},"black":{"9":"pawn","12":"queen","15":"king","20":"rook","33":"pawn"}}'
+    board_state = ActiveSupport::JSON.decode(board_state)
+    info = do_game(:play_mode, board_state, :black)
+    expect(info[:special_state]).to eq(:stalemate)
+  end
+
 end
