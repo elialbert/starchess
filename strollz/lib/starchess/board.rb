@@ -164,6 +164,12 @@ module StarChess
       return
     end
 
+    def do_pawn_promotion color, space_id, piece_type
+      board_state = get_state
+      board_state[color][space_id] = piece_type
+      self.reconstruct(board_state)
+    end
+
     def add_chosen_piece color, piece_type, space_id
       space = @spaces[space_id]
       raise StarChess::SpaceError, "space #{space_id} already has a piece" unless 

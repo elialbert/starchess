@@ -31,6 +31,14 @@ module StarChess
       return StarChess::CHOSEN_SPACES[color] - board_state[color].keys
     end
 
+    def do_pawn_promotion color, chosen_piece
+      if space_id = @board.check_pawn_promotion(color)
+        if chosen_piece['space_id'] == space_id
+          @board.do_pawn_promotion color, space_id, chosen_piece['piece_type']
+        end
+      end
+    end
+
     def add_piece color, piece_type, space_id
       raise StarChess::PieceError, "#{piece_type} is not allowed" unless 
         StarChess::CHOSEN_PIECE_TYPES.include? piece_type

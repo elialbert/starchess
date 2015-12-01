@@ -145,7 +145,6 @@ describe "StarChess Game" do
     board_state = {:white => {4 => :king, 23 => :pawn}, 
       :black => {6 => :rook, 12 => :queen}}
     info = do_game(:play_mode, board_state, :black)
-    puts info
     expect(info[:special_state]).to eq(:checkmate)
   end
 
@@ -158,6 +157,10 @@ describe "StarChess Game" do
     board_state = ActiveSupport::JSON.decode(board_state)
     g = StarChess::Game.new :play_mode, board_state, nil
     expect(g.board.check_pawn_promotion(:white)).to eq(10)
+    chosen_piece = {:space_id => 10, :piece_type => :knight}
+    g.do_pawn_promotion :white, chosen_piece
+    new_info = g.get_game_info :black
+    expect(new_info[:state][:white][10]).to eq(:knight)
   end    
 
 end

@@ -140,4 +140,39 @@ describe StarchessGamesController, :type => :controller do
 
   end
 
+  it "can do pawn promotion thru api" do
+    board_state = {:white => {4 => :king, 23 => :pawn, 6 =>:pawn, 9 => :pawn}, 
+      :black => {7 => :rook, 12 => :queen}}
+    data = {"starchess_game" => {"player1_id" => u1.id, "player2_id" => u1.id}, "version" => 1}
+    response = post :create, data
+    game_id = response.parsed_body['response']['id']
+
+    # join the game for u1 again, now as player2
+    sign_in :user, u1
+    data = {"starchess_game" => {"player1_id" => u1.id, "player2_id" => u1.id, "join" => game_id}, "version" => 1}
+    response = post :create, data
+
+    logic = StarChess::Game.new :play_mode, board_state, nil
+    info = logic.get_game_info :white
+    g1 = StarchessGame.find(game_id)
+    g1.mode = 'play_mode'
+    g1.board_state = ActiveSupport::JSON.encode(board_state)
+    g1.available_moves = ActiveSupport::JSON.encode(info[:available_moves])
+    g1.turn = "white"
+    g1.save!
+
+    # do the pawn promotion move
+    selected = '["9","10"]'
+    board_state = {:white => {4 => :king, 23 => :pawn, 6 => :pawn, 10 => :pawn}, 
+      :black => {7 => :rook, 12 => :queen}}
+    chosen_piece = ActiveSupport::JSON.encode({"space_id" => 10, "piece_type" => "queen"})
+    data = {"starchess_game" => {"board_state" => ActiveSupport::JSON.encode(board_state),
+        "turn" => "white",
+        "selected_move" => selected, "chosen_piece" => chosen_piece},
+        "id" => g1.id, "version" => 1}
+    response = patch :update, data
+    board_state = ActiveSupport::JSON.decode(response.parsed_body['response']['board_state'])
+    expect(board_state["white"]["10"]).to eq("queen")
+  end
+
 end

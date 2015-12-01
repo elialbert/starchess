@@ -63,7 +63,9 @@ class StarchessGame < ActiveRecord::Base
         attributes[:selected_move] = '["just_switched_modes"]'
       end
       attributes[:chosen_pieces] = ActiveSupport::JSON.encode(@logic.chosen_pieces)
-    end 
+    elsif attributes[:chosen_piece] # check for pawn promotion
+      @logic.do_pawn_promotion color.to_sym, ActiveSupport::JSON.decode(attributes[:chosen_piece])
+    end
 
     attributes.delete :chosen_piece
     opposite_color = (color.to_sym == :black) ? :white : :black
