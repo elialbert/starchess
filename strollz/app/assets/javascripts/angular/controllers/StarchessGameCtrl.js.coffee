@@ -11,19 +11,6 @@
     $scope.selected = null # space_id of selected hex  
   @setState game
 
-  @refreshData = () =>
-    console.log "running refreshdata!"
-    Restangular.one('starchess_games',$scope.game.id).get().then (game) =>
-      @setState game
-  @promise = $interval(@refreshData, 15000);
-
-  $scope.$on('$destroy', () ->
-    if angular.isDefined(@promise) 
-        $interval.cancel @promise
-        @promise = undefined
-  )
-    
-
   @handle_choose_mode_choice = () =>
     @modalInstance = $uibModal.open {
       controller: 'chooseModeModal',
