@@ -153,6 +153,17 @@ module StarChess
       end
     end
 
+    # should take current turn color
+    def check_pawn_promotion color
+      opposite_color = (color == :black) ? :white : :black
+      StarChess::CHOSEN_SPACES[opposite_color].each do |space_id|
+        if piece = @spaces[space_id].piece and piece.piece_type == :pawn
+          return space_id
+        end
+      end
+      return
+    end
+
     def add_chosen_piece color, piece_type, space_id
       space = @spaces[space_id]
       raise StarChess::SpaceError, "space #{space_id} already has a piece" unless 

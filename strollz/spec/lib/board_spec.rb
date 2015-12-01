@@ -49,4 +49,9 @@ describe "StarChess Board" do
     expect(result[9]).to eq([8,7])
   end
 
+  it "should be able to check pawn promotion" do
+    result = b.check_pawn_promotion :white
+    expect(result).to eq(nil)
+  end
+
 end

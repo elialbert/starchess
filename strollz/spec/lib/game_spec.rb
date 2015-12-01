@@ -148,4 +148,16 @@ describe "StarChess Game" do
     puts info
     expect(info[:special_state]).to eq(:checkmate)
   end
+
+  it "should see pawn promotion" do
+    board_state = '{"white":{"4":"bishop","8":"queen","17":"rook","30":"king","32":"pawn"},"black":{"5":"queen","9":"pawn","18":"pawn","20":"rook","21":"bishop","33":"pawn","34":"king"}}'
+    board_state = ActiveSupport::JSON.decode(board_state)
+    g = StarChess::Game.new :play_mode, board_state, nil
+    expect(g.board.check_pawn_promotion(:white)).to eq(nil)
+    board_state = '{"white":{"10":"pawn","4":"bishop","8":"queen","17":"rook","30":"king","32":"pawn"},"black":{"5":"queen","9":"pawn","18":"pawn","20":"rook","21":"bishop","33":"pawn","34":"king"}}'
+    board_state = ActiveSupport::JSON.decode(board_state)
+    g = StarChess::Game.new :play_mode, board_state, nil
+    expect(g.board.check_pawn_promotion(:white)).to eq(10)
+  end    
+
 end

@@ -36,7 +36,6 @@ class StarchessGame < ActiveRecord::Base
 
   def prepare_logic board_state
     board_state = ActiveSupport::JSON.decode(board_state)
-    puts "LOOKING AT BOARD STATE #{board_state.class}"
     chosen_pieces = (self.mode == "choose_mode" && self.chosen_pieces) ? 
       ActiveSupport::JSON.decode(self.chosen_pieces).with_indifferent_access : nil
     @logic = StarChess::Game.new self.mode.to_sym, board_state, chosen_pieces
@@ -44,7 +43,6 @@ class StarchessGame < ActiveRecord::Base
   end
 
   def get_available_moves
-    puts "RUNNING GET AVAILABLE MOVES"
     self.prepare_logic self.board_state
     info = @logic.get_game_info self.turn.to_sym
     self.available_moves = ActiveSupport::JSON.encode(info[:available_moves])
@@ -66,6 +64,7 @@ class StarchessGame < ActiveRecord::Base
       end
       attributes[:chosen_pieces] = ActiveSupport::JSON.encode(@logic.chosen_pieces)
     end 
+
     attributes.delete :chosen_piece
     opposite_color = (color.to_sym == :black) ? :white : :black
     attributes[:turn] = opposite_color
