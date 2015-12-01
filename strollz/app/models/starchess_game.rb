@@ -6,7 +6,7 @@ class StarchessGame < ActiveRecord::Base
   belongs_to :player2, class_name: "User", foreign_key: "player2_id"
 
   attr_reader :logic
-  attr_accessor :extra_state
+  attr_accessor :extra_state, :winner_id_temp
   before_create :set_board_attrs
 
   def extra_state
@@ -38,6 +38,9 @@ class StarchessGame < ActiveRecord::Base
       :special_state => @logic ? @logic.board.special_state : 'not started yet',
       :current_user_player => (@extra_state[:current_user_player] if @extra_state and @extra_state[:current_user_player])
     }
+    if @logic and @logic.board.special_state == :checkmate and not self.winner_id_temp
+      @winner_id_temp = (self.turn == 'white') ? self.player2_id : self.player1_id
+    end
   end
 
   def prepare_logic board_state
@@ -81,7 +84,10 @@ class StarchessGame < ActiveRecord::Base
     info = @logic.get_game_info opposite_color
     attributes[:board_state] = ActiveSupport::JSON.encode(info[:state])
     self.available_moves = ActiveSupport::JSON.encode(info[:available_moves])    
-    self.meta_info    
+    self.meta_info 
+    if @winner_id_temp # yes this needs work
+      attributes[:winner_id] = @winner_id_temp
+    end
     super
   end
 

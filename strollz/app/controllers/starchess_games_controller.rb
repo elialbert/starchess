@@ -55,6 +55,9 @@ class StarchessGamesController < ApiController
     begin 
       game.update(game_update_params)
     rescue Exception => e
+      if not e.class.to_s.include? "StarChess"
+        raise
+      end
       error!(:bad_request, :metadata => {:error_description => e.message, :error => e.class.to_s})
     end
     game.extra_state[:current_user_player] = (current_user.id == game.player1_id) ? 'white' : 'black'

@@ -1,4 +1,5 @@
 require "spec_helper"
+require 'starchess/game'
 
 describe StarchessGamesController, :type => :controller do  
   u1,u2=nil
@@ -104,7 +105,38 @@ describe StarchessGamesController, :type => :controller do
     selected = '["5","7"]'
     response = make_play_update ActiveSupport::JSON.encode(board_state), selected, "white", g1.id
     expect(response.parsed_body['response']['turn']).to eq('black')
-    
+  end
+
+  it "can report a checkmate and set winner id" do
+    board_state = {:white => {4 => :king, 23 => :pawn, 6 =>:pawn}, 
+      :black => {7 => :rook, 12 => :queen}}
+    data = {"starchess_game" => {"player1_id" => u1.id, "player2_id" => u1.id}, "version" => 1}
+    response = post :create, data
+    game_id = response.parsed_body['response']['id']
+
+    # join the game for u1 again, now as player2
+    sign_in :user, u1
+    data = {"starchess_game" => {"player1_id" => u1.id, "player2_id" => u1.id, "join" => game_id}, "version" => 1}
+    response = post :create, data
+
+    logic = StarChess::Game.new :play_mode, board_state, nil
+    info = logic.get_game_info :black
+    g1 = StarchessGame.find(game_id)
+    g1.mode = 'play_mode'
+    g1.board_state = ActiveSupport::JSON.encode(board_state)
+    g1.available_moves = ActiveSupport::JSON.encode(info[:available_moves])
+    g1.turn = "black"
+    g1.save!
+
+    # do the checkmate move
+    selected = '["7","6"]'
+    board_state = {:white => {4 => :king, 23 => :pawn}, 
+      :black => {6 => :rook, 12 => :queen}}
+    response = make_play_update ActiveSupport::JSON.encode(board_state), selected, "black", g1.id
+    expect(response.parsed_body['response']["extra_state"]["special_state"]).to eq("checkmate")
+    g1 = StarchessGame.find(game_id)
+    expect(g1.winner_id).to eq(u1.id)
+
   end
 
 end

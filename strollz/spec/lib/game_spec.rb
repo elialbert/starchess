@@ -141,4 +141,11 @@ describe "StarChess Game" do
     expect(info[:available_moves][15]).to eq([20])
   end
 
+  it "should handle checkmate" do
+    board_state = {:white => {4 => :king, 23 => :pawn}, 
+      :black => {6 => :rook, 12 => :queen}}
+    info = do_game(:play_mode, board_state, :black)
+    puts info
+    expect(info[:special_state]).to eq(:checkmate)
+  end
 end
