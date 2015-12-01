@@ -36,16 +36,16 @@ img {
   margin-bottom:-107px;
 }
 
-.row .outerclip .innerclip.available:hover {
+.gamerow .outerclip .innerclip.available:hover {
   background: white;  
 } 
-.row .outerclip .innerclip.available.selected {
+.gamerow .outerclip .innerclip.available.selected {
   background: yellow;  
 } 
-.row .outerclip .innerclip.selected {
+.gamerow .outerclip .innerclip.selected {
   background: yellow;  
 } 
-.row .outerclip .innerclip.available_move {
+.gamerow .outerclip .innerclip.available_move {
   background: yellow;  
 } 
 
@@ -54,17 +54,22 @@ img {
   display: block;
 
 }
-row {
+gamerow {
+  overflow: scroll;
   width:920px;
   margin:auto;
   padding:1px 51px 90px 1px;
 }
-
+.container#gamewrapper {
+  min-width: 970px;
+  overflow: scroll;
+}
 #gamewrapper {
+  min-width: 920px;
+  overflow: scroll;
   background:#333;
   border-radius: 15px;
-  padding-left: 100px;
-  padding-right: 20px;
+  padding-left: 50px;
   padding-top: 20px;
   padding-bottom: 20px;
 }
