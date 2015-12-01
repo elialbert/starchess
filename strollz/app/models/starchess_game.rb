@@ -38,7 +38,7 @@ class StarchessGame < ActiveRecord::Base
   def meta_info
     player2_email = self.player2 ? self.player2.email : "Waiting for opponent"
     @extra_state = {:player1 => self.player1.email, :player2 => player2_email, 
-      :special_state => @logic ? @logic.board.special_state : 'not started yet',
+      :special_state => @logic ? @logic.board.special_state : self.mode,
       :current_user_player => (@extra_state[:current_user_player] if @extra_state and @extra_state[:current_user_player])
     }
     if @logic and @logic.board.special_state == :checkmate and not self.winner_id_temp
@@ -90,6 +90,7 @@ class StarchessGame < ActiveRecord::Base
     self.meta_info 
     if @winner_id_temp # yes this needs work
       attributes[:winner_id] = @winner_id_temp
+      attributes[:mode] = "done"
     end
     super
   end
