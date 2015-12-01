@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   root 'welcome#index'
+  get '/administrivia', :to => redirect('/templates/privacy_policy.html')
 
   api :version => 1 do
     resources :users
