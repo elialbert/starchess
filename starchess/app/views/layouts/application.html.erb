@@ -11,18 +11,29 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-<p class="notice"><%= notice %></p>
-<p class="alert"><%= alert %></p>
-<% if current_user %>
-Logged in as: <%= current_user.email %><br/>
-<%= link_to "Log out", destroy_user_session_path %>
-<% else %>
-<%= link_to "Sign in with Facebook", user_omniauth_authorize_path(:facebook) %>
-<br/>
-<%= link_to "Sign in with Github", user_omniauth_authorize_path(:github) %>
+  <nav class="navbar navbar-inverse">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">StarChess Online!</a>
+        <span class="navbar-text" id="byline">a <a href="http://zap.sexy">crumble</a> production</span>
+        <% if current_user %>
+          <span class="navbar-text">Logged in as: <%= current_user.email %></span>
+          <span class="navbar-text" id="logoutlink"><%= link_to "Log out", destroy_user_session_path %></span>
+        <% else %>
+          <span class="navbar-text"><%= link_to "Sign in with Facebook", user_omniauth_authorize_path(:facebook) %></span>
+          <span class="navbar-text">OR</span>
+          <span class="navbar-text"><%= link_to "Sign in with Github", user_omniauth_authorize_path(:github) %></span>
+        <% end %>
 
-<% end %>
-<%= yield %> 
+      </div>
+    </div>
+  </nav>
 
+  <div class="container">
+
+    <span class="notice"><%= notice %></span>
+    <span class="alert"><%= alert %></span>
+    <%= yield %> 
+  </div>
 </body>
 </html>
