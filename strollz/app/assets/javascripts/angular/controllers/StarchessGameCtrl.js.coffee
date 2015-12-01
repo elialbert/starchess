@@ -5,7 +5,10 @@
   @firebaseRef = new Firebase("https://starchess.firebaseio.com/games/"+game.id)
   @firebaseRef.on 'value', (data) =>
     data = data.val()
+    if not data
+      return
     $scope.game.turn = data.turn
+    $scope.game.mode = data.mode
     $scope.game_status = boardService.get_game_status data
     $scope.game.chosen_pieces = JSON.parse(data.chosen_pieces)
     $scope.available_moves = JSON.parse(data.available_moves)
@@ -35,7 +38,7 @@
       (selectedPiece) =>
         $scope.game.chosen_piece = JSON.stringify(
           {piece_type:selectedPiece, space_id:$scope.selected})
-        $scope.game.board_state = JSON.stringify($scope.game.board_state)
+        $scope.game.board_state = JSON.stringify(@boardState)
         $scope.game.put().then( (response) =>
           @setState response
         (error) =>
