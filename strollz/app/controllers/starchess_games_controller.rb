@@ -20,7 +20,7 @@ class StarchessGamesController < ApiController
       error!(:forbidden)
     end
     game.get_available_moves
-    game.extra_state['current_user_player'] = (current_user.id == game.player1_id) ? 'white' : 'black'
+    game.extra_state[:current_user_player] = (current_user.id == game.player1_id) ? 'white' : 'black'
     expose game
   end
   

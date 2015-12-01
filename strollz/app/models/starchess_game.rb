@@ -10,7 +10,6 @@ class StarchessGame < ActiveRecord::Base
   before_create :set_board_attrs
 
   def extra_state
-    puts "found extra state #{@extra_state}"
     @extra_state
   end
 
@@ -20,9 +19,7 @@ class StarchessGame < ActiveRecord::Base
   end
 
   def serializable_hash(options = {})
-    test = super methods: [:available_moves,  :meta_info, :extra_state]
-    puts test
-    test
+    super methods: [:available_moves,  :meta_info, :extra_state]
   end
 
   def set_board_attrs
