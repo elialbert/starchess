@@ -1,29 +1,38 @@
-<h2>Current Starchess Games:</h2>
-<a href="" ng-click="newGame()">Start a new game</a>
-<div ng-repeat="game in games">
-  <ul>
-    <li>
-      Player1: {{game.extra_state.player1}}
-    </li>
-    <li>
-    <div ng-if="game.player2_id == 0">
-      <a href="" ng-click="joinGame(game.id)">Join this game!</a>
-    </div>
-    <div ng-if="game.player2_id != 0">
-      Player2: {{game.extra_state.player2}}
-    </div>
-    </li>
-    <li ng-if="game.extra_state.special_state">
-      Status: {{game.extra_state.special_state}}
-    </li>
-    <li ng-if="game.winner_id">
-      Winner ID: {{game.winner_id}}
-    </li>
-    <li ng-if="game.turn">
-      Turn: {{game.turn}}
-    </li>
-    <li>
-    <a href="#/StarchessGames/{{game.id}}">Go to game</a>
-    </li>
-  </ul>
+<div class="container">
+  <button ng-click="newGame()" type="button" class="btn btn-success">New Game</button>
+
+  <div id="games_helptext">
+    Note: Invite a friend to join by sending them the link to the game page; they will have to log in first.
+    Easier game sharing is on the todo list!
+  </div>
+</div>
+<div class="container" ng-if="games.length">
+  <h3>Your current and recent games:</h3>
+  <div ng-repeat="game in games">
+    <ul>
+      <li>
+        Player1: {{game.extra_state.player1}}
+      </li>
+      <li>
+      <div ng-if="game.player2_id == 0">
+        <a href="" ng-click="joinGame(game.id)">Join this game!</a>
+      </div>
+      <div ng-if="game.player2_id != 0">
+        Player2: {{game.extra_state.player2}}
+      </div>
+      </li>
+      <li ng-if="game.extra_state.special_state">
+        Status: {{game.extra_state.special_state}}
+      </li>
+      <li ng-if="game.winner_id">
+        Winner ID: {{game.winner_id}}
+      </li>
+      <li ng-if="game.turn">
+        Turn: {{game.turn}}
+      </li>
+      <li>
+      <a href="#/StarchessGames/{{game.id}}">Go to game</a>
+      </li>
+    </ul>
+  </div>
 </div>
