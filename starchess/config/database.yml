@@ -32,4 +32,11 @@ test:
   
 production:
   <<: *default
+  adapter: postgresql
+  encoding: unicode
+  database: starchess_production
+  pool: 5
+  username: pguser
+  password: <%= ENV['PROD_DB_PASSWOD'] %>
+  <<: *default
   database: db/production.sqlite3
