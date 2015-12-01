@@ -36,7 +36,6 @@ production:
   encoding: unicode
   database: starchess_production
   pool: 5
+  host: localhost
   username: pguser
   password: <%= ENV['PROD_DB_PASSWOD'] %>
-  <<: *default
-  database: db/production.sqlite3
