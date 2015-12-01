@@ -36,6 +36,12 @@ module StarChess
       state
     end
 
+    def print_pieces color
+      @pieces[color].each do |piece|
+        puts("huh #{piece.piece_type}: #{piece.space.id}")
+      end     
+    end
+
     def get_available_moves(color, recursed = nil)
       result = {}
       king = nil
@@ -60,6 +66,7 @@ module StarChess
       end
       # find other color moves
       # if king's square is in the flattened values
+
       if king && recursed.nil? 
         result = compute_check_moves(color, opposite_color, result, king.space.id)
         if opponents_flattened_avail.include?(king.space.id) 
@@ -109,7 +116,7 @@ module StarChess
     def reconstruct board_state
       @spaces = {}
       self.construct_spaces
-      @pieces ||= {:white => [], :black => []}.with_indifferent_access
+      @pieces = {:white => [], :black => []}.with_indifferent_access
       board_state.each do |color, positions|
         positions.each do |space_id, piece_type|
           space = @spaces[space_id.to_i]
