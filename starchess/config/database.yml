@@ -16,7 +16,7 @@ development:
   database: strollz_development
   pool: 5
   username: elialbert
-  password: 
+  password: test
   
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -28,7 +28,7 @@ test:
   database: strollz_test
   pool: 5
   username: elialbert
-  password: 
+  password: test
   
 production:
   <<: *default
