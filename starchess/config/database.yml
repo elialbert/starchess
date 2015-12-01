@@ -16,7 +16,7 @@ development:
   database: strollz_development
   pool: 5
   username: elialbert
-  password: test
+  password: 
   
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -28,7 +28,7 @@ test:
   database: strollz_test
   pool: 5
   username: elialbert
-  password: test
+  password: 
   
 production:
   <<: *default
@@ -38,4 +38,4 @@ production:
   pool: 5
   host: localhost
   username: pguser
-  password: <%= ENV['PROD_DB_PASSWOD'] %>
+  password: <%= ENV['PROD_DB_PASSWORD'] %>
