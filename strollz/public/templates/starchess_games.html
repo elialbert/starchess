@@ -14,7 +14,10 @@
     </div>
     </li>
     <li ng-if="game.extra_state.special_state">
-      Result: {{game.extra_state.special_state}}
+      Status: {{game.extra_state.special_state}}
+    </li>
+    <li ng-if="game.winner_id">
+      Winner ID: {{game.winner_id}}
     </li>
     <li ng-if="game.turn">
       Turn: {{game.turn}}

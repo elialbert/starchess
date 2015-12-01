@@ -6,20 +6,15 @@ class StarchessGame < ActiveRecord::Base
   belongs_to :player2, class_name: "User", foreign_key: "player2_id"
 
   attr_reader :logic
-  attr_accessor :extra_state, :winner_id_temp
+  attr_accessor :extra_state, :winner_id_temp, :current_user_player
   before_create :set_board_attrs
 
   def extra_state
     @extra_state
   end
 
-  def attributes
-    info = {:available_moves => self.available_moves, :extra_state => @extra_state}
-    super.merge info
-  end
-
   def serializable_hash(options = {})
-    super methods: [:available_moves,  :meta_info, :extra_state]
+    super methods: [:available_moves, :meta_info, :extra_state]
   end
 
   def set_board_attrs
@@ -29,22 +24,17 @@ class StarchessGame < ActiveRecord::Base
     info = @logic.get_game_info :white # get game info for next call
     self.board_state = ActiveSupport::JSON.encode(info[:state])
     self.available_moves = ActiveSupport::JSON.encode(info[:available_moves])
-    self.meta_info
   end
 
   def meta_info
     player2_email = self.player2 ? self.player2.email : "Waiting for opponent"
     @extra_state = {:player1 => self.player1.email, :player2 => player2_email, 
       :special_state => @logic ? @logic.board.special_state : self.mode,
-      :current_user_player => (@extra_state[:current_user_player] if @extra_state and @extra_state[:current_user_player])
+      :current_user_player => @current_user_player
     }
-    if @logic and @logic.board.special_state == :checkmate and not self.winner_id_temp
-      @winner_id_temp = (self.turn == 'white') ? self.player2_id : self.player1_id
-    end
   end
 
   def prepare_logic board_state
-    puts "looking at board state #{board_state}"
     board_state = ActiveSupport::JSON.decode(board_state)
     chosen_pieces = (self.mode == "choose_mode" && self.chosen_pieces) ? 
       ActiveSupport::JSON.decode(self.chosen_pieces).with_indifferent_access : nil
@@ -53,9 +43,9 @@ class StarchessGame < ActiveRecord::Base
   end
 
   def get_available_moves
+    puts "RUNNING GET AVAILABLE MOVES"
     self.prepare_logic self.board_state
     info = @logic.get_game_info self.turn.to_sym
-    self.meta_info
     self.available_moves = ActiveSupport::JSON.encode(info[:available_moves])
   end
 
@@ -85,9 +75,8 @@ class StarchessGame < ActiveRecord::Base
     info = @logic.get_game_info opposite_color
     attributes[:board_state] = ActiveSupport::JSON.encode(info[:state])
     self.available_moves = ActiveSupport::JSON.encode(info[:available_moves])    
-    self.meta_info 
-    if @winner_id_temp # yes this needs work
-      attributes[:winner_id] = @winner_id_temp
+    if @logic.board.special_state == :checkmate and not self.winner_id
+      attributes[:winner_id] = (self.turn == 'white') ? self.player2_id : self.player1_id
       attributes[:mode] = "done"
     end
     super
