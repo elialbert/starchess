@@ -11,6 +11,7 @@
     $scope.available_moves = JSON.parse(data.available_moves)
     $scope.game.board_state = JSON.parse(data.board_state)
     @boardState = $scope.game.board_state
+    $scope.$apply()
 
   @setState = (game) =>
     $scope.game = game
