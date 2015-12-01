@@ -1,4 +1,4 @@
-@strollz.controller 'StarchessGameCtrl', ['$scope','game','$routeParams','Restangular','boardService','$uibModal', ($scope, game, $routeParams, Restangular, boardService, $uibModal) ->
+@strollz.controller 'StarchessGameCtrl', ['$scope','$interval','game','$routeParams','Restangular','boardService','$uibModal', ($scope, $interval, game, $routeParams, Restangular, boardService, $uibModal) ->
   $scope.row_range = boardService.row_range
   $scope.col_range = boardService.col_range
 
@@ -10,6 +10,19 @@
     @boardState = JSON.parse(game.board_state)
     $scope.selected = null # space_id of selected hex  
   @setState game
+
+  @refreshData = () =>
+    console.log "running refreshdata!"
+    Restangular.one('starchess_games',$scope.game.id).get().then (game) =>
+      @setState game
+  @promise = $interval(@refreshData, 15000);
+
+  $scope.$on('$destroy', () ->
+    if angular.isDefined(@promise) 
+        $interval.cancel @promise
+        @promise = undefined
+  )
+    
 
   @handle_choose_mode_choice = () =>
     @modalInstance = $uibModal.open {
@@ -54,9 +67,8 @@
     if $scope.game.turn != $scope.game.extra_state.current_user_player
       return
     space_id = boardService.space_id_lookup[row][col]
-    if @check_available_moves_key(space_id) != 'available '
+    if not $scope.selected and (@check_available_moves_key(space_id) != 'available ')
       return
-    console.log("in do click")
     original_selected = null
 
     if not $scope.selected
