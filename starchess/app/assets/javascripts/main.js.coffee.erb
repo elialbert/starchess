@@ -1,7 +1,7 @@
 #= depend_on_asset "starchess_game.html"
 @strollz = angular.module('strollz', ['ngRoute','restangular','ui.bootstrap','firebase'])
 
-@strollz.config(['RestangularProvider', (RestangularProvider) ->
+@strollz.config(['RestangularProvider','$windowProvider', (RestangularProvider, $windowProvider) ->
   RestangularProvider.setBaseUrl('/1')
   # add a response intereceptor
   RestangularProvider.addResponseInterceptor( (data, operation, what, url, response, deferred) ->
@@ -17,7 +17,12 @@
     if operation == "put" and what == "starchess_games"
       element = {'starchess_game':element}
     return element
-  )                                          
+  )
+  RestangularProvider.setErrorInterceptor( ( response ) ->
+    if response.status == 401 and response.config.method in ["PUT","POST"]
+      $windowProvider.$get().alert("Please sign in!")
+      return false
+ )                 
 ])
 @strollz.config(['$routeProvider', ($routeProvider) ->
   $routeProvider.when('/StarchessGames/', {
