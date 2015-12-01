@@ -1,11 +1,11 @@
-@strollz.controller 'StarchessGameCtrl', ['$scope','$interval','game','$routeParams','Restangular','boardService','$uibModal', ($scope, $interval, game, $routeParams, Restangular, boardService, $uibModal) ->
+@strollz.controller 'StarchessGameCtrl', ['$scope','$interval','$route','game','$routeParams','Restangular','boardService','$uibModal', ($scope, $interval, $route, game, $routeParams, Restangular, boardService, $uibModal) ->
   $scope.row_range = boardService.row_range
   $scope.col_range = boardService.col_range
 
   @firebaseRef = new Firebase("https://starchess.firebaseio.com/games/"+game.id)
   @firebaseRef.on 'value', (data) =>
     data = data.val()
-    if not data
+    if not data or not $scope.game
       return
     $scope.game.turn = data.turn
     $scope.game.mode = data.mode
@@ -24,7 +24,7 @@
     $scope.selected = null # space_id of selected hex  
   @setState game
 
-  @handle_choose_mode_choice = () =>
+  @handle_choose_mode_choice = (selected_space_id) =>
     @modalInstance = $uibModal.open {
       controller: 'chooseModeModal',
       templateUrl: 'templates/chooseModeModalTemplate.html'
@@ -37,7 +37,7 @@
     @modalInstance.result.then(
       (selectedPiece) =>
         $scope.game.chosen_piece = JSON.stringify(
-          {piece_type:selectedPiece, space_id:$scope.selected})
+          {piece_type:selectedPiece, space_id:selected_space_id})
         $scope.game.board_state = JSON.stringify(@boardState)
         $scope.game.put().then( (response) =>
           @setState response
@@ -46,7 +46,11 @@
         )
       () =>
         $scope.selected = null
-    ) 
+        $route.reload()
+      ) 
+
+  @check_pawn_promotion = (piece_type, space_id) =>
+    return piece_type == 'pawn' and space_id in boardService.pawn_promotion_lookup[$scope.game.turn]  
   
   @handle_play_mode_choice = (original_selected) =>  
     opposite_color = boardService.get_opposite_color $scope.game.turn
@@ -56,6 +60,11 @@
     @boardState[$scope.game.turn][$scope.selected] = piece_to_move
     $scope.game.board_state = JSON.stringify(@boardState)
     $scope.game.selected_move = JSON.stringify([original_selected,$scope.selected])
+    if @check_pawn_promotion piece_to_move, $scope.selected
+      @handle_choose_mode_choice($scope.selected)
+      $scope.selected = null
+      return
+
     $scope.selected = null
 
     $scope.game.put().then( (response) =>
@@ -81,7 +90,7 @@
       $scope.selected = space_id
 
     if $scope.game.mode == 'choose_mode' and $scope.selected
-      @handle_choose_mode_choice()
+      @handle_choose_mode_choice($scope.selected)
     else if $scope.game.mode == 'play_mode' and $scope.selected and original_selected
       if $scope.selected in $scope.available_moves[original_selected]
         @handle_play_mode_choice original_selected

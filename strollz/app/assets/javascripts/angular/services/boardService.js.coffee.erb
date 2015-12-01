@@ -18,6 +18,12 @@
     5: {2:5,3:11,4:17,5:22,6:29},
     6: {2:4,6:28},
   }
+
+  @pawn_promotion_lookup = {
+    'white': [10,16,21,27,34],
+    'black': [4,11,17,22,28]
+  }
+
   @space_rowcol_lookup = {
   }
   for row,col_hash of @space_id_lookup
@@ -65,5 +71,6 @@
     col_range: _.range(9)
     get_opposite_color: @get_opposite_color
     get_game_status: @get_game_status
+    pawn_promotion_lookup: @pawn_promotion_lookup
   }
 ]   
