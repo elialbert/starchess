@@ -4,7 +4,7 @@
   $scope.pieces = ["queen","rook","bishop","knight","king"]
   $scope.chosen_pieces = []
   if game.chosen_pieces
-    $scope.chosen_pieces = JSON.parse(game.chosen_pieces)[game.turn]
+    $scope.chosen_pieces = game.chosen_pieces[game.turn]
     $scope.pieces = _.difference($scope.pieces, $scope.chosen_pieces)
   $scope.ok =  (piece_type) =>
     $uibModalInstance.close(piece_type);

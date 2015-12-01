@@ -35,6 +35,7 @@
       (selectedPiece) =>
         $scope.game.chosen_piece = JSON.stringify(
           {piece_type:selectedPiece, space_id:$scope.selected})
+        $scope.game.board_state = JSON.stringify($scope.game.board_state)
         $scope.game.put().then( (response) =>
           @setState response
         (error) =>

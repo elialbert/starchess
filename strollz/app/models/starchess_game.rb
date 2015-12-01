@@ -44,6 +44,7 @@ class StarchessGame < ActiveRecord::Base
   end
 
   def prepare_logic board_state
+    puts "looking at board state #{board_state}"
     board_state = ActiveSupport::JSON.decode(board_state)
     chosen_pieces = (self.mode == "choose_mode" && self.chosen_pieces) ? 
       ActiveSupport::JSON.decode(self.chosen_pieces).with_indifferent_access : nil

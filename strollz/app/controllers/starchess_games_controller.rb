@@ -78,6 +78,8 @@ class StarchessGamesController < ApiController
     def push_to_firebase game
       firebase = Firebase::Client.new('https://starchess.firebaseio.com/games',
                                       'RiDJGFDCyYIUsXhB1VCh0KLimYyjbLvZEVZGNfct')
+      puts "CHOSEN PIECES TO FB"
+      puts game.chosen_pieces
       response = firebase.set(game.id, game)
     end
 end
