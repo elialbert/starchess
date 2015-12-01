@@ -25,6 +25,7 @@
   @setState game
 
   @handle_choose_mode_choice = (selected_space_id) =>
+    $scope.game.chosen_pieces = JSON.parse($scope.game.chosen_pieces) if typeof $scope.game.chosen_pieces is 'string'
     @modalInstance = $uibModal.open {
       controller: 'chooseModeModal',
       templateUrl: 'templates/chooseModeModalTemplate.html'
