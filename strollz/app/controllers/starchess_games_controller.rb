@@ -47,18 +47,21 @@ class StarchessGamesController < ApiController
   end
 
   def update
-    @game = StarchessGame.find(params[:id])
-    player_id_field = (@game.turn == 'white') ? 'player1_id' : 'player2_id'
-    if current_user.id != @game[player_id_field]
+    game = StarchessGame.find(params[:id])
+    player_id_field = (game.turn == 'white') ? 'player1_id' : 'player2_id'
+    if current_user.id != game[player_id_field]
       error!(:forbidden)
     end
     begin 
-      @game.update(game_update_params)
+      game.update(game_update_params)
     rescue Exception => e
       error!(:bad_request, :metadata => {:error_description => e.message, :error => e.class.to_s})
     end
-    @game.extra_state['current_user_player'] = (current_user.id == @game.player1_id) ? 'white' : 'black'
-    expose(@game, {:include => [:available_moves,:extra_state]})
+    game.extra_state[:current_user_player] = (current_user.id == game.player1_id) ? 'white' : 'black'
+    if not Rails.env.test?
+      push_to_firebase game
+    end
+    expose game 
   end
 
   private
@@ -67,5 +70,11 @@ class StarchessGamesController < ApiController
     end
     def game_update_params
       params.require(:starchess_game).permit(:board_state, :turn, :chosen_piece, :selected_move)
+    end
+
+    def push_to_firebase game
+      firebase = Firebase::Client.new('https://starchess.firebaseio.com/games',
+                                      'RiDJGFDCyYIUsXhB1VCh0KLimYyjbLvZEVZGNfct')
+      response = firebase.set(game.id, game)
     end
 end

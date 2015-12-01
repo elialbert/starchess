@@ -36,6 +36,7 @@ class StarchessGame < ActiveRecord::Base
     player2_email = self.player2 ? self.player2.email : "Waiting for opponent"
     @extra_state = {:player1 => self.player1.email, :player2 => player2_email, 
       :special_state => @logic ? @logic.board.special_state : 'not started yet',
+      :current_user_player => (@extra_state[:current_user_player] if @extra_state and @extra_state[:current_user_player])
     }
   end
 

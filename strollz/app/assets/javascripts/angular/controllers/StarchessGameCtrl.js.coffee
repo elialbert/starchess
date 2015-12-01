@@ -2,11 +2,20 @@
   $scope.row_range = boardService.row_range
   $scope.col_range = boardService.col_range
 
+  @firebaseRef = new Firebase("https://starchess.firebaseio.com/games/"+game.id)
+  @firebaseRef.on 'value', (data) =>
+    data = data.val()
+    $scope.game.turn = data.turn
+    $scope.game_status = boardService.get_game_status data
+    $scope.game.chosen_pieces = JSON.parse(data.chosen_pieces)
+    $scope.available_moves = JSON.parse(data.available_moves)
+    $scope.game.board_state = JSON.parse(data.board_state)
+    @boardState = $scope.game.board_state
+
   @setState = (game) =>
     $scope.game = game
     $scope.game_status = boardService.get_game_status game
     $scope.available_moves = JSON.parse(game.available_moves)
-    console.log "setstate: ", game
     @boardState = JSON.parse(game.board_state)
     $scope.selected = null # space_id of selected hex  
   @setState game
