@@ -128,7 +128,6 @@
     else # choose a space 
       original_selected = $scope.selected
       $scope.selected = space_id
-    @run_hex_classes()
     if $scope.game.mode == 'choose_mode' and $scope.selected
       @handle_choose_mode_choice($scope.selected)
     else if $scope.game.mode == 'play_mode' and $scope.selected and original_selected
