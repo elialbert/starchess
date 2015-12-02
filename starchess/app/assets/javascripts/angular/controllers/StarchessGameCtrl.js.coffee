@@ -13,14 +13,14 @@
     $scope.game.chosen_pieces = JSON.parse(data.chosen_pieces)
     $scope.available_moves = JSON.parse(data.available_moves)
     $scope.game.board_state = JSON.parse(data.board_state)
-    @boardState = $scope.game.board_state
+    $scope.boardState = $scope.game.board_state
     $scope.$apply()
 
   @setState = (game) =>
     $scope.game = game
     $scope.game_status = boardService.get_game_status game
     $scope.available_moves = JSON.parse(game.available_moves)
-    @boardState = JSON.parse(game.board_state)
+    $scope.boardState = JSON.parse(game.board_state)
     $scope.selected = null # space_id of selected hex  
   @setState game
 
@@ -39,7 +39,7 @@
       (selectedPiece) =>
         $scope.game.chosen_piece = JSON.stringify(
           {piece_type:selectedPiece, space_id:selected_space_id})
-        $scope.game.board_state = JSON.stringify(@boardState)
+        $scope.game.board_state = JSON.stringify($scope.boardState)
         $scope.game.put().then( (response) =>
           @setState response
         (error) =>
@@ -55,11 +55,11 @@
   
   @handle_play_mode_choice = (original_selected) =>  
     opposite_color = boardService.get_opposite_color $scope.game.turn
-    delete @boardState[opposite_color][$scope.selected]
-    piece_to_move = @boardState[$scope.game.turn][original_selected]
-    delete @boardState[$scope.game.turn][original_selected]
-    @boardState[$scope.game.turn][$scope.selected] = piece_to_move
-    $scope.game.board_state = JSON.stringify(@boardState)
+    delete $scope.boardState[opposite_color][$scope.selected]
+    piece_to_move = $scope.boardState[$scope.game.turn][original_selected]
+    delete $scope.boardState[$scope.game.turn][original_selected]
+    $scope.boardState[$scope.game.turn][$scope.selected] = piece_to_move
+    $scope.game.board_state = JSON.stringify($scope.boardState)
     $scope.game.selected_move = JSON.stringify([original_selected,$scope.selected])
     if @check_pawn_promotion piece_to_move, $scope.selected
       @handle_choose_mode_choice($scope.selected)
@@ -67,7 +67,6 @@
       return
 
     $scope.selected = null
-
     $scope.game.put().then( (response) =>
       @setState response
     (error) =>
@@ -100,9 +99,9 @@
   
   $scope.get_piece_image = (row,col) =>
     space_id = boardService.space_id_lookup[row][col]
-    if piece_type=@boardState['white'][space_id]
+    if piece_type=$scope.boardState['white'][space_id]
       color = 'white'
-    else if piece_type=@boardState['black'][space_id]
+    else if piece_type=$scope.boardState['black'][space_id]
       color = 'black'
     else
       color = 'white'
@@ -141,7 +140,7 @@
   $scope.get_debug_text = (row,col) =>
     # return row + ": " + col + ", " + boardService.space_id_lookup[row][col]
     # space_id = boardService.space_id_lookup[row][col]
-    # return @boardState['white'][space_id] || @boardState['black'][space_id] || 'empty'
+    # return $scope.boardState['white'][space_id] || $scope.boardState['black'][space_id] || 'empty'
     return ''
 
 ]

@@ -21,8 +21,8 @@ beforeEach inject (_$httpBackend_, _$compile_, $rootScope, $templateCache, $cont
   @routeParams = $routeParams
   @uibModal = $uibModal
   @boardService = boardService
-  # @http.whenGET(/^\/templates\//).respond(200,'')
   $templateCache.put('../templates/starchess_games.html', '<div>test</div>')
+  $templateCache.put('templates/chooseModeModalTemplate.html', '<div>test</div>')
 
   @model = (name) =>
     @injector.get(name)
