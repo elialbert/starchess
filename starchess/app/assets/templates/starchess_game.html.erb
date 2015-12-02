@@ -1,9 +1,12 @@
 <div id="gameinfo_container" class="container">
   <div id="gameinfo"><b>{{game.extra_state.player1}}</b> vs <b>{{game.extra_state.player2}}</b></div>
   <div id="gameinfo">{{game_status}}</div>
-  <div id="gameinfo">current turn: {{game.turn}} - you are: <b>{{game.extra_state.current_user_player}}</b></div>
-  <div id="gameinfo">
-    <div class="fb-share-button" data-href={{get_game_url()}} data-layout="button"></div>    
+  <div id="gameinfo">Your color: <b>{{game.extra_state.current_user_player}}</b></div>
+  <div id="gameinfo">current turn: <b>{{game.turn}}</b></div>
+  <div id="gameinfo" ng-if="game.player2_id == 0">
+    <div class="fb-share-button" data-href={{get_game_url()}} data-layout="button">
+    </div> <i>(If you share this page's URL with a friend, they can join the game.)</i>
+
   </div>
 </div>
 <div id="gamewrapper" class="container">
