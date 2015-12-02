@@ -11,9 +11,10 @@
   @get_hex_class = (row, col) =>
     hex_class = ''
     space_id = boardService.space_id_lookup[row][col]
+
+    if $scope.last_selected_space_id and $scope.last_selected_space_id == space_id
+      hex_class += 'last_selected '
     if $scope.game.turn != $scope.game.extra_state.current_user_player
-      if $scope.last_selected_space_id and $scope.last_selected_space_id == space_id
-        hex_class += 'last_selected '
       return hex_class
     
     hex_class += @check_available_moves_key space_id
