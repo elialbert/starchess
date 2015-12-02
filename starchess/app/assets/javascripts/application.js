@@ -15,6 +15,7 @@
 //= require restangular
 //= require underscore-min.js
 //= require ui-bootstrap-tpls-0.14.3.min
+//= require angular-cookies.min
 //= require main
 //= require_tree .
 

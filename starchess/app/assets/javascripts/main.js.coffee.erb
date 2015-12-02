@@ -1,5 +1,5 @@
 #= depend_on_asset "starchess_game.html"
-@strollz = angular.module('strollz', ['ngRoute','restangular','ui.bootstrap','firebase'])
+@strollz = angular.module('strollz', ['ngRoute','restangular','ui.bootstrap','firebase','ngCookies'])
 
 @strollz.config(['RestangularProvider','$windowProvider', (RestangularProvider, $windowProvider) ->
   RestangularProvider.setBaseUrl('/1')
@@ -21,6 +21,7 @@
   RestangularProvider.setErrorInterceptor( ( response ) ->
     if response.status == 401 and response.config.method in ["PUT","POST"]
       $windowProvider.$get().alert("Please sign in!")
+      # console.log("intercepted")
       return false
  )                 
 ])
@@ -42,3 +43,17 @@
       controller: 'StarchessGamesCtrl'
     }) 
 ])
+
+@strollz.run ($rootScope, $window, $location, $cookies) ->
+  $rootScope.$on '$locationChangeStart', (event, next, current) ->
+    splitUrl = next.split('#')
+    nextAngularUrl = splitUrl[1] if (splitUrl.length > 1) 
+    if $cookies.get('signed_in') != '1'
+      if /StarchessGames/.test(nextAngularUrl)
+        $cookies.put('nextAngularUrl',nextAngularUrl)
+        $window.location.href = "/users/auth/facebook"
+    else
+      next = $cookies.get('nextAngularUrl')
+      if next
+        $cookies.remove('nextAngularUrl')
+        $location.path(next)
