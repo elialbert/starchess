@@ -137,6 +137,9 @@
           return "available "
     return ''
       
+  $scope.get_game_url = () =>
+    "http://starchess.upchicago.org/#/StarchessGames/#{$scope.game.id}"    
+
   $scope.get_debug_text = (row,col) =>
     # return row + ": " + col + ", " + boardService.space_id_lookup[row][col]
     # space_id = boardService.space_id_lookup[row][col]
