@@ -19,6 +19,13 @@
     6: {2:4,6:28},
   }
 
+  @hex_classes = () =>
+    result = {0:{},1:{},2:{},3:{},4:{},5:{},6:{}}
+    for row,coldict of @space_id_lookup
+      for col, space_id of coldict
+        result[row][col] = ''
+    result
+
   @pawn_promotion_lookup = {
     'white': [10,16,21,27,34],
     'black': [4,11,17,22,28]
@@ -72,5 +79,6 @@
     get_opposite_color: @get_opposite_color
     get_game_status: @get_game_status
     pawn_promotion_lookup: @pawn_promotion_lookup
+    get_empty_hex_classes: @hex_classes
   }
 ]   

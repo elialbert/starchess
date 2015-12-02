@@ -135,6 +135,7 @@ describe StarchessGamesController, :type => :controller do
     response = make_play_update ActiveSupport::JSON.encode(board_state), selected, "black", g1.id
     expect(response.parsed_body['response']["extra_state"]["special_state"]).to eq("checkmate")
     expect(response.parsed_body['response']['winner_id']).to eq(u1.id)
+    expect(response.parsed_body['response']['extra_state']['saved_selected_move']).not_to be_nil
     g1 = StarchessGame.find(game_id)
     expect(g1.winner_id).to eq(u1.id)
 

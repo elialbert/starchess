@@ -6,7 +6,7 @@ class StarchessGame < ActiveRecord::Base
   belongs_to :player2, class_name: "User", foreign_key: "player2_id"
 
   attr_reader :logic
-  attr_accessor :extra_state, :winner_id_temp, :current_user_player
+  attr_accessor :extra_state, :winner_id_temp, :current_user_player, :saved_selected_move
   before_create :set_board_attrs
 
   def extra_state
@@ -30,7 +30,8 @@ class StarchessGame < ActiveRecord::Base
     player2_email = self.player2 ? self.player2.email : "Waiting for opponent"
     @extra_state = {:player1 => self.player1.email, :player2 => player2_email, 
       :special_state => @logic ? @logic.board.special_state : self.mode,
-      :current_user_player => @current_user_player
+      :current_user_player => @current_user_player,
+      :saved_selected_move => @saved_selected_move
     }
   end
 
@@ -67,6 +68,7 @@ class StarchessGame < ActiveRecord::Base
       @logic.do_pawn_promotion color.to_sym, ActiveSupport::JSON.decode(attributes[:chosen_piece])
     end
 
+    @saved_selected_move = (attributes[:selected_move] or attributes[:chosen_piece]).deep_dup
     attributes.delete :chosen_piece
     opposite_color = (color.to_sym == :black) ? :white : :black
     attributes[:turn] = opposite_color

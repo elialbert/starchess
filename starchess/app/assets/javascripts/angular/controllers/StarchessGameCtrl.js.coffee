@@ -1,6 +1,38 @@
 @strollz.controller 'StarchessGameCtrl', ['$scope','$interval','$route','game','$routeParams','Restangular','boardService','$uibModal', ($scope, $interval, $route, game, $routeParams, Restangular, boardService, $uibModal) ->
   $scope.row_range = boardService.row_range
   $scope.col_range = boardService.col_range
+  $scope.hex_classes = boardService.get_empty_hex_classes()
+
+  @run_hex_classes = () =>
+    for row,coldict of boardService.space_id_lookup
+      for col, space_id of coldict
+        $scope.hex_classes[row][col] = @get_hex_class(row,col)    
+
+  @get_hex_class = (row, col) =>
+    hex_class = ''
+    space_id = boardService.space_id_lookup[row][col]
+    if $scope.game.turn != $scope.game.extra_state.current_user_player
+      if $scope.last_selected_space_id and $scope.last_selected_space_id == space_id
+        hex_class += 'last_selected '
+      return hex_class
+    
+    hex_class += @check_available_moves_key space_id
+    if $scope.selected == space_id
+      hex_class += 'selected'  
+    if $scope.selected and $scope.game.mode == 'play_mode'
+      if space_id in $scope.available_moves[$scope.selected]
+        hex_class += 'available_move'
+    return hex_class
+
+  @check_available_moves_key = (space_id) =>
+    if $scope.game.mode == 'choose_mode'
+      if (space_id in $scope.available_moves)
+        return "available "
+    if $scope.game.mode == 'play_mode'
+      if not $scope.selected
+        if $scope.available_moves[space_id] and $scope.available_moves[space_id].length > 0
+          return "available "
+    return ''
 
   @firebaseRef = new Firebase("https://starchess.firebaseio.com/games/"+game.id)
   @firebaseRef.on 'value', (data) =>
@@ -14,6 +46,12 @@
     $scope.available_moves = JSON.parse(data.available_moves)
     $scope.game.board_state = JSON.parse(data.board_state)
     $scope.boardState = $scope.game.board_state
+    try
+      $scope.set_last_move(data.extra_state)
+    catch err
+      console.log "SET LAST STATE ERROR"
+      console.log err.message
+    @run_hex_classes()
     $scope.$apply()
 
   @setState = (game) =>
@@ -22,6 +60,7 @@
     $scope.available_moves = JSON.parse(game.available_moves)
     $scope.boardState = JSON.parse(game.board_state)
     $scope.selected = null # space_id of selected hex  
+    @run_hex_classes()
   @setState game
 
   @handle_choose_mode_choice = (selected_space_id) =>
@@ -114,28 +153,13 @@
     else
       return ""
 
-  $scope.get_hex_class = (row, col) =>
-    if $scope.game.turn != $scope.game.extra_state.current_user_player
-      return ''
-    space_id = boardService.space_id_lookup[row][col]
-    hex_class = ''
-    hex_class += @check_available_moves_key space_id
-    if $scope.selected == space_id
-      hex_class += 'selected'  
-    if $scope.selected and $scope.game.mode == 'play_mode'
-      if space_id in $scope.available_moves[$scope.selected]
-        hex_class += 'available_move'
-    return hex_class
-
-  @check_available_moves_key = (space_id) =>
-    if $scope.game.mode == 'choose_mode'
-      if (space_id in $scope.available_moves)
-        return "available "
-    if $scope.game.mode == 'play_mode'
-      if not $scope.selected
-        if $scope.available_moves[space_id] and $scope.available_moves[space_id].length > 0
-          return "available "
-    return ''
+  $scope.set_last_move = (data) =>
+    if not data or not data.saved_selected_move
+      return
+    if $scope.game.mode == "choose_mode"
+      $scope.last_selected_space_id = data.saved_selected_move["space_id"]
+    else
+      $scope.last_selected_space_id = parseInt(data.saved_selected_move[1])
       
   $scope.get_game_url = () =>
     "http://starchess.upchicago.org/#/StarchessGames/#{$scope.game.id}"    

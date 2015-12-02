@@ -48,6 +48,9 @@ img {
 .gamerow .outerclip .innerclip.available_move {
   background: yellow;  
 } 
+.gamerow .outerclip .innerclip.last_selected {
+  background: red;  
+} 
 
 .space_id {
   transform:rotate(-45deg) skew(-16.5deg,-15.5deg);  
