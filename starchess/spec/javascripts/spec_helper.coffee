@@ -3,6 +3,9 @@
 #= require sinon
 #= require jasmine-sinon
 
+# TO RUN
+# bundle exec rake spec:javascript
+
 beforeEach(module('strollz'))
 
 beforeEach inject (_$httpBackend_, _$compile_, $rootScope, $templateCache, $controller, $location, $injector, $timeout, $interval, $route, $routeParams, $uibModal, boardService) ->

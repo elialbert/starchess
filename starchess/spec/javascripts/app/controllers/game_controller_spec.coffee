@@ -4,9 +4,6 @@ describe 'strollz', ->
   describe 'StarchessGameCtrl', ->
     gameCtrl = null
     beforeEach () ->
-      # module ($provide) ->
-      #   $provide.value('game', {test:'test'})
-      #   return
       game = 
         extra_state: 
           special_state: null
@@ -16,7 +13,6 @@ describe 'strollz', ->
 
       
       Restangular = {}
-      @http.expectGET("*")
       gameCtrl = @controller 'StarchessGameCtrl', 
         $scope: @scope,
         $interval: @interval, 
