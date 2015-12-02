@@ -5,7 +5,7 @@
 
 beforeEach(module('strollz'))
 
-beforeEach inject (_$httpBackend_, _$compile_, $rootScope, $controller, $location, $injector, $timeout) ->
+beforeEach inject (_$httpBackend_, _$compile_, $rootScope, $templateCache, $controller, $location, $injector, $timeout, $interval, $route, $routeParams, $uibModal, boardService) ->
   @scope = $rootScope.$new()
   @http = _$httpBackend_
   @compile = _$compile_
@@ -13,6 +13,14 @@ beforeEach inject (_$httpBackend_, _$compile_, $rootScope, $controller, $locatio
   @controller = $controller
   @injector = $injector
   @timeout = $timeout
+  @interval = $interval
+  @route = $route
+  @routeParams = $routeParams
+  @uibModal = $uibModal
+  @boardService = boardService
+  # @http.whenGET(/^\/templates\//).respond(200,'')
+  $templateCache.put('../templates/starchess_games.html', '<div>test</div>')
+
   @model = (name) =>
     @injector.get(name)
   @eventLoop =
