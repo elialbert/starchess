@@ -128,7 +128,7 @@
     else # choose a space 
       original_selected = $scope.selected
       $scope.selected = space_id
-
+    @run_hex_classes()
     if $scope.game.mode == 'choose_mode' and $scope.selected
       @handle_choose_mode_choice($scope.selected)
     else if $scope.game.mode == 'play_mode' and $scope.selected and original_selected
@@ -136,6 +136,7 @@
         @handle_play_mode_choice original_selected
       else
         $scope.selected = null
+    @run_hex_classes()
   
   $scope.get_piece_image = (row,col) =>
     space_id = boardService.space_id_lookup[row][col]
@@ -160,7 +161,7 @@
     if $scope.game.mode == "choose_mode"
       $scope.last_selected_space_id = data.saved_selected_move["space_id"]
     else
-      $scope.last_selected_space_id = parseInt(data.saved_selected_move[1])
+      $scope.last_selected_space_id = parseInt(JSON.parse(data.saved_selected_move)[1])
       
   $scope.get_game_url = () =>
     "http://starchess.upchicago.org/#/StarchessGames/#{$scope.game.id}"    
