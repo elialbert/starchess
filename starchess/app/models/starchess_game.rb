@@ -29,6 +29,9 @@ class StarchessGame < ActiveRecord::Base
 
   def meta_info
     player2_email = self.player2 ? self.player2.email : "Waiting for opponent"
+    if self.player2_id == -1
+      player2_email = "AI"
+    end
     @extra_state = {:player1 => self.player1.email, :player2 => player2_email, 
       :special_state => @logic ? @logic.board.special_state : self.mode,
       :current_user_player => @current_user_player,

@@ -162,6 +162,11 @@
     else
       $scope.last_selected_space_id = parseInt(JSON.parse(data.saved_selected_move)[1])
       
+  $scope.aiMode = () =>
+    @starchessGames = Restangular.all('starchess_games')
+    @starchessGames.post({starchess_game: {player2_id:0, join:$scope.game.id, ai_mode:'normal'}}).then (game) =>
+      $scope.game.extra_state.player2 = 'AI'
+      $scope.game.player2_id = -1
   $scope.get_game_url = () =>
     "http://starchess.upchicago.org/#/StarchessGames/#{$scope.game.id}"    
 
