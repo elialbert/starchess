@@ -33,7 +33,7 @@ class StarchessGame < ActiveRecord::Base
       player2_email = "AI"
     end
     @extra_state = {:player1 => self.player1.email, :player2 => player2_email, 
-      :special_state => @logic ? @logic.board.special_state : self.mode,
+      :special_state => @logic ? @logic.board.special_state : nil,
       :current_user_player => @current_user_player,
       :saved_selected_move => @saved_selected_move
     }
