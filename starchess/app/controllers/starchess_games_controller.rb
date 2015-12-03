@@ -14,6 +14,7 @@ class StarchessGamesController < ApiController
     if game.player2_id == 0 and current_user.id != game.player1_id 
       game.player2_id = current_user.id
       game.save!
+      push_to_firebase(game) if not Rails.env.test?
     end
 
     if (game.player1_id != current_user.id) and (game.player2_id != current_user.id)
@@ -38,6 +39,7 @@ class StarchessGamesController < ApiController
           game.ai_mode = 'normal'
         else
           game.player2_id = current_user.id
+          push_to_firebase(game) if not Rails.env.test?
         end
         game.save
         return expose(game)
@@ -66,9 +68,7 @@ class StarchessGamesController < ApiController
       error!(:bad_request, :metadata => {:error_description => e.message, :error => e.class.to_s})
     end
     game.current_user_player = (current_user.id == game.player1_id) ? 'white' : 'black'
-    if not Rails.env.test?
-      push_to_firebase game
-    end
+    push_to_firebase(game) if not Rails.env.test?
     expose game 
   end
 
