@@ -81,7 +81,8 @@ class StarchessGamesController < ApiController
     end
 
     def push_to_firebase game
-      firebase = Firebase::Client.new('https://starchess.firebaseio.com/games',
+      firebase_url = Rails.env.production? ? 'https://starchess.firebaseio.com/games' : 'https://starchess.firebaseio.com/dev_games'
+      firebase = Firebase::Client.new(firebase_url,
                                       ENV['FIREBASE_SECRET'])
       response = firebase.set(game.id, game)
     end
