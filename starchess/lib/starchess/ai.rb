@@ -89,8 +89,8 @@ module StarChess
 
     def pick_play_move info, color
       if @run_mode == 'test_mode'
-        if color == :black
-          available_moves = find_highest_state_moves color, info[:available_moves], info[:state]
+        if color == :white
+          available_moves = ai_heuristic color, info[:available_moves], info[:state]
         else
           available_moves = info[:available_moves]          
         end
