@@ -51,9 +51,7 @@ img {
 .gamerow .outerclip .innerclip.last_selected {
   background: red;  
 } 
-#chatbox {
-  float: right;
-}
+
 
 .space_id {
   transform:rotate(-45deg) skew(-16.5deg,-15.5deg);  
@@ -78,6 +76,7 @@ gamerow {
   padding-left: 50px;
   padding-top: 20px;
   padding-bottom: 20px;
+  margin-bottom: 25px;
 }
 div #gameinfo {
   color: #333;

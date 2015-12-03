@@ -1,7 +1,4 @@
 <div id="gameinfo_container" class="container">
-  <in-game-chat-box author='{{game.extra_state.current_user_player}}'
-    gameid='{{game.id}}'
-    ></in-game-chat-box>
   <div id="gameinfo"><b>{{game.extra_state.player1}}</b> vs <b>{{game.extra_state.player2}}</b></div>
   <div id="gameinfo">{{game_status}}</div>
   <div id="gameinfo">Your color: <b>{{game.extra_state.current_user_player}}</b></div>
@@ -28,3 +25,12 @@
 
 
 </div>
+
+<div id="gameinfo_container" class="container">
+  <div id="gameinfo">
+  <b>In-game Chat:</b>
+  </div>
+  <in-game-chat-box author='{{game.extra_state.current_user_player}}'
+    gameid='{{game.id}}'
+    ></in-game-chat-box>
+</div>  
