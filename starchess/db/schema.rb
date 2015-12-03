@@ -11,10 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151130203219) do
+ActiveRecord::Schema.define(version: 20151203001734) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "ai_board_states", force: :cascade do |t|
+    t.string   "state",      limit: 1000
+    t.integer  "score"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  add_index "ai_board_states", ["state"], name: "index_ai_board_states_on_state", using: :btree
 
   create_table "attendrequests", force: :cascade do |t|
     t.datetime "created_at", null: false

@@ -17,6 +17,7 @@ module StarChess
                   :southeast => [:south, :northeast],
                   :northeast => [:southeast, :north]
   }    
+  PIECE_POINTS = {:pawn => 1, :king => 0, :queen => 10, :bishop => 5, :rook => 4, :knight => 5}
 
 
 end
