@@ -5,8 +5,7 @@ require 'starchess/piece_defs'
 
 module StarChess
   class Board
-    attr_accessor :spaces, :pieces
-    attr_reader :special_state
+    attr_accessor :spaces, :pieces, :special_state
     def initialize(board_state = nil)
       @spaces = {}.with_indifferent_access # int ID to Space instance
       @pieces = {:white => [], :black => []}.with_indifferent_access

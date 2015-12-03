@@ -12,7 +12,7 @@ module StarChess
     # the ai simply looks for the given board state of each possible move,
     # and chooses randomly from the ones with the highest score
 
-    attr_accessor :game, :state_store
+    attr_accessor :game, :state_store, :saved_selected_move
     def initialize run_mode='store_mode'
       @run_mode = run_mode
       @results_tally = Hash.new { |hash, key| hash[key] = 0 }
@@ -73,6 +73,7 @@ module StarChess
       color = :black
       @game = game
       move = @game.mode == :choose_mode ? pick_choose_move(info, color) : pick_play_move(info, color)
+      @saved_selected_move = (@game.mode == :choose_mode) ? move : [move[:from], move[:to]]
       @game.mode == :choose_mode ? do_choose_move(color, info, move) : do_play_move(color, info, move)
       if @game.chosen_pieces[color].length == 5
         @game.mode = :play_mode

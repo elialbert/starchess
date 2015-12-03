@@ -76,6 +76,8 @@ class StarchessGame < ActiveRecord::Base
     if @logic.board.special_state == :checkmate and not self.winner_id
       attributes[:winner_id] = (self.turn == 'white') ? self.player2_id : self.player1_id
       attributes[:mode] = "done"
+    elsif @logic.board.special_state == :stalemate
+      attributes[:mode] = "done"
     end
     attributes
   end
@@ -98,9 +100,11 @@ class StarchessGame < ActiveRecord::Base
     end
     # switch back to human player - new turn should always be white for now
     attributes[:turn] = (attributes[:turn].to_sym == :black) ? :white : :black
-    raise "turn problens" unless attributes[:turn] == :white
+    raise "turn problems" unless attributes[:turn] == :white
     info = gameAI.game.get_game_info attributes[:turn]
+    @logic.board.special_state = info[:special_state]
     attributes = do_special_state attributes
+    @saved_selected_move = ActiveSupport::JSON.encode(gameAI.saved_selected_move)
     attributes.delete :chosen_piece
     attributes.delete :selected_move
 
