@@ -27,6 +27,10 @@
       <li ng-if="game.turn">
         Turn: {{game.turn}}
       </li>
+      <li ng-if="game.extra_state.winner">
+        Winner: {{game.extra_state.winner}}
+      </li>
+      
       <li>
       <a href="#/StarchessGames/{{game.id}}">Go to game</a>
       </li>

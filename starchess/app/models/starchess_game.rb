@@ -37,6 +37,18 @@ class StarchessGame < ActiveRecord::Base
       :current_user_player => @current_user_player,
       :saved_selected_move => @saved_selected_move
     }
+    @extra_state[:special_state] = self.mode if not @extra_state[:special_state] and self.mode == "done"
+    if self.winner_id
+      if self.winner_id > 0
+        begin
+          @extra_state[:winner] = User.find(self.winner_id).email
+        rescue Exception => e
+          @extra_state[:winner] = self.winner_id
+        end
+      elsif self.winner_id == -1
+        @extra_state[:winner] = "AI"
+      end
+    end
   end
 
   def prepare_logic board_state
