@@ -68,13 +68,17 @@ class StarchessGame < ActiveRecord::Base
                                  ActiveSupport::JSON.decode(self.available_moves)) # old available moves
   end
 
-  def prepare_update_attributes_return attributes, info
-    attributes[:board_state] = ActiveSupport::JSON.encode(info[:state])
-    self.available_moves = ActiveSupport::JSON.encode(info[:available_moves])    
+  def do_special_state attributes
     if @logic.board.special_state == :checkmate and not self.winner_id
       attributes[:winner_id] = (self.turn == 'white') ? self.player2_id : self.player1_id
       attributes[:mode] = "done"
     end
+    attributes
+  end
+
+  def prepare_update_attributes_return attributes, info
+    attributes[:board_state] = ActiveSupport::JSON.encode(info[:state])
+    self.available_moves = ActiveSupport::JSON.encode(info[:available_moves])    
     return attributes
   end
 
@@ -95,6 +99,7 @@ class StarchessGame < ActiveRecord::Base
     attributes.delete :selected_move
 
     info = @logic.get_game_info attributes[:turn]
+    attributes = do_special_state attributes
     attributes = prepare_update_attributes_return attributes, info
     super
   end
