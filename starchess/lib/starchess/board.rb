@@ -45,16 +45,14 @@ module StarChess
       result = {}
       king = nil
       opposite_color = (color == :black) ? :white : :black
-      # opp_extra = get_available_moves(
-      #   opposite_color, true) if not recursed
-      # opponents_flattened_avail = opp_extra.values.flatten if not recursed
+      
       opponents_flattened_avail = get_available_moves(
         opposite_color, true).values.flatten if not recursed
       @pieces[color].each do |piece|
         # dict of space id => list of space ids
         if (piece.piece_type == :king)
           result[piece.space.id] = piece.get_king_moves(
-                                          opponents_flattened_avail=opponents_flattened_avail,
+                                          opponents_flattened_avail,
                                           recursed)
           king = piece
         elsif (piece.piece_type == :pawn)
