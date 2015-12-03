@@ -74,7 +74,7 @@ class StarchessGame < ActiveRecord::Base
 
   def do_special_state attributes
     if @logic.board.special_state == :checkmate and not self.winner_id
-      attributes[:winner_id] = (self.turn == 'white') ? self.player2_id : self.player1_id
+      attributes[:winner_id] = (self.turn == 'white') ? self.player1_id : self.player2_id
       attributes[:mode] = "done"
     elsif @logic.board.special_state == :stalemate
       attributes[:mode] = "done"
