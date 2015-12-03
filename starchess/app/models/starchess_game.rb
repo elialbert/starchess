@@ -1,4 +1,5 @@
 require 'starchess/game'
+require 'starchess/ai'
 
 class StarchessGame < ActiveRecord::Base
   include RocketPants::Cacheable
@@ -82,6 +83,27 @@ class StarchessGame < ActiveRecord::Base
     return attributes
   end
 
+  def run_ai_mode attributes, info
+    gameAI = StarChess::AI.new 'single_mode'
+    gameAI.run_single_move info, @logic
+    if self.mode == 'choose_mode'
+      attributes[:chosen_pieces] = ActiveSupport::JSON.encode(gameAI.game.chosen_pieces)
+      if gameAI.game.mode == :play_mode
+        attributes[:mode] = "play_mode"
+        attributes[:selected_move] = '["just_switched_modes"]'
+      end
+    end
+    # switch back to human player - new turn should always be white for now
+    attributes[:turn] = (attributes[:turn].to_sym == :black) ? :white : :black
+    raise "turn problens" unless attributes[:turn] == :white
+    info = gameAI.game.get_game_info attributes[:turn]
+    attributes = do_special_state attributes
+    attributes.delete :chosen_piece
+    attributes.delete :selected_move
+
+    return attributes, info
+  end
+
   def update(attributes={})
     attributes[:board_state] = prepare_logic attributes[:board_state]
     color = attributes[:turn]
@@ -100,6 +122,8 @@ class StarchessGame < ActiveRecord::Base
 
     info = @logic.get_game_info attributes[:turn]
     attributes = do_special_state attributes
+
+    attributes,info = run_ai_mode(attributes, info) if self.ai_mode == 'normal' and attributes[:mode] != "done"
     attributes = prepare_update_attributes_return attributes, info
     super
   end

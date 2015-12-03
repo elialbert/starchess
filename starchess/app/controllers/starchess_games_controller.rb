@@ -33,7 +33,12 @@ class StarchessGamesController < ApiController
         error!(:forbidden)
       end
       if game.player1_id != 0 and game.player2_id == 0
-        game.player2_id = current_user.id
+        if params[:ai_mode]
+          game.player2_id = -1
+          game.ai_mode = 'normal'
+        else
+          game.player2_id = current_user.id
+        end
         game.save
         return expose(game)
       else
@@ -69,7 +74,7 @@ class StarchessGamesController < ApiController
 
   private
     def game_create_params
-      params.require(:starchess_game).permit(:player1_id, :player2_id, :join)
+      params.require(:starchess_game).permit(:player1_id, :player2_id, :join, :ai_mode)
     end
     def game_update_params
       params.require(:starchess_game).permit(:board_state, :turn, :chosen_piece, :selected_move)

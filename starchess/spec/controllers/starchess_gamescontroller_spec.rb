@@ -48,7 +48,51 @@ describe StarchessGamesController, :type => :controller do
     board_state = ActiveSupport::JSON.decode(response.parsed_body['response']['board_state'])
     expect(board_state['white']['5']).to eq('pawn')
     expect(response.parsed_body['response']['available_moves']).to eq("[4,11,17,22,28]")
+  end
 
+  it "can play a whole game in AI mode" do
+    data = {"starchess_game" => {"player1_id" => u1.id, "player2_id" => 0}, "version" => 1}
+    response = post :create, data
+    game_id = response.parsed_body['response']['id']
+    sign_in :user, u1
+
+    data = {"starchess_game" => {"player1_id" => u1.id, "player2_id" => 0, "join" => game_id, "ai_mode" => "normal"}, "version" => 1}
+    response = post :create, data
+
+    g1 = StarchessGame.find(game_id)
+    expect(g1.mode).to eq('choose_mode')
+    expect(g1.ai_mode).to eq('normal')
+    expect(g1.player2_id).to eq(-1)
+    data = {"starchess_game" => {"board_state" => 
+      '{"white" : {"5":"pawn", "12":"pawn", "18":"pawn", "23":"pawn", "29":"pawn"}, 
+      "black" : {"9":"pawn", "15":"pawn", "20":"pawn", "26":"pawn", "33":"pawn"}}', 
+      "turn" => "white",
+      "chosen_piece" => '{"piece_type" : "rook", "space_id" : 4}'}, 
+      "id" => g1.id, "version" => 1}
+    response = patch :update, data
+
+    expect(response.parsed_body['response']['turn']).to eq('white')
+    expect(response.parsed_body['response']['mode']).to eq('choose_mode')
+    board_state = ActiveSupport::JSON.decode(response.parsed_body['response']['board_state'])
+    response=make_choose_update response, "white", "bishop", 11, g1.id
+    response=make_choose_update response, "white", "knight", 17, g1.id
+    response=make_choose_update response, "white", "king", 22, g1.id
+    response=make_choose_update response, "white", "queen", 28, g1.id
+
+    board_state = ActiveSupport::JSON.decode(response.parsed_body['response']['board_state'])
+    expect(response.parsed_body['response']['mode']).to eq('play_mode')
+    expect(response.parsed_body['response']['ai_mode']).to eq('normal')
+    expect(response.parsed_body['response']['turn']).to eq('white')
+    avail = ActiveSupport::JSON.decode(response.parsed_body['response']['available_moves'])
+    expect(avail['5']).to eq([6,7])
+    board_state = ActiveSupport::JSON.decode(response.parsed_body['response']['board_state'])
+
+    selected = '["5","7"]'
+    board_state['white'].delete('5')
+    board_state['white']['7'] = 'pawn'    
+    response = make_play_update ActiveSupport::JSON.encode(board_state), selected, "white", g1.id
+    expect(response.parsed_body['response']['turn']).to eq('white')
+    # board_state = ActiveSupport::JSON.decode(response.parsed_body['response']['board_state'])
   end
 
   it "can update in choose mode for both players, switch to play, and play" do

@@ -16,7 +16,7 @@ module StarChess
     def initialize run_mode='store_mode'
       @run_mode = run_mode
       @results_tally = Hash.new { |hash, key| hash[key] = 0 }
-      Rails.logger.level = 3
+      Rails.logger.level = 3 if (run_mode != 'single_mode')
       @hit_count = 0
     end
 
@@ -68,10 +68,20 @@ module StarChess
 
     end
 
+    # run the "AI" from the frontend. color is always black for now.
+    def run_single_move info, game
+      color = :black
+      @game = game
+      move = @game.mode == :choose_mode ? pick_choose_move(info, color) : pick_play_move(info, color)
+      @game.mode == :choose_mode ? do_choose_move(color, info, move) : do_play_move(color, info, move)
+      if @game.chosen_pieces[color].length == 5
+        @game.mode = :play_mode
+      end
+    end
+
     def pick_choose_move info, color
-      # puts "available moves are #{info[:available_moves]}"
       space_id = info[:available_moves][Random.rand(0...info[:available_moves].length)]
-      chosen_pieces_left = StarChess::CHOSEN_PIECE_TYPES - @game.chosen_pieces[color]
+      chosen_pieces_left = StarChess::CHOSEN_PIECE_TYPES - @game.chosen_pieces[color].map(&:to_sym)
       piece = chosen_pieces_left[Random.rand(0...chosen_pieces_left.length)]
       return {:color => color, :piece_type => piece, :space_id => space_id}
     end
