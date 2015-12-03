@@ -114,7 +114,7 @@
     )
   
   $scope.do_click = (row,col) =>
-    if $scope.game.turn != $scope.game.extra_state.current_user_player
+    if ($scope.game.turn != $scope.game.extra_state.current_user_player) or ($scope.game.player2_id == 0)
       return
     space_id = boardService.space_id_lookup[row][col]
     if not $scope.selected and (@check_available_moves_key(space_id) != 'available ')
