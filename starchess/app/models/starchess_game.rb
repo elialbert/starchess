@@ -62,6 +62,22 @@ class StarchessGame < ActiveRecord::Base
     return attributes
   end
 
+  def check_move_validity attributes
+    raise StarChess::TurnError, "that move is not valid" unless 
+      @logic.check_move_validity(ActiveSupport::JSON.decode(attributes[:selected_move] || '[]'),
+                                 ActiveSupport::JSON.decode(self.available_moves)) # old available moves
+  end
+
+  def prepare_update_attributes_return attributes, info
+    attributes[:board_state] = ActiveSupport::JSON.encode(info[:state])
+    self.available_moves = ActiveSupport::JSON.encode(info[:available_moves])    
+    if @logic.board.special_state == :checkmate and not self.winner_id
+      attributes[:winner_id] = (self.turn == 'white') ? self.player2_id : self.player1_id
+      attributes[:mode] = "done"
+    end
+    return attributes
+  end
+
   def update(attributes={})
     attributes[:board_state] = prepare_logic attributes[:board_state]
     color = attributes[:turn]
@@ -73,20 +89,13 @@ class StarchessGame < ActiveRecord::Base
     end
 
     @saved_selected_move = (attributes[:selected_move] or attributes[:chosen_piece]).deep_dup
+    attributes[:turn] = (color.to_sym == :black) ? :white : :black
+    check_move_validity attributes
     attributes.delete :chosen_piece
-    opposite_color = (color.to_sym == :black) ? :white : :black
-    attributes[:turn] = opposite_color
-    raise StarChess::TurnError, "that move is not valid" unless 
-      @logic.check_move_validity(ActiveSupport::JSON.decode(attributes[:selected_move] || '[]'),
-                                 ActiveSupport::JSON.decode(self.available_moves)) # old available moves
     attributes.delete :selected_move
-    info = @logic.get_game_info opposite_color
-    attributes[:board_state] = ActiveSupport::JSON.encode(info[:state])
-    self.available_moves = ActiveSupport::JSON.encode(info[:available_moves])    
-    if @logic.board.special_state == :checkmate and not self.winner_id
-      attributes[:winner_id] = (self.turn == 'white') ? self.player2_id : self.player1_id
-      attributes[:mode] = "done"
-    end
+
+    info = @logic.get_game_info attributes[:turn]
+    attributes = prepare_update_attributes_return attributes, info
     super
   end
 
