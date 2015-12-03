@@ -2,6 +2,7 @@
   scope:
     author: '@'
     gameid: '@'
+    player2: '@'
   templateUrl: '../templates/chatBox.html'
   controller: 'inGameChatBoxCtrl'
 
@@ -14,4 +15,9 @@
       author: $scope.author
       message: message,
       timestamp: Firebase.ServerValue.TIMESTAMP
+    if $scope.player2 == 'AI'
+      $scope.chats.$add
+        author: 'black'
+        message: 'shush, puny human'
+        timestamp: Firebase.ServerValue.TIMESTAMP
     $scope.message=''
