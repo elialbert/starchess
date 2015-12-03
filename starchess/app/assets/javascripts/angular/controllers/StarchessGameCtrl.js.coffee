@@ -43,7 +43,7 @@
     $scope.game.turn = data.turn
     $scope.game.mode = data.mode
     $scope.game_status = boardService.get_game_status data
-    $scope.game.chosen_pieces = JSON.parse(data.chosen_pieces)
+    $scope.game.chosen_pieces = JSON.parse(data.chosen_pieces or '[]')
     $scope.available_moves = JSON.parse(data.available_moves)
     $scope.game.board_state = JSON.parse(data.board_state)
     $scope.boardState = $scope.game.board_state
