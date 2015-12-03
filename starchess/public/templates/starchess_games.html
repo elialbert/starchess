@@ -24,7 +24,7 @@
       <li ng-if="game.extra_state.special_state">
         Status: {{game.extra_state.special_state}}
       </li>
-      <li ng-if="game.turn">
+      <li ng-if="game.turn && !game.extra_state.winner">
         Turn: {{game.turn}}
       </li>
       <li ng-if="game.extra_state.winner">
