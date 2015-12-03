@@ -13,8 +13,11 @@ module StarChess
     # and chooses randomly from the ones with the highest score
 
     attr_accessor :game, :state_store
-    def initialize
+    def initialize run_mode='store_mode'
+      @run_mode = run_mode
+      @results_tally = Hash.new { |hash, key| hash[key] = 0 }
       Rails.logger.level = 3
+      @hit_count = 0
     end
 
     def run_many_games n
@@ -22,6 +25,8 @@ module StarChess
         run_AI_game()
       end
       puts "final state store count is #{AiBoardState.count}"
+      puts "final tally is #{@results_tally}"
+      puts "hit count is @hit_count"
     end
 
     def run_AI_game
@@ -34,7 +39,7 @@ module StarChess
       while move_count < 60
         # puts "color is #{color}, mode is #{mode}, game mode is #{@game.mode}"
         info = @game.get_game_info color
-        @state_store[color] << info[:state]
+        @state_store[color] << normalize_state(info[:state])
 
         if info[:special_state] == "checkmate"
           winner = (color == :white) ? :black : :white
@@ -58,7 +63,8 @@ module StarChess
 
       end
       winner = find_winner @game.get_game_info(color)[:state] if not winner
-      # set_results winner
+      set_results winner if @run_mode == 'store_mode'
+      tally_results winner if @run_mode == 'test_mode'
 
     end
 
@@ -72,9 +78,17 @@ module StarChess
 
     def pick_play_move info, color
       # puts "available moves are #{info[:available_moves]}"
-      available_moves = find_highest_state_moves info[:available_moves]
-      random_from = info[:available_moves].keys()[Random.rand(0...info[:available_moves].keys().length)]
-      random_to = info[:available_moves][random_from][Random.rand(0...info[:available_moves][random_from].length)] 
+      if @run_mode == 'test_mode'
+        if color == :black
+          available_moves = find_highest_state_moves color, info[:available_moves], info[:state]
+        else
+          available_moves = info[:available_moves]          
+        end
+      else
+        available_moves = info[:available_moves]
+      end
+      random_from = available_moves.keys()[Random.rand(0...available_moves.keys().length)]
+      random_to = available_moves[random_from][Random.rand(0...available_moves[random_from].length)] 
       piece_type = info[:state][color][random_from]
       return {:from => random_from, :to => random_to, :piece_type => piece_type}
     end
@@ -85,6 +99,39 @@ module StarChess
       g = StarChess::Game.new :choose_mode, previous_state, @game.chosen_pieces
       g.add_piece chosen_piece[:color], chosen_piece[:piece_type], chosen_piece[:space_id]
       @game = g
+    end
+
+    def find_highest_state_moves color, available_moves, board_state
+      available_moves_new = Hash.new { |hash, key| hash[key] = [] }
+      available_moves_score_count = {}
+      available_moves.each do |from, to_list|
+        to_list.each do |to|
+          piece_type = board_state[color][from]
+          state = board_state.deep_dup
+          state[color].delete(from)
+          state[color][to] = piece_type
+          opp_color = (color == :white) ? :black : :white
+          state[opp_color].delete(to)
+          state = normalize_state state
+          # puts "lookup looks like #{ActiveSupport::JSON.encode(state)}" 
+          stored = AiBoardState.where(:state => ActiveSupport::JSON.encode(state)).first
+          if stored
+            puts "HIT"
+            @hit_count += 1
+          end
+          score = stored ? stored.score : 0
+          available_moves_score_count["#{from},#{to}"] = score
+        end
+      end
+      max_score = available_moves_score_count.max_by{|k,v| v}[1]
+      available_moves_flat = available_moves_score_count.select {|k,v| v == max_score}
+      available_moves_flat.keys().each do |move_string|
+        to, from = move_string.split(',')
+        available_moves_new[to.to_i] << from.to_i
+      end
+      # puts "found available moves new: #{available_moves_new}"
+      # puts "score count was #{available_moves_score_count}"
+      return available_moves_new
     end
 
     def do_play_move color, info, move
@@ -129,13 +176,27 @@ module StarChess
       @state_store[loser].each do |state|
         state = ActiveSupport::JSON.encode(state)
         ai_board_state = AiBoardState.find_or_create_by(state: state)
-        if ai_board_state.score == nil
-          ai_board_state.score = 0
         ai_board_state.score -= 1
         ai_board_state.save!  
       end 
       puts "finished storing!"
     end 
+  
+
+    def normalize_state state
+      new_state = {:white => {}, :black => {}}
+      [:white, :black].each do |color|
+        keys = state[color].keys.sort
+        keys.each do |key|
+          new_state[color][key] = state[color][key]
+        end
+      end
+      new_state
+    end
+
+    def tally_results winner
+      @results_tally[winner[0]] += 1
+    end
   end
 
 end

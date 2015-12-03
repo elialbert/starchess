@@ -49,21 +49,25 @@ class StarchessGame < ActiveRecord::Base
     self.available_moves = ActiveSupport::JSON.encode(info[:available_moves])
   end
 
+  def update_choose_mode attributes, color
+    attributes[:chosen_piece] = ActiveSupport::JSON.decode(attributes[:chosen_piece])
+    @logic.add_piece color.to_sym, attributes[:chosen_piece][:piece_type].to_sym,
+      attributes[:chosen_piece][:space_id]
+    if @logic.chosen_pieces.values.flatten.length == 10
+      self.mode = "play_mode"
+      @logic.mode = :play_mode
+      attributes[:selected_move] = '["just_switched_modes"]'
+    end
+    attributes[:chosen_pieces] = ActiveSupport::JSON.encode(@logic.chosen_pieces)
+    return attributes
+  end
+
   def update(attributes={})
     attributes[:board_state] = prepare_logic attributes[:board_state]
     color = attributes[:turn]
     raise StarChess::TurnError, "it is #{color}'s turn" unless color == self.turn
-
     if self.mode == "choose_mode"
-      attributes[:chosen_piece] = ActiveSupport::JSON.decode(attributes[:chosen_piece])
-      @logic.add_piece color.to_sym, attributes[:chosen_piece][:piece_type].to_sym,
-        attributes[:chosen_piece][:space_id]
-      if @logic.chosen_pieces.values.flatten.length == 10
-        self.mode = "play_mode"
-        @logic.mode = :play_mode
-        attributes[:selected_move] = '["just_switched_modes"]'
-      end
-      attributes[:chosen_pieces] = ActiveSupport::JSON.encode(@logic.chosen_pieces)
+      attributes = update_choose_mode attributes, color
     elsif attributes[:chosen_piece] # check for pawn promotion
       @logic.do_pawn_promotion color.to_sym, ActiveSupport::JSON.decode(attributes[:chosen_piece])
     end
