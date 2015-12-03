@@ -47,6 +47,8 @@
     $scope.available_moves = JSON.parse(data.available_moves)
     $scope.game.board_state = JSON.parse(data.board_state)
     $scope.boardState = $scope.game.board_state
+    $scope.game.extra_state.player2 = data.extra_state.player2 if data.extra_state.player2
+    $scope.game.player2_id = data.player2_id if data.player2_id
     try
       $scope.set_last_move(data.extra_state)
     catch err
