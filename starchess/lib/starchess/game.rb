@@ -1,4 +1,5 @@
 require 'starchess/board'
+require 'starchess/starcraft_board'
 require 'starchess/piece_defs'
 
 module StarChess
@@ -6,6 +7,7 @@ module StarChess
     attr_reader :board, :board_state, :chosen_pieces
     attr_accessor :mode, :game_variant_type
     def initialize(game_mode, board_state = nil, chosen_pieces = nil, game_variant_type=nil)
+      @game_variant_type = game_variant_type
       @board = (game_variant_type == "starcraft") ? StarChess::StarcraftBoard.new(board_state) : StarChess::Board.new(board_state)
       @mode = game_mode
       @chosen_pieces = chosen_pieces || {:white => [], :black => []}.with_indifferent_access

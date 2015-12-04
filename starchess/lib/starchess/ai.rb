@@ -204,12 +204,16 @@ module StarChess
       # puts "doing play move with board state #{board_state}"
       # puts "play move for #{color} is #{move}"
       board_state[color].delete(move[:from])
-      board_state[color][move[:to]] = move[:piece_type]
-      opp_color = (color == :white) ? :black : :white
-      board_state[opp_color].delete(move[:to])
+      if @game.game_variant_type == 'starcraft' and move[:from] == move[:to]
+        board_state[color][move[:to]] = :pawn
+      else
+        board_state[color][move[:to]] = move[:piece_type]
+        opp_color = (color == :white) ? :black : :white
+        board_state[opp_color].delete(move[:to])
+      end
 
       # puts "got new play state #{board_state}"
-      @game = StarChess::Game.new :play_mode, board_state, nil
+      @game = StarChess::Game.new :play_mode, board_state, nil, @game.game_variant_type
 
     end
 

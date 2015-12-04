@@ -51,6 +51,9 @@ module StarChess
       
       # check if moving piece was pawn and taken piece was own color
       # if so, check if promotion was correct
+      if old_board_state[color] and old_board_state[color].keys()[0].class == String
+        selected_move = [selected_move[0].to_s, selected_move[1].to_s]
+      end
       moving_piece_type = old_board_state[color][selected_move[0]]
       return true unless moving_piece_type.to_sym == :pawn
       taken = old_board_state[color][selected_move[1]]

@@ -105,7 +105,11 @@ module StarChess
     end
 
     def change_board_state(board_state, original_spaces, color, opp_color, from, to)
-      from_piece_type = original_spaces[from].piece.piece_type
+      if not original_spaces[from].piece
+        from_piece_type = :pawn
+      else
+        from_piece_type = original_spaces[from].piece.piece_type
+      end
       board_state[color].delete(from)
       board_state[color][to] = from_piece_type
       board_state[opp_color].delete(to)

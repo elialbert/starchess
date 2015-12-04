@@ -19,7 +19,7 @@
     
     hex_class += @check_available_moves_key space_id
     if $scope.selected == space_id
-      hex_class += 'selected'  
+      hex_class += 'selected '  
     if $scope.selected and $scope.game.mode == 'play_mode'
       if space_id in $scope.available_moves[$scope.selected]
         hex_class += 'available_move'
@@ -100,10 +100,12 @@
     delete $scope.boardState[opposite_color][$scope.selected]
     piece_to_move = $scope.boardState[$scope.game.turn][original_selected]
     delete $scope.boardState[$scope.game.turn][original_selected]
+    if $scope.game.game_variant_type == "starcraft" and not piece_to_move
+      piece_to_move = 'pawn'
     $scope.boardState[$scope.game.turn][$scope.selected] = piece_to_move
     $scope.game.board_state = JSON.stringify($scope.boardState)
     $scope.game.selected_move = JSON.stringify([original_selected,$scope.selected])
-    if @check_pawn_promotion piece_to_move, $scope.selected
+    if not $scope.game.game_variant_type == "starcraft" and @check_pawn_promotion piece_to_move, $scope.selected
       @handle_choose_mode_choice($scope.selected)
       $scope.selected = null
       return
@@ -126,7 +128,10 @@
     if not $scope.selected
       $scope.selected = space_id
     else if $scope.selected == space_id # unselect selection in play mode
-      $scope.selected = null
+      if $scope.game.game_variant_type == 'starcraft'
+        original_selected = $scope.selected
+      else
+        $scope.selected = null
     else # choose a space 
       original_selected = $scope.selected
       $scope.selected = space_id
@@ -134,9 +139,11 @@
       @handle_choose_mode_choice($scope.selected)
     else if $scope.game.mode == 'play_mode' and $scope.selected and original_selected
       if $scope.selected in $scope.available_moves[original_selected]
+        console.log "going to handle play mode"
         @handle_play_mode_choice original_selected
       else
         $scope.selected = null
+    console.log "running hex classes with #{$scope.selected}"
     @run_hex_classes()
   
   $scope.get_piece_image = (row,col) =>

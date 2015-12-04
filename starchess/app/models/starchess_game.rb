@@ -80,10 +80,11 @@ class StarchessGame < ActiveRecord::Base
   end
 
   def check_move_validity attributes, color
+    old_board_state = (self.board_state.class == String) ? ActiveSupport::JSON.decode(self.board_state) : self.board_state
     raise StarChess::TurnError, "that move is not valid" unless 
       @logic.check_move_validity(ActiveSupport::JSON.decode(attributes[:selected_move] || '[]'),
                                  ActiveSupport::JSON.decode(self.available_moves), # old available moves
-                                 self.board_state, color) # old board state
+                                 old_board_state, color) # old board state
   end
 
   def do_special_state attributes

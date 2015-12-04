@@ -1,7 +1,10 @@
 @strollz.controller 'StarchessGamesCtrl', ['$scope', '$location','$window','Restangular', ($scope, $location,$window, Restangular) ->
   @starchessGames = Restangular.all('starchess_games')
-  $scope.newGame = () =>
+  $scope.newStarchessGame = () =>
     @starchessGames.post({starchess_game: {player1_id:1, player2_id:1}}).then (game) =>
+      $location.path('StarchessGames/'+game.id)
+  $scope.newStarcraftGame = () =>
+    @starchessGames.post({starchess_game: {player1_id:1, player2_id:1, game_variant_type: 'starcraft'}}).then (game) =>
       $location.path('StarchessGames/'+game.id)
        
   $scope.joinGame = (gameId) =>
