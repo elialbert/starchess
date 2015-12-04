@@ -25,5 +25,19 @@ module StarChess
       end
     end
 
+    def get_pawn_creation_moves color
+      king_piece = self.get_king_piece color
+      king_moves = king_piece.get_king_moves nil, true
+      result = {}
+      king_moves.each do |move|
+        result[move] = move
+      end
+      result
+    end
+    
+    def get_available_moves(color, recursed = nil)
+      result = super 
+      result.merge get_pawn_creation_moves color
+    end 
   end
 end

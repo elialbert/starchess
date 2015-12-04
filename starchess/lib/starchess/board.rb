@@ -42,6 +42,10 @@ module StarChess
       end     
     end
 
+    def get_king_piece color
+      @pieces[color].select {|piece| piece.piece_type == :king}[0]
+    end
+
     def get_available_moves(color, recursed = nil)
       result = {}
       king = nil
