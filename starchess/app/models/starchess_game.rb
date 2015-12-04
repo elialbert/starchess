@@ -19,9 +19,10 @@ class StarchessGame < ActiveRecord::Base
   end
 
   def set_board_attrs
-    @logic = StarChess::Game.new :choose_mode, nil, nil, game_variant_type
+    mode = (game_variant_type != "starcraft") ? :choose_mode : :play_mode
+    @logic = StarChess::Game.new mode, nil, nil, game_variant_type
     self.turn = "white" # next move's color
-    self.mode = "choose_mode"
+    self.mode = mode.to_s
     info = @logic.get_game_info :white # get game info for next call
     self.board_state = ActiveSupport::JSON.encode(info[:state])
     self.available_moves = ActiveSupport::JSON.encode(info[:available_moves])
@@ -55,7 +56,7 @@ class StarchessGame < ActiveRecord::Base
     board_state = ActiveSupport::JSON.decode(board_state)
     chosen_pieces = (self.mode == "choose_mode" && self.chosen_pieces) ? 
       ActiveSupport::JSON.decode(self.chosen_pieces).with_indifferent_access : nil
-    @logic = StarChess::Game.new self.mode.to_sym, board_state, chosen_pieces
+    @logic = StarChess::Game.new self.mode.to_sym, board_state, chosen_pieces, self.game_variant_type
     return board_state
   end
 
