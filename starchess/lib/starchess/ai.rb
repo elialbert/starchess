@@ -206,6 +206,8 @@ module StarChess
       board_state[color].delete(move[:from])
       if @game.game_variant_type == 'starcraft' and move[:from] == move[:to]
         board_state[color][move[:to]] = :pawn
+      elsif @game.game_variant_type == 'starcraft' and board_state[color][move[:to]]
+        board_state[color][move[:to]] = @game.board.get_promotion board_state[color][move[:to]]
       else
         board_state[color][move[:to]] = move[:piece_type]
         opp_color = (color == :white) ? :black : :white

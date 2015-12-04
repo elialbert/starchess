@@ -100,12 +100,15 @@
     delete $scope.boardState[opposite_color][$scope.selected]
     piece_to_move = $scope.boardState[$scope.game.turn][original_selected]
     delete $scope.boardState[$scope.game.turn][original_selected]
-    if $scope.game.game_variant_type == "starcraft" and not piece_to_move
-      piece_to_move = 'pawn'
+    if $scope.game.game_variant_type == "starcraft" 
+      if not piece_to_move
+        piece_to_move = 'pawn'
+      else if $scope.boardState[$scope.game.turn][$scope.selected]
+        piece_to_move = boardService.starcraft_promotion_lookup[$scope.boardState[$scope.game.turn][$scope.selected]]
     $scope.boardState[$scope.game.turn][$scope.selected] = piece_to_move
     $scope.game.board_state = JSON.stringify($scope.boardState)
     $scope.game.selected_move = JSON.stringify([original_selected,$scope.selected])
-    if not $scope.game.game_variant_type == "starcraft" and @check_pawn_promotion piece_to_move, $scope.selected
+    if $scope.game.game_variant_type != "starcraft" and @check_pawn_promotion piece_to_move, $scope.selected
       @handle_choose_mode_choice($scope.selected)
       $scope.selected = null
       return
@@ -139,11 +142,9 @@
       @handle_choose_mode_choice($scope.selected)
     else if $scope.game.mode == 'play_mode' and $scope.selected and original_selected
       if $scope.selected in $scope.available_moves[original_selected]
-        console.log "going to handle play mode"
         @handle_play_mode_choice original_selected
       else
         $scope.selected = null
-    console.log "running hex classes with #{$scope.selected}"
     @run_hex_classes()
   
   $scope.get_piece_image = (row,col) =>
