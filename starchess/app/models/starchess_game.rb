@@ -79,10 +79,11 @@ class StarchessGame < ActiveRecord::Base
     return attributes
   end
 
-  def check_move_validity attributes
+  def check_move_validity attributes, color
     raise StarChess::TurnError, "that move is not valid" unless 
       @logic.check_move_validity(ActiveSupport::JSON.decode(attributes[:selected_move] || '[]'),
-                                 ActiveSupport::JSON.decode(self.available_moves)) # old available moves
+                                 ActiveSupport::JSON.decode(self.available_moves), # old available moves
+                                 self.board_state, color) # old board state
   end
 
   def do_special_state attributes
@@ -136,7 +137,7 @@ class StarchessGame < ActiveRecord::Base
 
     @saved_selected_move = (attributes[:selected_move] or attributes[:chosen_piece]).deep_dup
     attributes[:turn] = (color.to_sym == :black) ? :white : :black
-    check_move_validity attributes
+    check_move_validity attributes, color
     attributes.delete :chosen_piece
     attributes.delete :selected_move
 

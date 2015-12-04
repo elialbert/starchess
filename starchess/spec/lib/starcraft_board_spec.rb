@@ -26,4 +26,24 @@ describe "StarCraftChess Board" do
     expect(result[11]).to eq([12, 5])
     expect(result[4]).to eq([])
   end
+ 
+  it "should allow a pawn to take or promote depending on color" do
+    board_state = {:white => {4 => :king, 24 => :pawn, 31 => :pawn}, 
+      :black => {34 => :king, 19 => :pawn}}
+
+    b = StarChess::StarcraftBoard.new board_state
+    result = b.get_available_moves :white
+    expect(result[24]).to eq([25, 19, 31])
+  end
+
+  it "should only allow a pawn to promote when there are not too many of that piece type" do
+    board_state = {:white => {4 => :king, 24 => :pawn, 31 => :pawn, 1 => :knight, 2 => :knight}, 
+      :black => {34 => :king, 19 => :pawn}}
+
+    b = StarChess::StarcraftBoard.new board_state
+    result = b.get_available_moves :white
+    expect(result[24]).to eq([25, 19])
+
+  end
+
 end

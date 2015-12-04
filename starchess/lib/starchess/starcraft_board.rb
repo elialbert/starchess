@@ -39,5 +39,24 @@ module StarChess
       result = super 
       result.merge get_pawn_creation_moves color
     end 
+
+    def get_promotion piece_type
+      return StarChess::STARCRAFT_PROMOTIONS[piece_type]
+    end
+
+    def check_move_validity selected_move, available_moves, old_board_state, color
+      # check if moving piece was pawn and taken piece was own color
+      # if so, check if promotion was correct
+      moving_piece_type = old_board_state[color][selected_move[0]]
+      return true unless moving_piece_type.to_sym == :pawn
+      taken = old_board_state[color][selected_move[1]]
+      return true unless taken
+      new_piece = @board_state[color][selected_move[1]]
+      return get_promotion(taken) == new_piece.piece_type
+    end
+
+    def count_piece_type piece_type, color
+      self.get_state[color].values().count piece_type
+    end
   end
 end

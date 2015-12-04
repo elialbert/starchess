@@ -6,7 +6,6 @@ module StarChess
     attr_reader :board, :board_state, :chosen_pieces
     attr_accessor :mode, :game_variant_type
     def initialize(game_mode, board_state = nil, chosen_pieces = nil, game_variant_type=nil)
-      puts "initializing with game variant type #{game_variant_type}"
       @board = (game_variant_type == "starcraft") ? StarChess::StarcraftBoard.new(board_state) : StarChess::Board.new(board_state)
       @mode = game_mode
       @chosen_pieces = chosen_pieces || {:white => [], :black => []}.with_indifferent_access
@@ -23,9 +22,15 @@ module StarChess
       info
     end
 
-    def check_move_validity(selected_move, available_moves)
+    def check_move_validity(selected_move, available_moves, old_board_state, color)
       return true if @mode.to_sym == :choose_mode or selected_move[0] == 'just_switched_modes'
-      return (available_moves[selected_move[0].to_s] || []).include? selected_move[1].to_i 
+      step_1 = (available_moves[selected_move[0].to_s] || []).include? selected_move[1].to_i 
+      if @game_variant_type != 'starcraft'
+        return step_1
+      else
+        return false unless step_1
+        @board.check_move_validity selected_move, available_moves, old_board_state, color
+      end 
     end
 
     def get_choose_moves color, board_state
