@@ -19,7 +19,7 @@ class StarchessGame < ActiveRecord::Base
   end
 
   def set_board_attrs
-    @logic = StarChess::Game.new :choose_mode, nil, nil
+    @logic = StarChess::Game.new :choose_mode, nil, nil, game_variant_type
     self.turn = "white" # next move's color
     self.mode = "choose_mode"
     info = @logic.get_game_info :white # get game info for next call

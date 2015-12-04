@@ -48,6 +48,12 @@ describe StarchessGamesController, :type => :controller do
     board_state = ActiveSupport::JSON.decode(response.parsed_body['response']['board_state'])
     expect(board_state['white']['5']).to eq('pawn')
     expect(response.parsed_body['response']['available_moves']).to eq("[4,11,17,22,28]")
+    data = {"starchess_game" => {"player1_id" => u1.id, "player2_id" => u2.id,
+      "game_variant_type" => "starcraft"
+      }, "version" => 1}
+    response = post :create, data
+    expect(response.parsed_body['response']['game_variant_type']).to eq('starcraft')
+
   end
 
   it "can play a whole game in AI mode" do

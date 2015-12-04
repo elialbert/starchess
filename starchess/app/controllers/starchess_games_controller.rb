@@ -49,6 +49,7 @@ class StarchessGamesController < ApiController
     end
     params[:player1_id] = current_user.id
     params[:player2_id] = 0
+    params[:game_variant_type] ||= "starchess"
     @game = StarchessGame.create(params)
     expose(@game, {:include => [:available_moves,:extra_state], :status => :created})
   end
@@ -74,7 +75,7 @@ class StarchessGamesController < ApiController
 
   private
     def game_create_params
-      params.require(:starchess_game).permit(:player1_id, :player2_id, :join, :ai_mode)
+      params.require(:starchess_game).permit(:player1_id, :player2_id, :join, :ai_mode, :game_variant_type)
     end
     def game_update_params
       params.require(:starchess_game).permit(:board_state, :turn, :chosen_piece, :selected_move)
