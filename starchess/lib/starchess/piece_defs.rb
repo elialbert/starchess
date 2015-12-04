@@ -2,7 +2,7 @@ module StarChess
   PAWN_SPACES = {:white => [5, 12, 18, 23, 29], 
     :black => [9, 15, 20, 26, 33]
     }
-  STARCRAFT_SETUP = {:white => 4, :black => 34}
+  STARCRAFT_SETUP = {:white => 11, :black => 27}
   CHOSEN_SPACES = {:white => [4, 11, 17, 22, 28],
     :black => [10, 16, 21, 27, 34]}
 
