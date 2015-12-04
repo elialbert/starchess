@@ -13,7 +13,8 @@
     space_id = boardService.space_id_lookup[row][col]
 
     if $scope.last_selected_space_id and $scope.last_selected_space_id == space_id
-      hex_class += 'last_selected '
+      if not $scope.selected
+        hex_class += 'last_selected '
     if $scope.game.turn != $scope.game.extra_state.current_user_player
       return hex_class
     
