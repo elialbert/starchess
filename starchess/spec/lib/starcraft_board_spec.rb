@@ -87,4 +87,12 @@ describe "StarCraftChess Board" do
     expect(b3.check_move_validity(selected_move, 
             available_moves, original_board_state, :white)).to be false
   end
+
+  it "should still be able to compute when in check" do
+    board_state = '{"white":{"19":"knight","6":"pawn","7":"king","9":"queen","13":"pawn","14":"pawn","16":"pawn","17":"pawn"},"black":{"24":"pawn","27":"pawn","28":"pawn","33":"king","21":"bishop"}}'
+    board_state = ActiveSupport::JSON.decode(board_state)
+    b1 = StarChess::StarcraftBoard.new board_state
+    available_moves = b1.get_available_moves :black
+    expect(available_moves.keys().length).to eq(1)
+  end
 end

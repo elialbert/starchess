@@ -122,6 +122,14 @@ module StarChess
       available_moves.each do |from, to_list|
         to_list.each do |to|
           move_key = "#{from},#{to}"
+          if @game.game_variant_type == 'starcraft' 
+            if board_state[color][to] and StarChess::PROMOTION_PIECE_POINTS.keys().include? board_state[color][to].to_sym 
+              available_moves_score_count[move_key] += StarChess::PROMOTION_PIECE_POINTS[board_state[color][to].to_sym] / 2
+              puts "promotion score increase: #{available_moves_score_count[move_key]}"
+            elsif from == to
+              available_moves_score_count[move_key] += 2                        
+            end
+          end
           piece_type = board_state[color][from]
           # will the move take a piece? if so add a score value
           available_moves_score_count[move_key] += StarChess::PIECE_POINTS[board_state[opp_color][to]]

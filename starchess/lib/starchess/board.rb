@@ -95,7 +95,7 @@ module StarChess
           # always look at real king space ID unless simulating new one        
           new_king_space_id = (from == king_space_id) ? to_space_id : king_space_id
           change_board_state(cur_board_state.deep_dup, original_spaces, color, opp_color, from, to_space_id)
-          opponents_new_moves = get_available_moves(opp_color,recursed=true).values.flatten
+          opponents_new_moves = self.get_available_moves(opp_color,recursed=true).values.flatten
           new_available_moves[from] << to_space_id if not opponents_new_moves.include? new_king_space_id
         end
       end

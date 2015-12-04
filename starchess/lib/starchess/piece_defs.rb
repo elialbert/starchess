@@ -19,6 +19,7 @@ module StarChess
                   :northeast => [:southeast, :north]
   }    
   PIECE_POINTS = {:pawn => 1, :king => 20, :queen => 12, :bishop => 5, :rook => 3, :knight => 7, nil => 0}
+  PROMOTION_PIECE_POINTS = {:pawn => 5, :knight => 6, :rook => 7, :queen => 10}
   STARCRAFT_PROMOTIONS = {:pawn => :knight, :knight => :bishop, :bishop => :rook, :rook => :queen}
   STARCRAFT_NUM_ALLOWED = {:knight => 2, :bishop => 2, :rook => 2, :queen => 1}
 

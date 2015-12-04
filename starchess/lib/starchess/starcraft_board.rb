@@ -37,7 +37,10 @@ module StarChess
     
     def get_available_moves(color, recursed = nil)
       result = super 
-      result.merge get_pawn_creation_moves color
+      if recursed.nil? and @special_state != :check
+        result = result.merge get_pawn_creation_moves color
+      end
+      return result
     end 
 
     def get_promotion piece_type
