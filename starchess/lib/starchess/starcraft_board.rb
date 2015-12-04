@@ -51,8 +51,8 @@ module StarChess
       return true unless moving_piece_type.to_sym == :pawn
       taken = old_board_state[color][selected_move[1]]
       return true unless taken
-      new_piece = @board_state[color][selected_move[1]]
-      return get_promotion(taken) == new_piece.piece_type
+      new_piece = self.get_state[color][selected_move[1]]
+      return get_promotion(taken) == new_piece
     end
 
     def count_piece_type piece_type, color

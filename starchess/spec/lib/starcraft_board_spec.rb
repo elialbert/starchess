@@ -43,7 +43,27 @@ describe "StarCraftChess Board" do
     b = StarChess::StarcraftBoard.new board_state
     result = b.get_available_moves :white
     expect(result[24]).to eq([25, 19])
-
   end
 
+  it "should assert move validity for pawn promotion" do
+    original_board_state = {:white => {4 => :king, 31 => :pawn, 19 => :pawn, 24 => :pawn}, 
+      :black => {34 => :king, 19 => :pawn}}
+    b1 = StarChess::StarcraftBoard.new original_board_state
+    available_moves = b1.get_available_moves :white
+
+    board_state = {:white => {4 => :king, 31 => :pawn, 19 => :knight}, 
+      :black => {34 => :king, 19 => :pawn}}
+    selected_move = [24,19]
+    b2 = StarChess::StarcraftBoard.new board_state
+    expect(b2.check_move_validity(selected_move, 
+            available_moves, original_board_state, :white)).to be true
+
+
+    board_state = {:white => {4 => :king, 31 => :pawn, 19 => :queen}, 
+      :black => {34 => :king, 19 => :pawn}}
+    selected_move = [24,19]
+    b3 = StarChess::StarcraftBoard.new board_state
+    expect(b3.check_move_validity(selected_move, 
+            available_moves, original_board_state, :white)).to be false
+  end
 end
