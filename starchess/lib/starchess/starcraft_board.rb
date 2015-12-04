@@ -30,7 +30,7 @@ module StarChess
       king_moves = king_piece.get_king_moves nil, true
       result = {}
       king_moves.each do |move|
-        result[move] = move
+        result[move] = [move]
       end
       result
     end
@@ -45,13 +45,17 @@ module StarChess
     end
 
     def check_move_validity selected_move, available_moves, old_board_state, color
+      # check pawn creation
+      new_state = self.get_state  
+      return new_state[color][selected_move[1]] == :pawn if selected_move[0] == selected_move[1]
+      
       # check if moving piece was pawn and taken piece was own color
       # if so, check if promotion was correct
       moving_piece_type = old_board_state[color][selected_move[0]]
       return true unless moving_piece_type.to_sym == :pawn
       taken = old_board_state[color][selected_move[1]]
       return true unless taken
-      new_piece = self.get_state[color][selected_move[1]]
+      new_piece = new_state[color][selected_move[1]]
       return get_promotion(taken) == new_piece
     end
 

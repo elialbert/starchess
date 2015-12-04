@@ -15,7 +15,7 @@ describe "StarCraftChess Board" do
     result = b.get_available_moves :white
     expect(result[4]).to eq([5,11])
     result = b.get_available_moves :black
-    expect(result[27]).to eq(27)
+    expect(result[27]).to eq([27])
   end
 
   it "it should initialize a board midgame and understand pawn promotion" do
@@ -45,14 +45,35 @@ describe "StarCraftChess Board" do
     expect(result[24]).to eq([25, 19])
   end
 
+  it "should assert move validity for pawn creation" do
+    original_board_state = {:white => {4 => :king, 31 => :pawn, 19 => :pawn, 24 => :pawn}, 
+      :black => {34 => :king, 27 => :pawn}}
+    b1 = StarChess::StarcraftBoard.new original_board_state
+    available_moves = b1.get_available_moves :black
+
+    expect(available_moves[33]).to eq([33])
+    selected_move = [33,33]
+    board_state = {:white => {4 => :king, 31 => :pawn, 19 => :pawn, 24 => :pawn}, 
+      :black => {34 => :king, 27 => :pawn, 33 => :pawn}}
+    b2 = StarChess::StarcraftBoard.new board_state
+    expect(b2.check_move_validity(selected_move, 
+            available_moves, original_board_state, :black)).to be true
+
+    board_state = {:white => {4 => :king, 31 => :pawn, 19 => :pawn, 24 => :pawn}, 
+      :black => {34 => :king, 27 => :pawn, 33 => :rook}}
+    b3 = StarChess::StarcraftBoard.new board_state
+    expect(b3.check_move_validity(selected_move, 
+            available_moves, original_board_state, :black)).to be false
+  end
+
   it "should assert move validity for pawn promotion" do
     original_board_state = {:white => {4 => :king, 31 => :pawn, 19 => :pawn, 24 => :pawn}, 
-      :black => {34 => :king, 19 => :pawn}}
+      :black => {34 => :king, 27 => :pawn}}
     b1 = StarChess::StarcraftBoard.new original_board_state
     available_moves = b1.get_available_moves :white
 
     board_state = {:white => {4 => :king, 31 => :pawn, 19 => :knight}, 
-      :black => {34 => :king, 19 => :pawn}}
+      :black => {34 => :king, 27 => :pawn}}
     selected_move = [24,19]
     b2 = StarChess::StarcraftBoard.new board_state
     expect(b2.check_move_validity(selected_move, 
@@ -60,7 +81,7 @@ describe "StarCraftChess Board" do
 
 
     board_state = {:white => {4 => :king, 31 => :pawn, 19 => :queen}, 
-      :black => {34 => :king, 19 => :pawn}}
+      :black => {34 => :king, 27 => :pawn}}
     selected_move = [24,19]
     b3 = StarChess::StarcraftBoard.new board_state
     expect(b3.check_move_validity(selected_move, 
