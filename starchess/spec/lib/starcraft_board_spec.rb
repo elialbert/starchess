@@ -13,9 +13,9 @@ describe "StarCraftChess Board" do
 
   it "should get available starting pawn moves" do
     result = b.get_available_moves :white
-    expect(result[4]).to eq([5,11])
+    expect(result[4]).to eq([4])
     result = b.get_available_moves :black
-    expect(result[27]).to eq([27])
+    expect(result[21]).to eq([21])
   end
 
   it "it should initialize a board midgame and understand pawn promotion" do
@@ -102,5 +102,13 @@ describe "StarCraftChess Board" do
     b1 = StarChess::StarcraftBoard.new board_state
     available_moves = b1.get_available_moves :black
     expect(available_moves[25]).to eq([26, 24, 20, 32])
+  end
+
+  it "should not allow pawn creation on a held square" do
+    board_state = {:white => {4 => :king, }, 
+      :black => {34 => :king, 24 => :pawn, 11 => :rook}}
+    b1 = StarChess::StarcraftBoard.new board_state
+    available_moves = b1.get_available_moves :white
+    expect(available_moves[11]).to eq([])
   end
 end

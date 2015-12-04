@@ -30,7 +30,7 @@ module StarChess
       king_moves = king_piece.get_king_moves nil, true
       result = {}
       king_moves.each do |move|
-        result[move] = [move]
+        result[move] = [move] if @spaces[move].piece.nil?
       end
       result
     end
