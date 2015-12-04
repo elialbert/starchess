@@ -95,4 +95,12 @@ describe "StarCraftChess Board" do
     available_moves = b1.get_available_moves :black
     expect(available_moves.keys().length).to eq(1)
   end
+
+  it "should allow rooks a little more freedom" do 
+    board_state = {:white => {4 => :king, 31 => :pawn, 19 => :pawn, 24 => :pawn}, 
+      :black => {34 => :king, 27 => :pawn, 25 => :rook}}
+    b1 = StarChess::StarcraftBoard.new board_state
+    available_moves = b1.get_available_moves :black
+    expect(available_moves[25]).to eq([26, 24, 20, 32])
+  end
 end

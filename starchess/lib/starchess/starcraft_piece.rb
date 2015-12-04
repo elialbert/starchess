@@ -39,6 +39,18 @@ module StarChess
 
     end
 
+    # new rook move behavior: allow for 1 diagonal move along with all the 
+    # standard up and down. can still only take up and down tho.
+    def get_rook_moves
+      result = get_standard_moves [:north, :south]
+      [:northwest, :northeast, :southwest, :southeast].each do  |direction|
+        diagonal_adjacent = @space.get_adjacent(direction)
+        next if diagonal_adjacent.nil?
+        result << diagonal_adjacent.id if diagonal_adjacent.piece.nil?
+      end
+      result
+    end
+
     def check_piece_supply taken_piece
       if taken_piece.color != @color
         return true
