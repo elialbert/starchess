@@ -3,10 +3,12 @@ require 'starchess/piece'
 require 'starchess/space_defs'
 require 'starchess/piece_defs'
 require 'starchess/board'
+require 'starchess/starcraft_piece'
 
 module StarChess
   class StarcraftBoard < StarChess::Board
     def initialize(board_state = nil)
+      @piece_class = StarChess::StarcraftPiece
       @spaces = {}.with_indifferent_access # int ID to Space instance
       @pieces = {:white => [], :black => []}.with_indifferent_access
       @special_state = nil

@@ -7,6 +7,7 @@ module StarChess
   class Board
     attr_accessor :spaces, :pieces, :special_state
     def initialize(board_state = nil)
+      @piece_class = StarChess::Piece
       @spaces = {}.with_indifferent_access # int ID to Space instance
       @pieces = {:white => [], :black => []}.with_indifferent_access
       @special_state = nil
@@ -117,7 +118,7 @@ module StarChess
       board_state.each do |color, positions|
         positions.each do |space_id, piece_type|
           space = @spaces[space_id.to_i]
-          piece = StarChess::Piece.new self, piece_type.to_sym, color.to_sym, space
+          piece = @piece_class.new self, piece_type.to_sym, color.to_sym, space
           space.piece = piece
           @pieces[color.to_sym] << piece
         end
@@ -143,7 +144,7 @@ module StarChess
       StarChess::PAWN_SPACES.each do |color, space_list|
         space_list.each do |space_id|
           space = @spaces[space_id]
-          pawn = StarChess::Piece.new self, :pawn, color, space
+          pawn = @piece_class.new self, :pawn, color, space
           space.piece = pawn
           @pieces[color] << pawn
         end
@@ -173,7 +174,7 @@ module StarChess
         space.piece == nil
       raise StarChess::SpaceError, "#{space_id} not a choosable space" unless 
         StarChess::CHOSEN_SPACES[color].include? space_id
-      piece = StarChess::Piece.new self, piece_type, color, space
+      piece = @piece_class.new self, piece_type, color, space
       space.piece = piece
       @pieces[color] << piece
     end
