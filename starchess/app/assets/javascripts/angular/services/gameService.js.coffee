@@ -65,8 +65,8 @@
         $route.reload()
       )
 
-  check_pawn_promotion = (piece_type, space_id) ->
-    return piece_type == 'pawn' and space_id in boardService.pawn_promotion_lookup[@game.turn]
+  check_pawn_promotion = (piece_type, space_id, turn) ->
+    return piece_type == 'pawn' and space_id in boardService.pawn_promotion_lookup[turn]
 
   @handle_play_mode_choice = (original_selected) ->
     opposite_color = boardService.get_opposite_color @game.turn
@@ -81,7 +81,7 @@
     @game.boardState[@game.turn][@game.selected] = piece_to_move
     @game.board_state = JSON.stringify(@game.boardState)
     @game.selected_move = JSON.stringify([original_selected,@game.selected])
-    if @game.game_variant_type != "starcraft" and check_pawn_promotion piece_to_move, @game.selected
+    if @game.game_variant_type != "starcraft" and check_pawn_promotion piece_to_move, @game.selected, @game.turn
       @handle_choose_mode_choice(@game.selected)
       @game.selected = null
       return
