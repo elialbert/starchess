@@ -1,7 +1,6 @@
 @strollz.controller 'StarchessGameCtrl', ['$scope','$interval','$route','game','$routeParams','Restangular','boardService','gameService','$uibModal', ($scope, $interval, $route, game, $routeParams, Restangular, boardService, gameService, $uibModal) ->
   gameService.run_firebase(game.id)
-  gameService.setState game
-  $scope.game = gameService.game
+  $scope.game = gameService.setState game
 
   $scope.aiMode = () ->
     @starchessGames = Restangular.all('starchess_games')

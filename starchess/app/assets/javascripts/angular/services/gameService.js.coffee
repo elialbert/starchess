@@ -1,10 +1,10 @@
 @strollz.factory 'gameService', ['boardService','$uibModal','$rootScope', (boardService, $uibModal, $rootScope) ->
-  # @game = null
+  #$ @game = null
   @run_firebase = (game_id) ->
     @firebaseRef = new Firebase("https://starchess.firebaseio.com/games/"+game_id)
     @firebaseRef.on 'value', (data) =>
       data = data.val()
-      if not data # or not @game
+      if not data or not @game
         return
       @game.turn = data.turn
       @game.mode = data.mode
@@ -23,13 +23,17 @@
       $rootScope.$broadcast('boardChange')
       @game
 
+
   @setState = (game) ->
     @game = game
     @game.game_status = boardService.get_game_status game
     @game.available_moves = JSON.parse(game.available_moves)
     @game.boardState = JSON.parse(game.board_state)
     @game.selected = null # space_id of selected hex
+    if @game.extra_state.player2 == "AI"
+      @set_last_move(@game.extra_state)
     $rootScope.$broadcast('boardChange')
+    return game
 
   @set_last_move = (data) ->
     if not data or not data.saved_selected_move
@@ -38,6 +42,7 @@
       @game.last_selected_space_id = data.saved_selected_move["space_id"]
     else
       @game.last_selected_space_id = parseInt(JSON.parse(data.saved_selected_move)[1])
+
 
   @handle_choose_mode_choice = (selected_space_id) ->
     @game.chosen_pieces = JSON.parse(@game.chosen_pieces) if typeof @game.chosen_pieces is 'string'
@@ -99,5 +104,6 @@
     setState: @setState
     handle_play_mode_choice: @handle_play_mode_choice
     handle_choose_mode_choice: @handle_choose_mode_choice
+    set_last_move: @set_last_move
   }
 ]
