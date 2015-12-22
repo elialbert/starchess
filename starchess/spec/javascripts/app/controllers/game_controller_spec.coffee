@@ -2,10 +2,10 @@
 describe 'strollz', ->
 
   describe 'StarchessGameCtrl', ->
-    gameCtrl = null
+    # gameCtrl = null
     beforeEach () ->
-      game = 
-        extra_state: 
+      game =
+        extra_state:
           special_state: null
           current_user_player: "white"
         id: 0
@@ -13,17 +13,17 @@ describe 'strollz', ->
         board_state: '{"white":{"5":"pawn","12":"pawn","18":"pawn","23":"pawn","29":"pawn"},"black":{"9":"pawn","15":"pawn","20":"pawn","26":"pawn","33":"pawn"}}'
         mode: "choose_mode"
         turn: "white"
-      
+
       Restangular = {}
-      gameCtrl = @controller 'StarchessGameCtrl', 
+      @gameCtrl = @controller 'StarchessGameCtrl',
         $scope: @scope,
-        $interval: @interval, 
+        $interval: @interval,
         $route: @route,
         game: game,
         $routeParams: @routeParams,
         Restangular: Restangular,
         boardService: @boardService,
-        $uibModal: @uibModal                 
+        $uibModal: @uibModal
 
     it 'has choose mode setup correctly', ->
       expect(@scope.game_status).toEqual "This is the board setup phase"
@@ -33,19 +33,19 @@ describe 'strollz', ->
       expect(image).toEqual '/assets/chess_pieces/Chess_plt60.png'
 
     it 'manages classes of hex pieces', ->
-      expect(@scope.selected).toBeNull() 
-      hex_class_result = @scope.get_hex_class(6,2) # space_id 4
+      expect(@scope.selected).toBeNull()
+      hex_class_result = @gameCtrl.get_hex_class(6,2) # space_id 4
       expect(hex_class_result).toEqual "available "
       @scope.selected = 4
-      hex_class_result = @scope.get_hex_class(6,2) # space_id 4
-      expect(hex_class_result).toEqual "available selected"
+      hex_class_result = @gameCtrl.get_hex_class(6,2) # space_id 4
+      expect(hex_class_result).toEqual "available selected "
       @scope.selected = null
-      
+
     it 'does stuff on click in choose mode', ->
       @scope.do_click(3,0) # not a choice
-      expect(@scope.selected).toBeNull() 
+      expect(@scope.selected).toBeNull()
       @scope.do_click(6,2)
-      expect(@scope.selected).toEqual(4) 
+      expect(@scope.selected).toEqual(4)
 
     it 'also handles clicks in play mode', ->
       @scope.game.mode = 'play_mode'
@@ -64,11 +64,11 @@ describe 'strollz', ->
       expect(@scope.selected).toEqual(5) # square highlighted
       @scope.do_click(5,2) # unselected
       expect(@scope.selected).toBeNull() # square not highlighted
-      @scope.do_click(5,2) 
+      @scope.do_click(5,2)
       expect(@scope.selected).toEqual(5) # square highlighted
       @scope.do_click(3,2) # click forward two - not our one available move as set above
       expect(@scope.selected).toBeNull() # square not highlighted
-      @scope.do_click(5,2) 
+      @scope.do_click(5,2)
       expect(@scope.selected).toEqual(5) # square highlighted
 
       apiSpy = sinon.spy()

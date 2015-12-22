@@ -6,7 +6,7 @@
   @run_hex_classes = () =>
     for row,coldict of boardService.space_id_lookup
       for col, space_id of coldict
-        $scope.hex_classes[row][col] = @get_hex_class(row,col)    
+        $scope.hex_classes[row][col] = @get_hex_class(row,col)
 
   @get_hex_class = (row, col) =>
     hex_class = ''
@@ -17,10 +17,10 @@
         hex_class += 'last_selected '
     if $scope.game.turn != $scope.game.extra_state.current_user_player
       return hex_class
-    
+
     hex_class += @check_available_moves_key space_id
     if $scope.selected == space_id
-      hex_class += 'selected '  
+      hex_class += 'selected '
     if $scope.selected and $scope.game.mode == 'play_mode'
       if space_id in $scope.available_moves[$scope.selected]
         hex_class += 'available_move'
@@ -63,7 +63,7 @@
     $scope.game_status = boardService.get_game_status game
     $scope.available_moves = JSON.parse(game.available_moves)
     $scope.boardState = JSON.parse(game.board_state)
-    $scope.selected = null # space_id of selected hex  
+    $scope.selected = null # space_id of selected hex
     @run_hex_classes()
   @setState game
 
@@ -91,17 +91,17 @@
       () =>
         $scope.selected = null
         $route.reload()
-      ) 
+      )
 
   @check_pawn_promotion = (piece_type, space_id) =>
-    return piece_type == 'pawn' and space_id in boardService.pawn_promotion_lookup[$scope.game.turn]  
-  
-  @handle_play_mode_choice = (original_selected) =>  
+    return piece_type == 'pawn' and space_id in boardService.pawn_promotion_lookup[$scope.game.turn]
+
+  @handle_play_mode_choice = (original_selected) =>
     opposite_color = boardService.get_opposite_color $scope.game.turn
     delete $scope.boardState[opposite_color][$scope.selected]
     piece_to_move = $scope.boardState[$scope.game.turn][original_selected]
     delete $scope.boardState[$scope.game.turn][original_selected]
-    if $scope.game.game_variant_type == "starcraft" 
+    if $scope.game.game_variant_type == "starcraft"
       if not piece_to_move
         piece_to_move = 'pawn'
       else if $scope.boardState[$scope.game.turn][$scope.selected]
@@ -120,7 +120,7 @@
     (error) =>
       $scope.game_status = "#{error.data.error} - #{error.data.error_description}"
     )
-  
+
   $scope.do_click = (row,col) =>
     if ($scope.game.turn != $scope.game.extra_state.current_user_player) or ($scope.game.player2_id == 0)
       return
@@ -136,7 +136,7 @@
         original_selected = $scope.selected
       else
         $scope.selected = null
-    else # choose a space 
+    else # choose a space
       original_selected = $scope.selected
       $scope.selected = space_id
     if $scope.game.mode == 'choose_mode' and $scope.selected
@@ -147,7 +147,7 @@
       else
         $scope.selected = null
     @run_hex_classes()
-  
+
   $scope.get_piece_image = (row,col) =>
     space_id = boardService.space_id_lookup[row][col]
     if piece_type=$scope.boardState['white'][space_id]
@@ -161,7 +161,7 @@
 
   $scope.need_to_remove_space = (row,col) =>
     if _.indexOf(boardService.remove_spaces[row],col) > -1
-      return "removeSpace" 
+      return "removeSpace"
     else
       return ""
 
@@ -172,19 +172,19 @@
       $scope.last_selected_space_id = data.saved_selected_move["space_id"]
     else
       $scope.last_selected_space_id = parseInt(JSON.parse(data.saved_selected_move)[1])
-      
+
   $scope.aiMode = () =>
     @starchessGames = Restangular.all('starchess_games')
     @starchessGames.post({starchess_game: {player2_id:0, join:$scope.game.id, ai_mode:'normal'}}).then (game) =>
       $scope.game.extra_state.player2 = 'AI'
       $scope.game.player2_id = -1
   $scope.get_game_url = () =>
-    "http://starchess.upchicago.org/#/StarchessGames/#{$scope.game.id}"    
+    "http://starchess.upchicago.org/#/StarchessGames/#{$scope.game.id}"
 
   $scope.get_debug_text = (row,col) =>
     # return row + ": " + col + ", " + boardService.space_id_lookup[row][col]
     # space_id = boardService.space_id_lookup[row][col]
     # return $scope.boardState['white'][space_id] || $scope.boardState['black'][space_id] || 'empty'
     return ''
-
+  @
 ]
