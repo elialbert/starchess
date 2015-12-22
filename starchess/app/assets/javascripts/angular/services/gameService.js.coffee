@@ -1,5 +1,5 @@
 @strollz.factory 'gameService', ['boardService','$uibModal','$rootScope', (boardService, $uibModal, $rootScope) ->
-  #$ @game = null
+  @loading = false
   @run_firebase = (game_id) ->
     @firebaseRef = new Firebase("https://starchess.firebaseio.com/games/"+game_id)
     @firebaseRef.on 'value', (data) =>
@@ -23,7 +23,6 @@
       $rootScope.$broadcast('boardChange')
       @game
 
-
   @setState = (game) ->
     @game = game
     @game.game_status = boardService.get_game_status game
@@ -43,6 +42,15 @@
     else
       @game.last_selected_space_id = parseInt(JSON.parse(data.saved_selected_move)[1])
 
+  @put_to_server = () ->
+    @loading = true
+    @game.put().then( (response) =>
+      # @loading = false
+      @setState response
+    (error) =>
+      # @loading = false
+      @game.game_status = "#{error.data.error} - #{error.data.error_description}"
+    )
 
   @handle_choose_mode_choice = (selected_space_id) ->
     @game.chosen_pieces = JSON.parse(@game.chosen_pieces) if typeof @game.chosen_pieces is 'string'
@@ -60,11 +68,7 @@
         @game.chosen_piece = JSON.stringify(
           {piece_type:selectedPiece, space_id:selected_space_id})
         @game.board_state = JSON.stringify(@game.boardState)
-        @game.put().then( (response) =>
-          @setState response
-        (error) =>
-          @game.game_status = "#{error.data.error} - #{error.data.error_description}"
-        )
+        @put_to_server()
       () =>
         @game.selected = null
         $route.reload()
@@ -92,11 +96,7 @@
       return
 
     @game.selected = null
-    @game.put().then( (response) =>
-      @setState response
-    (error) =>
-      @game_status = "#{error.data.error} - #{error.data.error_description}"
-    )
+    @put_to_server()
 
   return {
     run_firebase: @run_firebase
@@ -105,5 +105,8 @@
     handle_play_mode_choice: @handle_play_mode_choice
     handle_choose_mode_choice: @handle_choose_mode_choice
     set_last_move: @set_last_move
+    put_to_server: @put_to_server
+    loading: @loading
   }
+
 ]
