@@ -9,6 +9,8 @@
   $scope.hex_classes = boardService.get_empty_hex_classes()
   $scope.$on "boardChange", (event) =>
     @run_hex_classes()
+  $scope.$on "loading", (event) =>
+    $scope.loading = if gameService.loading then "loading" else ""
 
   $scope.do_click = (row,col) =>
     if (gameService.game.turn != gameService.game.extra_state.current_user_player) or (gameService.game.player2_id == 0)

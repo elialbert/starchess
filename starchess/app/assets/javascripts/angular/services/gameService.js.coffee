@@ -44,11 +44,14 @@
 
   @put_to_server = () ->
     @loading = true
+    $rootScope.$broadcast("loading")
     @game.put().then( (response) =>
-      # @loading = false
+      @loading = false
+      $rootScope.$broadcast("loading")
       @setState response
     (error) =>
-      # @loading = false
+      @loading = false
+      $rootScope.$broadcast("loading")
       @game.game_status = "#{error.data.error} - #{error.data.error_description}"
     )
 
