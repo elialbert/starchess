@@ -8,7 +8,7 @@
         return
       @game.turn = data.turn
       @game.mode = data.mode
-      @game_status = boardService.get_game_status data
+      @game.game_status = boardService.get_game_status data
       @game.chosen_pieces = JSON.parse(data.chosen_pieces or '[]')
       @game.available_moves = JSON.parse(data.available_moves)
       @game.board_state = JSON.parse(data.board_state)
@@ -26,6 +26,7 @@
   @setState = (game) ->
     @game = game
     @game.game_status = boardService.get_game_status game
+    console.log "got game status " + @game.game_status
     @game.available_moves = JSON.parse(game.available_moves)
     @game.boardState = JSON.parse(game.board_state)
     @game.selected = null # space_id of selected hex
