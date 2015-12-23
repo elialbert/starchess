@@ -1,34 +1,34 @@
 require "spec_helper"
 require "starchess/board"
 
-describe "StarChess Bishops and Rooks" do 
-  it "should move rooks north and south" do
-    board_state = {:white => {17 => :rook}, 
+describe "StarChess Bishops and Rooks" do
+  it "should move rooks north and south and sometimes diagonal" do
+    board_state = {:white => {17 => :rook},
       :black => {20 => :pawn}}
     b = StarChess::Board.new board_state
 
     moves = b.pieces[:white][0].get_available_moves
-    expect(moves).to eq([18,19,20])
+    expect(moves).to eq([18,19,20,12,23,11,22])
 
-    board_state = {:black => {20 => :rook}, 
+    board_state = {:black => {20 => :rook},
       :white => {}}
     b = StarChess::Board.new board_state
 
     moves = b.pieces[:black][0].get_available_moves
-    expect(moves).to eq([21,19,18,17])
+    expect(moves).to eq([21,19,18,17,15,26,14,25])
   end
 
   it "should have rooks be blocked by own and take other color" do
-    board_state = {:white => {19 => :rook, 21 => :king}, 
+    board_state = {:white => {19 => :rook, 21 => :king},
       :black => {17 => :queen}}
     b = StarChess::Board.new board_state
 
     moves = b.pieces[:white][0].get_available_moves
-    expect(moves).to eq([20,18,17])
+    expect(moves).to eq([20,18,17,14,25,13,24])
   end
 
   it "should moves bishops diagonal" do
-    board_state = {:white => {8 => :bishop}, 
+    board_state = {:white => {8 => :bishop},
       :black => {}}
     b = StarChess::Board.new board_state
 
@@ -37,7 +37,7 @@ describe "StarChess Bishops and Rooks" do
   end
 
   it "should have bishops be blocked by own and take other color" do
-    board_state = {:white => {19 => :bishop, 32 => :king}, 
+    board_state = {:white => {19 => :bishop, 32 => :king},
       :black => {8 => :queen, 6 => :pawn, 24 => :pawn}}
     b = StarChess::Board.new board_state
 
