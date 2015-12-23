@@ -1,4 +1,4 @@
-<div class="gamerow"  ng-class="loading" ng-repeat="row in row_range">
+<div class="gamerow"  ng-class="game_data.loading" ng-repeat="row in row_range">
     <div class="outerclip" ng-repeat="col in col_range" ng-class='need_to_remove_space(row,col)'>
         <div class="innerclip" ng-class='hex_classes[row][col]' ng-click='do_click(row,col)'>
             <span class="space_id">{{get_debug_text(row,col)}}</span>

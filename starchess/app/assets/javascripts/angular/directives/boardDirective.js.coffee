@@ -7,36 +7,35 @@
   $scope.row_range = boardService.row_range
   $scope.col_range = boardService.col_range
   $scope.hex_classes = boardService.get_empty_hex_classes()
+  $scope.game_data = gameService.game_data
   $scope.$on "boardChange", (event) =>
     @run_hex_classes()
-  $scope.$on "loading", (event) =>
-    $scope.loading = if gameService.loading then "loading" else ""
 
   $scope.do_click = (row,col) =>
-    if (gameService.game.turn != gameService.game.extra_state.current_user_player) or (gameService.game.player2_id == 0)
+    if ($scope.game_data.game.turn != $scope.game_data.game.extra_state.current_user_player) or ($scope.game_data.game.player2_id == 0)
       return
     space_id = boardService.space_id_lookup[row][col]
-    if not gameService.game.selected and (@check_available_moves_key(space_id) != 'available ')
+    if not $scope.game_data.game.selected and (@check_available_moves_key(space_id) != 'available ')
       return
     original_selected = null
 
-    if not gameService.game.selected
-      gameService.game.selected = space_id
-    else if gameService.game.selected == space_id # unselect selection in play mode
-      if gameService.game.game_variant_type == 'starcraft'
-        original_selected = gameService.game.selected
+    if not $scope.game_data.game.selected
+      $scope.game_data.game.selected = space_id
+    else if $scope.game_data.game.selected == space_id # unselect selection in play mode
+      if $scope.game_data.game.game_variant_type == 'starcraft'
+        original_selected = $scope.game_data.game.selected
       else
-        gameService.game.selected = null
+        $scope.game_data.game.selected = null
     else # choose a space
-      original_selected = gameService.game.selected
-      gameService.game.selected = space_id
-    if gameService.game.mode == 'choose_mode' and gameService.game.selected
-      gameService.handle_choose_mode_choice(gameService.game.selected)
-    else if gameService.game.mode == 'play_mode' and gameService.game.selected and original_selected
-      if gameService.game.selected in gameService.game.available_moves[original_selected]
+      original_selected = $scope.game_data.game.selected
+      $scope.game_data.game.selected = space_id
+    if $scope.game_data.game.mode == 'choose_mode' and $scope.game_data.game.selected
+      gameService.handle_choose_mode_choice($scope.game_data.game.selected)
+    else if $scope.game_data.game.mode == 'play_mode' and $scope.game_data.game.selected and original_selected
+      if $scope.game_data.game.selected in $scope.game_data.game.available_moves[original_selected]
         gameService.handle_play_mode_choice original_selected
       else
-        gameService.game.selected = null
+        $scope.game_data.game.selected = null
     @run_hex_classes()
 
   $scope.need_to_remove_space = (row,col) ->
@@ -48,14 +47,14 @@
   $scope.get_debug_text = (row,col) ->
     # return row + ": " + col + ", " + boardService.space_id_lookup[row][col]
     # space_id = boardService.space_id_lookup[row][col]
-    # return gameService.game.boardState['white'][space_id] || gameService.game.boardState['black'][space_id] || 'empty'
+    # return $scope.game_data.game.boardState['white'][space_id] || $scope.game_data.game.boardState['black'][space_id] || 'empty'
     return ''
 
   $scope.get_piece_image = (row,col) ->
     space_id = boardService.space_id_lookup[row][col]
-    if piece_type=gameService.game.boardState['white'][space_id]
+    if piece_type=$scope.game_data.game.boardState['white'][space_id]
       color = 'white'
-    else if piece_type=gameService.game.boardState['black'][space_id]
+    else if piece_type=$scope.game_data.game.boardState['black'][space_id]
       color = 'black'
     else
       color = 'white'
@@ -66,27 +65,27 @@
     hex_class = ''
     space_id = boardService.space_id_lookup[row][col]
 
-    if gameService.game.last_selected_space_id and gameService.game.last_selected_space_id == space_id
-      if not gameService.game.selected
+    if $scope.game_data.game.last_selected_space_id and $scope.game_data.game.last_selected_space_id == space_id
+      if not $scope.game_data.game.selected
         hex_class += 'last_selected '
-    if gameService.game.turn != gameService.game.extra_state.current_user_player
+    if $scope.game_data.game.turn != $scope.game_data.game.extra_state.current_user_player
       return hex_class
 
     hex_class += @check_available_moves_key space_id
-    if gameService.game.selected == space_id
+    if $scope.game_data.game.selected == space_id
       hex_class += 'selected '
-    if gameService.game.selected and gameService.game.mode == 'play_mode'
-      if space_id in gameService.game.available_moves[gameService.game.selected]
+    if $scope.game_data.game.selected and $scope.game_data.game.mode == 'play_mode'
+      if space_id in $scope.game_data.game.available_moves[$scope.game_data.game.selected]
         hex_class += 'available_move'
     return hex_class
 
   @check_available_moves_key = (space_id) ->
-    if gameService.game.mode == 'choose_mode'
-      if (space_id in gameService.game.available_moves)
+    if $scope.game_data.game.mode == 'choose_mode'
+      if (space_id in $scope.game_data.game.available_moves)
         return "available "
-    if gameService.game.mode == 'play_mode'
-      if not gameService.game.selected
-        if gameService.game.available_moves[space_id] and gameService.game.available_moves[space_id].length > 0
+    if $scope.game_data.game.mode == 'play_mode'
+      if not $scope.game_data.game.selected
+        if $scope.game_data.game.available_moves[space_id] and $scope.game_data.game.available_moves[space_id].length > 0
           return "available "
     return ''
 
