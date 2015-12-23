@@ -10,7 +10,7 @@ module StarChess
         if @space.north && @space.north.piece.nil?
           result << @space.north.id if recursed.nil?
           if StarChess::PAWN_SPACES[@color].include?(@space.id) &&
-            @space.north.north && @space.north.north.piece.nil?           
+            @space.north.north && @space.north.north.piece.nil?
             result << @space.north.north.id if recursed.nil?
           end
         end
@@ -20,10 +20,10 @@ module StarChess
         if @space.northeast && @space.northeast.piece
           result << @space.northeast.id if check_piece_supply(@space.northeast.piece)
         end
-      when :black 
+      when :black
         if @space.south && @space.south.piece.nil?
           result << @space.south.id if recursed.nil?
-          if StarChess::PAWN_SPACES[@color].include?(@space.id) && 
+          if StarChess::PAWN_SPACES[@color].include?(@space.id) &&
             @space.south.south && @space.south.south.piece.nil?
             result << @space.south.south.id if recursed.nil?
           end
@@ -37,18 +37,6 @@ module StarChess
       end
       result
 
-    end
-
-    # new rook move behavior: allow for 1 diagonal move along with all the 
-    # standard up and down. can still only take up and down tho.
-    def get_rook_moves
-      result = get_standard_moves [:north, :south]
-      [:northwest, :northeast, :southwest, :southeast].each do  |direction|
-        diagonal_adjacent = @space.get_adjacent(direction)
-        next if diagonal_adjacent.nil?
-        result << diagonal_adjacent.id if diagonal_adjacent.piece.nil?
-      end
-      result
     end
 
     def check_piece_supply taken_piece
