@@ -61,7 +61,7 @@
       controller: 'chooseModeModal',
       templateUrl: 'templates/chooseModeModalTemplate.html'
       resolve: {
-        game: () => return game
+        game: () => return game_data.game
       }
     }
     # if piece selected, updated chosen_piece and put to server, update w result
