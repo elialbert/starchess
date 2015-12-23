@@ -3,7 +3,7 @@ require 'starchess/piece_defs'
 
 module StarChess
   class AI
-    # the idea is to create a runner that plays many games of ai vs ai 
+    # the idea is to create a runner that plays many games of ai vs ai
     # each game keeps track of each board state
     # moves start out as random + simple heuristics
     # after a set # of moves (or checkmate/stalemate), count points based on remaining pieces
@@ -92,7 +92,7 @@ module StarChess
         if color == :white
           available_moves = ai_heuristic color, info[:available_moves], info[:state]
         else
-          available_moves = info[:available_moves]          
+          available_moves = info[:available_moves]
         end
       elsif @run_mode == 'single_mode'
         available_moves = ai_heuristic color, info[:available_moves], info[:state]
@@ -100,7 +100,7 @@ module StarChess
         available_moves = info[:available_moves]
       end
       random_from = available_moves.keys()[Random.rand(0...available_moves.keys().length)]
-      random_to = available_moves[random_from][Random.rand(0...available_moves[random_from].length)] 
+      random_to = available_moves[random_from][Random.rand(0...available_moves[random_from].length)]
       piece_type = info[:state][color][random_from]
       return {:from => random_from, :to => random_to, :piece_type => piece_type}
     end
@@ -114,33 +114,56 @@ module StarChess
     end
 
     def ai_heuristic color, available_moves, board_state
-      opp_color = (color == :white) ? :black : :white
       original_spaces = @game.board.spaces.deep_dup
       # reversed_opponents_avail = get_reversed_opponents_available_moves opp_color, board_state
       # puts "reversed opp avail is #{reversed_opponents_avail}"
       available_moves_score_count = Hash.new { |hash, key| hash[key] = 0 }
+      ai_heuristic_inner(color, available_moves, board_state, original_spaces, available_moves_score_count, nil, 0)
+      puts available_moves_score_count
+      prepare_new_available_moves available_moves_score_count
+    end
+
+    def ai_heuristic_inner color, available_moves, board_state, original_spaces, available_moves_score_count, original_move_key, depth
+      inner_counts = Hash.new { |hash, key| hash[key] = 0 }
+      current_count = (depth == 0) ? available_moves_score_count : inner_counts
+      opp_color = (color == :white) ? :black : :white
       available_moves.each do |from, to_list|
         to_list.each do |to|
           move_key = "#{from},#{to}"
-          if @game.game_variant_type == 'starcraft' 
-            if board_state[color][to] and StarChess::PROMOTION_PIECE_POINTS.keys().include? board_state[color][to].to_sym 
-              available_moves_score_count[move_key] += StarChess::PROMOTION_PIECE_POINTS[board_state[color][to].to_sym] / 2
-              puts "promotion score increase: #{available_moves_score_count[move_key]}"
+          if @game.game_variant_type == 'starcraft'
+            if board_state[color][to] and StarChess::PROMOTION_PIECE_POINTS.keys().include? board_state[color][to].to_sym
+              current_count[move_key] += StarChess::PROMOTION_PIECE_POINTS[board_state[color][to].to_sym] / 2
+              puts "promotion score increase: #{current_count[move_key]}"
             elsif from == to
-              available_moves_score_count[move_key] += 2                        
+              current_count[move_key] += 2
             end
           end
           piece_type = board_state[color][from]
           # will the move take a piece? if so add a score value
-          available_moves_score_count[move_key] += StarChess::PIECE_POINTS[board_state[opp_color][to]]
+          current_count[move_key] += StarChess::PIECE_POINTS[board_state[opp_color][to]]
           # then check if a given move is a threatened square
           # then check if a given move creates a threat in either direction
-          available_moves_score_count[move_key] += check_move_threat color, opp_color, board_state, original_spaces, piece_type, from, to
+          threat_score, reg_opp_avail = check_move_threat(color, opp_color, board_state, original_spaces, piece_type, from, to)
+          current_count[move_key] += threat_score
           # go back to original board state hopefully
-          @game.board.reconstruct board_state
+
+          original_move_key = move_key if depth == 0
+          # puts "original_move key is #{original_move_key}"
+          if depth < 2
+            recursed_scores = ai_heuristic_inner(opp_color, reg_opp_avail, @game.board.get_state, @game.board.spaces.deep_dup, available_moves_score_count, original_move_key, depth+1)
+          else
+            recursed_scores = current_count
+          end
+          if depth == 0 or depth == 2
+              # current_count[original_move_key] -= recursed_scores.values.inject(&:+)
+            puts "adding #{recursed_scores.values.inject(&:+)} for #{original_move_key} at depth #{depth}"
+            available_moves_score_count[original_move_key] += recursed_scores.values.inject(&:+)
+          end
         end
       end
-      return prepare_new_available_moves available_moves_score_count
+      puts "returning with curcount #{current_count}"
+      puts "available_moves_score_count is #{available_moves_score_count}"
+      return current_count
     end
 
     def check_move_threat color, opp_color, board_state, original_spaces, piece_type, from, to
@@ -150,12 +173,12 @@ module StarChess
       new_available_moves_list.each do |potential_next_move|
         total_threat_score += StarChess::PIECE_POINTS[board_state[opp_color][potential_next_move]] / 2
       end
-      
-      opp_avail = get_reversed_opponents_available_moves opp_color, board_state
-      if opp_avail[to]
+
+      reg_opp_avail, reversed_opp_avail = get_reversed_opponents_available_moves opp_color, board_state
+      if reversed_opp_avail[to]
         total_threat_score -= StarChess::PIECE_POINTS[piece_type] # - StarChess::PIECE_POINTS[opp_avail[to]])
       end
-      return total_threat_score
+      return total_threat_score, reg_opp_avail
     end
 
     def get_reversed_opponents_available_moves opp_color, board_state
@@ -167,7 +190,7 @@ module StarChess
           reversed_avail[to] = board_state[opp_color.to_sym][from]
         end
       end
-      reversed_avail
+      return opponents_avail, reversed_avail
     end
 
     def find_highest_state_moves color, available_moves, board_state
@@ -181,7 +204,7 @@ module StarChess
           opp_color = (color == :white) ? :black : :white
           state[opp_color].delete(to)
           state = normalize_state state
-          # puts "lookup looks like #{ActiveSupport::JSON.encode(state)}" 
+          # puts "lookup looks like #{ActiveSupport::JSON.encode(state)}"
           stored = AiBoardState.where(:state => ActiveSupport::JSON.encode(state)).first
           if stored
             puts "HIT"
@@ -232,8 +255,8 @@ module StarChess
       [:white,:black].each do |color|
         board_state[color].values().each do |piece_type|
           points[color] += StarChess::PIECE_POINTS[piece_type]
-        end 
-      end 
+        end
+      end
       puts "white: #{points[:white]}, black: #{points[:black]}"
       winner = points.max_by{|k,v| v}
       return winner
@@ -256,11 +279,11 @@ module StarChess
         state = ActiveSupport::JSON.encode(state)
         ai_board_state = AiBoardState.find_or_create_by(state: state)
         ai_board_state.score -= 1
-        ai_board_state.save!  
-      end 
+        ai_board_state.save!
+      end
       puts "finished storing!"
-    end 
-  
+    end
+
 
     def normalize_state state
       new_state = {:white => {}, :black => {}}
