@@ -9,13 +9,12 @@ module StarChess
       @game = game
       opp_color = (color == :white) ? :black : :white
       original_spaces = @game.board.spaces.deep_dup
-      # @brain = AIHeuristic.new(game, color, opp_color, original_spaces)
       ai_class = case ai_type
-      when "heuristic"
-        AIHeuristic
-      when "recursive"
-        AIRecursive
-      end
+                 when 'heuristic'
+                   AIHeuristic
+                 when 'recursive'
+                   AIRecursive
+                 end
       @brain = ai_class.new(game, color, opp_color, original_spaces)
     end
 
@@ -27,6 +26,8 @@ module StarChess
           scores = @brain.run(from, to, board_state, scores)
         end
       end
+      puts "final scores are"
+      puts scores
       scores
     end
   end

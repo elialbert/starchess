@@ -20,7 +20,7 @@ module StarChess
       @pieces.each do |color, color_pieces|
         s << "#{color.to_s}: \n"
         color_pieces.each do |piece|
-          s << "#{piece.space.id.to_s}: #{piece.piece_type.to_s}\n" 
+          s << "#{piece.space.id.to_s}: #{piece.piece_type.to_s}\n"
         end
       end
       s
@@ -28,7 +28,7 @@ module StarChess
 
     def get_state
       state = {:white => {}, :black => {}}.with_indifferent_access
-      @pieces.each do |color, pieces| 
+      @pieces.each do |color, pieces|
         pieces.each do |piece|
           state[color][piece.space.id] = piece.piece_type
         end
@@ -39,7 +39,7 @@ module StarChess
     def print_pieces color
       @pieces[color].each do |piece|
         puts("huh #{piece.piece_type}: #{piece.space.id}")
-      end     
+      end
     end
 
     def get_king_piece color
@@ -50,7 +50,7 @@ module StarChess
       result = {}
       king = nil
       opposite_color = (color == :black) ? :white : :black
-      
+
       opponents_flattened_avail = get_available_moves(
         opposite_color, true).values.flatten if not recursed
       @pieces[color].each do |piece|
@@ -63,24 +63,24 @@ module StarChess
         elsif (piece.piece_type == :pawn)
           result[piece.space.id] = piece.get_pawn_moves recursed
         else
-          result[piece.space.id] = piece.get_available_moves 
-        end          
+          result[piece.space.id] = piece.get_available_moves
+        end
       end
       # find other color moves
       # if king's square is in the flattened values
 
-      if king && recursed.nil? 
+      if king && recursed.nil?
         result = compute_check_moves(color, opposite_color, result, king.space.id)
-        if opponents_flattened_avail.include?(king.space.id) 
+        if opponents_flattened_avail.include?(king.space.id)
           if @special_state.nil?
             @special_state = :check
           elsif @special_state == :stalemate
             @special_state = :checkmate
-          end 
-        end  
+          end
+        end
       end
       result
-    end    
+    end
 
     #   for each avail move for this color
     #     find other color moves again
@@ -92,7 +92,7 @@ module StarChess
 
       available_moves.each do |from, to|
         to.each do |to_space_id|
-          # always look at real king space ID unless simulating new one        
+          # always look at real king space ID unless simulating new one
           new_king_space_id = (from == king_space_id) ? to_space_id : king_space_id
           change_board_state(cur_board_state.deep_dup, original_spaces, color, opp_color, from, to_space_id)
           opponents_new_moves = self.get_available_moves(opp_color,recursed=true).values.flatten
@@ -116,7 +116,7 @@ module StarChess
       self.reconstruct(board_state)
     end
 
-    # board state should be 
+    # board state should be
     # {:white => {1 => :pawn, 2 => :pawn}, :black => [etc]}
     # todo: error handling on bad input here (or maybe do it in game)
     def reconstruct board_state
@@ -138,14 +138,14 @@ module StarChess
         @spaces[id] = StarChess::Space.new(id)
       end
       StarChess::SPACE_DEFS.each do |space_id, space_def|
-        [:north, :northwest, :southwest, 
+        [:north, :northwest, :southwest,
         :south, :southeast, :northeast].each_with_index do |direction, index|
           if not space_def[index].nil?
             referent_space =  @spaces[space_def[index]]
-            @spaces[space_id].set_adjacent(direction, referent_space) 
+            @spaces[space_id].set_adjacent(direction, referent_space)
           end
         end
-      end 
+      end
     end
 
     def setup_pawns
@@ -178,9 +178,9 @@ module StarChess
 
     def add_chosen_piece color, piece_type, space_id
       space = @spaces[space_id]
-      raise StarChess::SpaceError, "space #{space_id} already has a piece" unless 
+      raise StarChess::SpaceError, "space #{space_id} already has a piece" unless
         space.piece == nil
-      raise StarChess::SpaceError, "#{space_id} not a choosable space" unless 
+      raise StarChess::SpaceError, "#{space_id} not a choosable space" unless
         StarChess::CHOSEN_SPACES[color].include? space_id
       piece = @piece_class.new self, piece_type, color, space
       space.piece = piece

@@ -106,7 +106,7 @@ module StarChess
       return {:from => random_from, :to => random_to, :piece_type => piece_type}
     end
 
-    def run_ai(color, available_moves, board_state, ai_type="heuristic")
+    def run_ai(color, available_moves, board_state, ai_type="recursive")
       ai_brain = AIRunner.new(@game, color, ai_type)
       prepare_new_available_moves(
         ai_brain.run(available_moves, board_state)

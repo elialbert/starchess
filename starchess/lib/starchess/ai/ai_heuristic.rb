@@ -1,3 +1,6 @@
+require 'starchess/game'
+require 'starchess/piece_defs'
+
 module StarChess
   # one possible ai
   class AIHeuristic
@@ -11,7 +14,7 @@ module StarChess
       scores ||= Hash.new { |hash, key| hash[key] = 0 }
       move_key = "#{from},#{to}"
       if @game.game_variant_type == 'starcraft'
-        scores = check_pawn_promotion(board_state, from, to)
+        scores = check_pawn_promotion(scores, move_key, board_state, from, to)
       end
       piece_type = board_state[color][from]
       # will the move take a piece? if so add a score value
@@ -24,7 +27,7 @@ module StarChess
       scores
     end
 
-    def check_pawn_promotion(board_state, from, to)
+    def check_pawn_promotion(scores, move_key, board_state, from, to)
       if board_state[@color][to] &&
          StarChess::PROMOTION_PIECE_POINTS.keys.include?(
            board_state[@color][to].to_sym)
@@ -33,6 +36,7 @@ module StarChess
       elsif from == to
         scores[move_key] += 2
       end
+      scores
     end
 
     def check_move_threat(board_state, piece_type, from, to)
@@ -47,7 +51,10 @@ module StarChess
       end
 
       opp_avail = get_reversed_opponents_available_moves(board_state)
+      # penalize if would move INTO danger
       total_threat_score -= StarChess::PIECE_POINTS[piece_type] if opp_avail[to]
+      # reward if would move OUT of danger
+      total_threat_score += StarChess::PIECE_POINTS[piece_type] if opp_avail[from]
       total_threat_score
     end
 
