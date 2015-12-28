@@ -10,6 +10,10 @@ module StarChess
       @space = space
     end
 
+    def to_s
+      "#{@piece_type} - #{@color}"
+    end
+
     def get_available_moves
       self.send("get_#{@piece_type}_moves")
     end
