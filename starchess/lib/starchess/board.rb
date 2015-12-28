@@ -43,7 +43,9 @@ module StarChess
     end
 
     def get_king_piece color
-      @pieces[color].select {|piece| piece.piece_type == :king}[0]
+      res = @pieces[color].select {|piece| piece.piece_type == :king}[0]
+      byebug if res.nil? || res == []
+      res
     end
 
     def get_available_moves(color, recursed = nil)
@@ -131,6 +133,7 @@ module StarChess
           @pieces[color.to_sym] << piece
         end
       end
+      @special_state = nil
     end
 
     def construct_spaces

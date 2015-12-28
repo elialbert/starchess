@@ -39,7 +39,14 @@ describe "StarChess AI" do
     ai.game = StarChess::Game.new :play_mode, board_state, nil
     info = ai.game.get_game_info :black
     ai_result = ai.run_ai :black, info[:available_moves], info[:state], "recursive"
-    puts ai_result
     expect(ai_result[3]).to eq([19])
+  end
+
+  it "shouldnt crash" do
+    board_state = '{"white":{"6":"pawn","11":"king","17":"pawn","18":"rook"},"black":{"7":"bishop","21":"pawn","27":"king","33":"pawn","34":"pawn"}}'
+    board_state = ActiveSupport::JSON.decode(board_state)
+    ai.game = StarChess::Game.new :play_mode, board_state, nil
+    info = ai.game.get_game_info :black
+    ai_result = ai.run_ai :black, info[:available_moves], info[:state], "recursive"
   end
 end

@@ -32,7 +32,7 @@ module StarChess
          StarChess::PROMOTION_PIECE_POINTS.keys.include?(
            board_state[@color][to].to_sym)
         scores[move_key] += StarChess::PROMOTION_PIECE_POINTS[
-          board_state[@color][to].to_sym] / 2
+          board_state[@color][to].to_sym] / 1.2
       elsif from == to
         scores[move_key] += 2
       end

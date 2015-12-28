@@ -4,39 +4,38 @@ module StarChess
   # recursive ai using heuristic version (a lot)
   class AIRecursive
     attr_accessor :game, :color, :opp_color, :original_spaces
-    def initialize(game, color, opp_color, original_spaces)
-      @game, @color, @opp_color, @original_spaces = game, color, opp_color,
-        original_spaces
+    def initialize(game, color, opp_color, original_spaces, depth=1)
+      @game, @color, @opp_color, @original_spaces, @depth = game, color, opp_color,
+        original_spaces, depth
     end
 
     def run(from, to, board_state, scores)
-      puts "running ai for #{@color}"
       heuristic = AIHeuristic.new(@game, @color, @opp_color, @original_spaces)
       scores = heuristic.run(from, to, board_state, scores)
-      puts "starting with"
-      puts scores
       incremental = run_inner(board_state.deep_dup, [], from, to, 0)
       @game.board.reconstruct(board_state)
-      # puts "incremental is #{incremental}"
       scores["#{from},#{to}"] += average(incremental)
-      puts "average is #{average(incremental)}"
       scores
     end
 
     # switch colors, recreate board, rerun heuristic,
     # apply score back for that move key
     def run_inner(board_state, incremental, from, to, depth)
-      puts "run inner with #{from}:#{to}"
       available_moves, board_state = switch(board_state, from, to)
       # if opp mode, get best move and switch
       if depth.even?
-        puts "DEPTH: #{depth} avail moves for #{@color} are "
-        puts available_moves
         fromm, too, inc = get_opponent_move(available_moves, board_state)
+        return incremental if fromm.nil?
         incremental << -1 * inc
-        puts "opp move is #{fromm}, #{too} for #{from},#{to}: #{inc}"
         available_moves, board_state = switch(board_state, fromm, too)
-        puts "avail moves for #{@color} are #{available_moves}"
+        if @game.board.special_state == 'checkmate'
+          incremental << -10000
+          return incremental
+        end
+        if @game.board.special_state == 'stalemate'
+          incremental << -500
+          return incremental
+        end
         depth += 1
       end
 
@@ -47,22 +46,17 @@ module StarChess
       available_moves.each do |fromm, to_list|
         to_list.each do |too|
           new_scores = heuristic.run(fromm, too, board_state, new_scores)
-          if depth < 2
+          if depth < @depth
             incremental += run_inner(board_state.deep_dup, incremental, fromm, too, depth + 1)
             @game.board.reconstruct(board_state)
           end
         end
       end
-
-      inc = adjust_score(new_scores, depth) || 0
-      puts "inc is #{inc}"
-      incremental << inc
-      puts "DEPTH: #{depth} adjusting score by #{inc} for #{from}, #{to}"
+      incremental << (adjust_score(new_scores, depth) || 0)
       incremental
     end
 
     def switch(board_state, from, to)
-      puts "about to change board state for #{@opp_color}"
       @game.board.change_board_state(
         board_state.deep_dup,
         @game.board.spaces.deep_dup,
@@ -84,17 +78,14 @@ module StarChess
           new_scores = heuristic.run(fromm, too, board_state, new_scores)
         end
       end
-      if new_scores == {} || new_scores == nil
-        byebug
-      end
       new_scores
     end
 
     def get_opponent_move(available_moves, board_state)
-      puts "getting opp move for #{@color}"
       heuristic = AIHeuristic.new(@game, @color, @opp_color,
                                   @game.board.spaces.deep_dup)
       new_scores = run_all_moves(heuristic, available_moves, board_state)
+      return nil,nil,nil if new_scores.empty?
       pick_opponent_move(new_scores)
     end
 
@@ -112,7 +103,11 @@ module StarChess
     end
 
     def average(series)
-      series.inject(&:+) / series.length
+      begin
+        series.compact.inject(&:+) / series.length
+      rescue NoMethodError
+        0
+      end
     end
 
   end

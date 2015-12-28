@@ -26,8 +26,6 @@ module StarChess
           scores = @brain.run(from, to, board_state, scores)
         end
       end
-      puts "final scores are"
-      puts scores
       scores
     end
   end
