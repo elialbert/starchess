@@ -1,5 +1,5 @@
 require "spec_helper"
-require "starchess/ai"
+require "starchess/ai/ai"
 
 describe "StarChess AI" do
   ai = nil

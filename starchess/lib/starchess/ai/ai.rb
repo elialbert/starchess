@@ -1,6 +1,6 @@
 require 'starchess/game'
 require 'starchess/piece_defs'
-require 'starchess/ai_runner'
+require 'starchess/ai/ai_runner'
 
 module StarChess
   class AI

@@ -1,5 +1,5 @@
 require 'starchess/game'
-require 'starchess/ai'
+require 'starchess/ai/ai'
 
 class StarchessGame < ActiveRecord::Base
   include RocketPants::Cacheable
@@ -33,7 +33,7 @@ class StarchessGame < ActiveRecord::Base
     if self.player2_id == -1
       player2_email = "AI"
     end
-    @extra_state = {:player1 => self.player1.email, :player2 => player2_email, 
+    @extra_state = {:player1 => self.player1.email, :player2 => player2_email,
       :special_state => @logic ? @logic.board.special_state : nil,
       :current_user_player => @current_user_player,
       :saved_selected_move => @saved_selected_move
@@ -54,7 +54,7 @@ class StarchessGame < ActiveRecord::Base
 
   def prepare_logic board_state
     board_state = ActiveSupport::JSON.decode(board_state)
-    chosen_pieces = (self.mode == "choose_mode" && self.chosen_pieces) ? 
+    chosen_pieces = (self.mode == "choose_mode" && self.chosen_pieces) ?
       ActiveSupport::JSON.decode(self.chosen_pieces).with_indifferent_access : nil
     @logic = StarChess::Game.new self.mode.to_sym, board_state, chosen_pieces, self.game_variant_type
     return board_state
@@ -81,7 +81,7 @@ class StarchessGame < ActiveRecord::Base
 
   def check_move_validity attributes, color
     old_board_state = (self.board_state.class == String) ? ActiveSupport::JSON.decode(self.board_state) : self.board_state
-    raise StarChess::TurnError, "that move is not valid" unless 
+    raise StarChess::TurnError, "that move is not valid" unless
       @logic.check_move_validity(ActiveSupport::JSON.decode(attributes[:selected_move] || '[]'),
                                  ActiveSupport::JSON.decode(self.available_moves), # old available moves
                                  old_board_state, color) # old board state
@@ -99,7 +99,7 @@ class StarchessGame < ActiveRecord::Base
 
   def prepare_update_attributes_return attributes, info
     attributes[:board_state] = ActiveSupport::JSON.encode(info[:state])
-    self.available_moves = ActiveSupport::JSON.encode(info[:available_moves])    
+    self.available_moves = ActiveSupport::JSON.encode(info[:available_moves])
     return attributes
   end
 

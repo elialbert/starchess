@@ -1,4 +1,4 @@
-require 'starchess/ai_heuristic'
+require 'starchess/ai/ai_heuristic'
 
 module StarChess
   # basic move looper / ai chooser
