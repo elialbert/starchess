@@ -1,9 +1,10 @@
 require 'starchess/game'
 require 'starchess/piece_defs'
+require 'starchess/ai_heuristic'
 
 module StarChess
   class AI
-    # the idea is to create a runner that plays many games of ai vs ai 
+    # the idea is to create a runner that plays many games of ai vs ai
     # each game keeps track of each board state
     # moves start out as random + simple heuristics
     # after a set # of moves (or checkmate/stalemate), count points based on remaining pieces
@@ -90,19 +91,24 @@ module StarChess
     def pick_play_move info, color
       if @run_mode == 'test_mode'
         if color == :white
-          available_moves = ai_heuristic color, info[:available_moves], info[:state]
+          available_moves = run_ai(color, info[:available_moves], info[:state])
         else
-          available_moves = info[:available_moves]          
+          available_moves = info[:available_moves]
         end
       elsif @run_mode == 'single_mode'
-        available_moves = ai_heuristic color, info[:available_moves], info[:state]
+        available_moves = run_ai(color, info[:available_moves], info[:state])
       else
         available_moves = info[:available_moves]
       end
       random_from = available_moves.keys()[Random.rand(0...available_moves.keys().length)]
-      random_to = available_moves[random_from][Random.rand(0...available_moves[random_from].length)] 
+      random_to = available_moves[random_from][Random.rand(0...available_moves[random_from].length)]
       piece_type = info[:state][color][random_from]
       return {:from => random_from, :to => random_to, :piece_type => piece_type}
+    end
+
+    def run_ai(*args)
+      ai_brain = AIHeuristic.new(@game)
+      prepare_new_available_moves(ai_brain.run(*args))
     end
 
     def do_choose_move color, info, chosen_piece
@@ -113,64 +119,7 @@ module StarChess
       @game = g
     end
 
-    def ai_heuristic color, available_moves, board_state
-      opp_color = (color == :white) ? :black : :white
-      original_spaces = @game.board.spaces.deep_dup
-      # reversed_opponents_avail = get_reversed_opponents_available_moves opp_color, board_state
-      # puts "reversed opp avail is #{reversed_opponents_avail}"
-      available_moves_score_count = Hash.new { |hash, key| hash[key] = 0 }
-      available_moves.each do |from, to_list|
-        to_list.each do |to|
-          move_key = "#{from},#{to}"
-          if @game.game_variant_type == 'starcraft' 
-            if board_state[color][to] and StarChess::PROMOTION_PIECE_POINTS.keys().include? board_state[color][to].to_sym 
-              available_moves_score_count[move_key] += StarChess::PROMOTION_PIECE_POINTS[board_state[color][to].to_sym] / 2
-              puts "promotion score increase: #{available_moves_score_count[move_key]}"
-            elsif from == to
-              available_moves_score_count[move_key] += 2                        
-            end
-          end
-          piece_type = board_state[color][from]
-          # will the move take a piece? if so add a score value
-          available_moves_score_count[move_key] += StarChess::PIECE_POINTS[board_state[opp_color][to]]
-          # then check if a given move is a threatened square
-          # then check if a given move creates a threat in either direction
-          available_moves_score_count[move_key] += check_move_threat color, opp_color, board_state, original_spaces, piece_type, from, to
-          # go back to original board state hopefully
-          @game.board.reconstruct board_state
-        end
-      end
-      return prepare_new_available_moves available_moves_score_count
-    end
-
-    def check_move_threat color, opp_color, board_state, original_spaces, piece_type, from, to
-      total_threat_score = 0
-      @game.board.change_board_state(board_state.deep_dup, original_spaces, color, opp_color, from, to)
-      new_available_moves_list = @game.board.get_available_moves(color, true)[to]
-      new_available_moves_list.each do |potential_next_move|
-        total_threat_score += StarChess::PIECE_POINTS[board_state[opp_color][potential_next_move]] / 2
-      end
-      
-      opp_avail = get_reversed_opponents_available_moves opp_color, board_state
-      if opp_avail[to]
-        total_threat_score -= StarChess::PIECE_POINTS[piece_type] # - StarChess::PIECE_POINTS[opp_avail[to]])
-      end
-      return total_threat_score
-    end
-
-    def get_reversed_opponents_available_moves opp_color, board_state
-      reversed_avail = {}
-      opponents_avail = @game.board.get_available_moves(
-        opp_color.to_sym, true)
-      opponents_avail.each do |from, to_list|
-        to_list.each do |to|
-          reversed_avail[to] = board_state[opp_color.to_sym][from]
-        end
-      end
-      reversed_avail
-    end
-
-    def find_highest_state_moves color, available_moves, board_state
+    def find_highest_state_moves(color, available_moves, board_state)
       available_moves_score_count = {}
       available_moves.each do |from, to_list|
         to_list.each do |to|
@@ -181,7 +130,7 @@ module StarChess
           opp_color = (color == :white) ? :black : :white
           state[opp_color].delete(to)
           state = normalize_state state
-          # puts "lookup looks like #{ActiveSupport::JSON.encode(state)}" 
+          # puts "lookup looks like #{ActiveSupport::JSON.encode(state)}"
           stored = AiBoardState.where(:state => ActiveSupport::JSON.encode(state)).first
           if stored
             puts "HIT"
@@ -232,8 +181,8 @@ module StarChess
       [:white,:black].each do |color|
         board_state[color].values().each do |piece_type|
           points[color] += StarChess::PIECE_POINTS[piece_type]
-        end 
-      end 
+        end
+      end
       puts "white: #{points[:white]}, black: #{points[:black]}"
       winner = points.max_by{|k,v| v}
       return winner
@@ -256,11 +205,11 @@ module StarChess
         state = ActiveSupport::JSON.encode(state)
         ai_board_state = AiBoardState.find_or_create_by(state: state)
         ai_board_state.score -= 1
-        ai_board_state.save!  
-      end 
+        ai_board_state.save!
+      end
       puts "finished storing!"
-    end 
-  
+    end
+
 
     def normalize_state state
       new_state = {:white => {}, :black => {}}

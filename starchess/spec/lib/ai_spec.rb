@@ -12,10 +12,10 @@ describe "StarChess AI" do
       board_state = ActiveSupport::JSON.decode(board_state)
       ai.game = StarChess::Game.new :play_mode, board_state, nil
       info = ai.game.get_game_info :black
-      ai_result = ai.ai_heuristic :black, info[:available_moves], info[:state]
+      ai_result = ai.run_ai :black, info[:available_moves], info[:state]
       expect(ai_result[10].include? 14).not_to be true
   end
 
 
 
-end 
+end
