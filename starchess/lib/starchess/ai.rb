@@ -1,6 +1,6 @@
 require 'starchess/game'
 require 'starchess/piece_defs'
-require 'starchess/ai_heuristic'
+require 'starchess/ai_runner'
 
 module StarChess
   class AI
@@ -107,7 +107,7 @@ module StarChess
     end
 
     def run_ai(*args)
-      ai_brain = AIHeuristic.new(@game)
+      ai_brain = AIRunner.new(@game)
       prepare_new_available_moves(ai_brain.run(*args))
     end
 
