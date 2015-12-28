@@ -106,9 +106,11 @@ module StarChess
       return {:from => random_from, :to => random_to, :piece_type => piece_type}
     end
 
-    def run_ai(*args)
-      ai_brain = AIRunner.new(@game)
-      prepare_new_available_moves(ai_brain.run(*args))
+    def run_ai(color, available_moves, board_state, ai_type="heuristic")
+      ai_brain = AIRunner.new(@game, color, ai_type)
+      prepare_new_available_moves(
+        ai_brain.run(available_moves, board_state)
+      )
     end
 
     def do_choose_move color, info, chosen_piece
