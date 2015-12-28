@@ -5,7 +5,7 @@ module StarChess
   # basic move looper / ai chooser
   class AIRunner
     attr_accessor :game
-    def initialize(game, color, ai_type)
+    def initialize(game, color, ai_type, depth=1)
       @game = game
       opp_color = (color == :white) ? :black : :white
       original_spaces = @game.board.spaces.deep_dup
@@ -15,7 +15,7 @@ module StarChess
                  when 'recursive'
                    AIRecursive
                  end
-      @brain = ai_class.new(game, color, opp_color, original_spaces)
+      @brain = ai_class.new(game, color, opp_color, original_spaces, depth)
     end
 
     def run(available_moves, board_state)

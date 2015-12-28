@@ -25,7 +25,6 @@ module StarChess
       (1...n).each do |x|
         run_AI_game()
       end
-      puts "final state store count is #{AiBoardState.count}"
       puts "final tally is #{@results_tally}"
       puts "hit count is @hit_count"
     end
@@ -64,6 +63,7 @@ module StarChess
 
       end
       winner = find_winner @game.get_game_info(color)[:state] if not winner
+      return if winner.nil?
       set_results winner if @run_mode == 'store_mode'
       tally_results winner if @run_mode == 'test_mode'
 
@@ -91,9 +91,9 @@ module StarChess
     def pick_play_move info, color
       if @run_mode == 'test_mode'
         if color == :white
-          available_moves = run_ai(color, info[:available_moves], info[:state])
+          available_moves = run_ai(color, info[:available_moves], info[:state], 'heuristic', 1)
         else
-          available_moves = info[:available_moves]
+          available_moves = run_ai(color, info[:available_moves], info[:state], 'recursive', 1)
         end
       elsif @run_mode == 'single_mode'
         available_moves = run_ai(color, info[:available_moves], info[:state])
@@ -106,8 +106,8 @@ module StarChess
       return {:from => random_from, :to => random_to, :piece_type => piece_type}
     end
 
-    def run_ai(color, available_moves, board_state, ai_type="recursive")
-      ai_brain = AIRunner.new(@game, color, ai_type)
+    def run_ai(color, available_moves, board_state, ai_type="recursive", depth=1)
+      ai_brain = AIRunner.new(@game, color, ai_type, depth)
       prepare_new_available_moves(
         ai_brain.run(available_moves, board_state)
       )
@@ -186,6 +186,7 @@ module StarChess
         end
       end
       puts "white: #{points[:white]}, black: #{points[:black]}"
+      return nil if points[:white] == points[:black] && points[:white] == 41
       winner = points.max_by{|k,v| v}
       return winner
 

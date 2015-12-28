@@ -5,7 +5,7 @@ module StarChess
   # one possible ai
   class AIHeuristic
     attr_accessor :game, :color, :opp_color, :original_spaces
-    def initialize(game, color, opp_color, original_spaces)
+    def initialize(game, color, opp_color, original_spaces, depth=1)
       @game, @color, @opp_color, @original_spaces = game, color, opp_color,
         original_spaces
     end
