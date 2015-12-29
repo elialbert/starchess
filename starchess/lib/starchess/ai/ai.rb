@@ -105,8 +105,12 @@ module StarChess
 
     def run_ai(color, available_moves, board_state, ai_type="recursive", depth=1)
       ai_brain = AIRunner.new(@game, color, ai_type, depth)
+      result = ai_brain.run(available_moves, board_state)
+      # prof = RubyProf.stop
+      # printer = RubyProf::CallStackPrinter.new(prof)
+      # printer.print(File.open('testperf.html','w'),{})
       prepare_new_available_moves(
-        ai_brain.run(available_moves, board_state)
+        result
       )
     end
 

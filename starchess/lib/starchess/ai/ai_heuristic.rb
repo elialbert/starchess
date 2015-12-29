@@ -4,8 +4,9 @@ require 'starchess/piece_defs'
 module StarChess
   # one possible ai
   class AIHeuristic
-    attr_accessor :game, :color, :opp_color, :original_spaces
+    attr_accessor :game, :color, :opp_color, :original_spaces, :cur_result
     def initialize(game, color, opp_color, original_spaces, depth=1)
+      @cur_result = nil
       @game, @color, @opp_color, @original_spaces = game, color, opp_color,
         original_spaces
     end
@@ -24,6 +25,7 @@ module StarChess
       scores[move_key] += check_move_threat(board_state, piece_type, from, to)
       # go back to original board state hopefully
       @game.board.reconstruct board_state
+      @cur_result = scores[move_key]
       scores
     end
 

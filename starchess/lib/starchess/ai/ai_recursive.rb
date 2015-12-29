@@ -1,4 +1,5 @@
 require 'starchess/ai/ai_heuristic'
+require 'digest/sha1'
 
 module StarChess
   # recursive ai using heuristic version (a lot)
@@ -7,6 +8,7 @@ module StarChess
     def initialize(game, color, opp_color, original_spaces, depth=1)
       @game, @color, @opp_color, @original_spaces, @depth = game, color, opp_color,
         original_spaces, depth
+      @cache = {}
     end
 
     def run(from, to, board_state, scores)
@@ -45,6 +47,7 @@ module StarChess
       new_scores = Hash.new { |hash, key| hash[key] = 0 }
       available_moves.each do |fromm, to_list|
         to_list.each do |too|
+          # new_scores = run_memoized_heuristic(heuristic, fromm, too, board_state, new_scores)
           new_scores = heuristic.run(fromm, too, board_state, new_scores)
           if depth < @depth
             incremental += run_inner(board_state.deep_dup, incremental, fromm, too, depth + 1)
@@ -75,9 +78,24 @@ module StarChess
       new_scores = Hash.new { |hash, key| hash[key] = 0 }
       available_moves.each do |fromm, to_list|
         to_list.each do |too|
+          # new_scores = run_memoized_heuristic(heuristic, fromm, too, board_state, new_scores) # heuristic.run(fromm, too, board_state, new_scores)
           new_scores = heuristic.run(fromm, too, board_state, new_scores)
         end
       end
+      new_scores
+    end
+
+    def run_memoized_heuristic(heuristic, from, to, board_state, new_scores)
+      string_key = {from:from, to:to, board_state:board_state}.to_a.to_s
+      cache_key = Digest::SHA1.hexdigest(string_key)
+      cache_val = @cache[cache_key]
+      if cache_val
+        new_scores["#{from},#{to}"] = cache_val
+        return new_scores
+      end
+      heuristic.run(from, to, board_state, new_scores)
+      new_scores["#{from},#{to}"] = heuristic.cur_result
+      @cache[cache_key] = heuristic.cur_result
       new_scores
     end
 
