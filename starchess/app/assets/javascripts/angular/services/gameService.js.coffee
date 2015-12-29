@@ -1,4 +1,4 @@
-@strollz.factory 'gameService', ['boardService','$uibModal','$rootScope', (boardService, $uibModal, $rootScope) ->
+@strollz.factory 'gameService', ['boardService','$uibModal','$rootScope', 'Restangular', (boardService, $uibModal, $rootScope, Restangular) ->
   game = null
   game_data = {game: game}
   run_firebase = (game_id) ->
@@ -29,15 +29,18 @@
     game_data.game.game_status = boardService.get_game_status game_data.game
     game_data.game.available_moves = JSON.parse(game_data.game.available_moves)
     game_data.game.boardState = JSON.parse(game_data.game.board_state)
-    console.log "in set state"
-    console.log game_data.game.boardState['white']
 
     game_data.game.selected = null # space_id of selected hex
-    if game_data.game.extra_state.player2 == "AI"
+    if game_data.game.extra_state.player2 == "AI" or game_data.game.player1_id == -1
       set_last_move(game_data.game.extra_state)
     if !game_data.game.turn
       game_data.game.turn = "white"
     $rootScope.$broadcast('boardChange')
+
+  new_ai_ai_game = (cb) ->
+    Restangular.all('starchess_games').post({starchess_game: {player1_id:-1, player2_id:-1, ai_mode:'both'}}).then (game) =>
+      setState game
+      cb()
 
   set_last_move = (data) ->
     if not data or not data.saved_selected_move
@@ -115,6 +118,7 @@
     handle_choose_mode_choice: handle_choose_mode_choice
     set_last_move: set_last_move
     put_to_server: put_to_server
+    new_ai_ai_game: new_ai_ai_game
   }
 
 ]

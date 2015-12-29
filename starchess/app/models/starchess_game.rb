@@ -34,7 +34,7 @@ class StarchessGame < ActiveRecord::Base
       player2_email = "AI"
     end
     if self.player1_id == -1
-      @extra_state = {:player1 => "AI", :player2 => "AI"}
+      @extra_state = {:player1 => "AI", :player2 => "AI", :saved_selected_move => @saved_selected_move}
       return
     end
     @extra_state = {:player1 => self.player1.email, :player2 => player2_email,

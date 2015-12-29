@@ -13,24 +13,15 @@
     @run_hex_classes()
 
   $scope.run = () =>
-    @interv = $interval($scope.do_move, 500)
+    @interv = $interval($scope.do_move, 2500)
 
   $scope.do_move = () =>
-    console.log "in do move"
-    console.log $scope.game_data.game.boardState['white']
     $scope.num_moves += 1
-    console.log "running move num #{$scope.num_moves}"
     gameService.put_to_server()
-    console.log $scope.game_data.game.mode
-    if $scope.game_data.game.mode == "done" or $scope.num_moves > 15
-      console.log "CANCELLING - new game"
+    if $scope.game_data.game.mode == "done" or $scope.num_moves > 60
       $scope.num_moves = 0
       $interval.cancel(@interv)
-      Restangular.all('starchess_games').post({starchess_game: {player1_id:-1, player2_id:-1, ai_mode:'both'}}).then (game) =>
-        gameService.game_data = {game: game}
-        gameService.setState game
-        $scope.game_data = gameService.game_data
-        $scope.run()
+      gameService.new_ai_ai_game($scope.run)
 
   $scope.need_to_remove_space = (row,col) ->
     if _.indexOf(boardService.remove_spaces[row],col) > -1
