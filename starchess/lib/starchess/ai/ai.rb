@@ -69,14 +69,13 @@ module StarChess
 
     end
 
-    # run the "AI" from the frontend. color is always black for now.
-    def run_single_move info, game
-      color = :black
+    # run the "AI" from the frontend.
+    def run_single_move info, game, color=:black
       @game = game
       move = @game.mode == :choose_mode ? pick_choose_move(info, color) : pick_play_move(info, color)
       @saved_selected_move = (@game.mode == :choose_mode) ? move : [move[:from], move[:to]]
       @game.mode == :choose_mode ? do_choose_move(color, info, move) : do_play_move(color, info, move)
-      if @game.chosen_pieces[color].length == 5
+      if color == :black && @game.chosen_pieces[color].length == 5
         @game.mode = :play_mode
       end
     end

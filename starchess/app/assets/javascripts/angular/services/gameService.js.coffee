@@ -29,9 +29,14 @@
     game_data.game.game_status = boardService.get_game_status game_data.game
     game_data.game.available_moves = JSON.parse(game_data.game.available_moves)
     game_data.game.boardState = JSON.parse(game_data.game.board_state)
+    console.log "in set state"
+    console.log game_data.game.boardState['white']
+
     game_data.game.selected = null # space_id of selected hex
     if game_data.game.extra_state.player2 == "AI"
       set_last_move(game_data.game.extra_state)
+    if !game_data.game.turn
+      game_data.game.turn = "white"
     $rootScope.$broadcast('boardChange')
 
   set_last_move = (data) ->
@@ -45,6 +50,7 @@
   put_to_server = () ->
     game_data.loading = "loading"
     $rootScope.$broadcast("loading")
+    console.log "putting with game id #{game_data.game.id}"
     game_data.game.put().then( (response) =>
       game_data.loading = ""
       $rootScope.$broadcast("loading")

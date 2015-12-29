@@ -2,7 +2,7 @@
   <div class="panel panel-default">
     <div class="panel-heading">
       <h3 class="panel-title">StarChess</h3>
-    </div> 
+    </div>
     <div class="panel-body">
       <p>StarChess is a chess variant on a star-shaped board, and very easy to pick up if you know chess. <b>Original rules <a href="http://www.polgarstarchess.com/Rules/ENRules.html">here</a>.</b></p>
       <button ng-click="newStarchessGame()" type="button" class="btn btn-success">New StarChess Game</button>
@@ -11,19 +11,23 @@
   <div class="panel panel-default">
     <div class="panel-heading">
       <h3 class="panel-title">Starcraft Chess</h3>
-    </div> 
+    </div>
     <div class="panel-body">
       <p>Starcraft Chess is way different than chess, and has more of a resource creation / RTS feel. <b>Original rules <a href="https://unorthodox-engineers.blogspot.com/2014/02/starchess-rules.html">here</a>.</b>
       <br/> Note that I've changed the rules slightly - rooks can now move 1 non-taking square diagonally as well as their normal up and down.</p>
       <button ng-click="newStarcraftGame()" type="button" class="btn btn-success">New Starcraft Chess Game</button>
     </div>
   </div>
+</div>
+<div class="container" id="gamewrapper" ng-if="!games.length && ai_game_data.game">
+  <aistarchess-board></aistarchess-board>
+</div>
+<div class="container" ng-if="games.length">
   <div id="games_helptext">
     Note: Invite a friend to join any new game by sending them the link to the game page; they will have to log in first.
     <br/> There is also a clearly-marked option avaiable on the new game page to play a rudimentary AI.
   </div>
-</div>
-<div class="container" ng-if="games.length">
+
   <h3>Your current and recent games:</h3>
   <div ng-repeat="game in games">
     <ul>
@@ -47,7 +51,7 @@
       <li ng-if="game.extra_state.winner">
         Winner: {{game.extra_state.winner}}
       </li>
-      
+
       <li>
       <a href="#/StarchessGames/{{game.id}}">Go to game</a>
       </li>

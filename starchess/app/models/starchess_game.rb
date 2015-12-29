@@ -33,6 +33,10 @@ class StarchessGame < ActiveRecord::Base
     if self.player2_id == -1
       player2_email = "AI"
     end
+    if self.player1_id == -1
+      @extra_state = {:player1 => "AI", :player2 => "AI"}
+      return
+    end
     @extra_state = {:player1 => self.player1.email, :player2 => player2_email,
       :special_state => @logic ? @logic.board.special_state : nil,
       :current_user_player => @current_user_player,
@@ -105,7 +109,7 @@ class StarchessGame < ActiveRecord::Base
 
   def run_ai_mode attributes, info
     gameAI = StarChess::AI.new 'single_mode'
-    gameAI.run_single_move info, @logic
+    gameAI.run_single_move info, @logic, attributes[:turn].to_sym
     if self.mode == 'choose_mode'
       attributes[:chosen_pieces] = ActiveSupport::JSON.encode(gameAI.game.chosen_pieces)
       if gameAI.game.mode == :play_mode
@@ -115,7 +119,7 @@ class StarchessGame < ActiveRecord::Base
     end
     # switch back to human player - new turn should always be white for now
     attributes[:turn] = (attributes[:turn].to_sym == :black) ? :white : :black
-    raise "turn problems" unless attributes[:turn] == :white
+    # raise "turn problems" unless attributes[:turn] == :white
     info = gameAI.game.get_game_info attributes[:turn]
     @logic.board.special_state = info[:special_state]
     attributes = do_special_state attributes
@@ -124,6 +128,18 @@ class StarchessGame < ActiveRecord::Base
     attributes.delete :selected_move
 
     return attributes, info
+  end
+
+  def update_ai_ai(attributes)
+    puts "attrs are"
+    puts attributes
+    attributes[:board_state] = prepare_logic attributes[:board_state]
+    info = @logic.get_game_info(attributes[:turn])
+    attributes = do_special_state attributes
+    attributes, info = run_ai_mode(attributes, info) if attributes[:mode] != "done"
+    attributes = prepare_update_attributes_return attributes, info
+    # super update
+    ActiveRecord::Base.instance_method(:update).bind(self).call(attributes)
   end
 
   def update(attributes={})
