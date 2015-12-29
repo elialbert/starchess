@@ -41,6 +41,8 @@ module StarChess
 
     def check_move_threat(board_state, piece_type, from, to)
       total_threat_score = 0
+      taken = board_state[@opp_color][to]
+      premove_opp_avail = get_reversed_opponents_available_moves(board_state)
       @game.board.change_board_state(board_state.deep_dup,
                                      @original_spaces,
                                      @color, @opp_color, from, to)
@@ -54,7 +56,11 @@ module StarChess
       # penalize if would move INTO danger
       total_threat_score -= StarChess::PIECE_POINTS[piece_type] if opp_avail[to]
       # reward if would move OUT of danger
-      total_threat_score += StarChess::PIECE_POINTS[piece_type] if opp_avail[from]
+      total_threat_score += StarChess::PIECE_POINTS[piece_type] / 1.4 if opp_avail[from]
+      # reward if move would kill danger
+      if taken && premove_opp_avail[from] == taken
+        total_threat_score += StarChess::PIECE_POINTS[piece_type] * 1.2
+      end
       total_threat_score
     end
 
