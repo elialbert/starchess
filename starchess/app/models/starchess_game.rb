@@ -131,8 +131,6 @@ class StarchessGame < ActiveRecord::Base
   end
 
   def update_ai_ai(attributes)
-    puts "attrs are"
-    puts attributes
     attributes[:board_state] = prepare_logic attributes[:board_state]
     info = @logic.get_game_info(attributes[:turn])
     attributes = do_special_state attributes
