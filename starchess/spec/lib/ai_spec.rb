@@ -53,4 +53,13 @@ describe "StarChess AI" do
     ai_result = ai.run_ai :black, info[:available_moves], info[:state], "recursive"
     expect(ai_result[28]).to eq([30])
   end
+
+  it "shouldnt stay in check" do
+    board_state = '{"white":{"5":"pawn","23":"pawn","29":"pawn","28":"rook","22":"king","27":"pawn"},"black":{"34":"king","10":"bishop","7":"pawn","16":"rook"}}'
+    info,ai = get_info(board_state, ai)
+    ai_result = ai.run_ai :black, info[:available_moves], info[:state], "recursive"
+    expect(ai_result[34]).to eq([27])
+  end
+
+
 end
