@@ -88,14 +88,12 @@ module StarChess
     end
 
     def pick_play_move info, color
-      if @run_mode == 'test_mode'
+      if @run_mode == 'test_mode' || @run_mode == 'single_mode'
         if color == :white
           available_moves = run_ai(color, info[:available_moves], info[:state], 'heuristic', 1)
         else
           available_moves = run_ai(color, info[:available_moves], info[:state], 'recursive', 1)
         end
-      elsif @run_mode == 'single_mode'
-        available_moves = run_ai(color, info[:available_moves], info[:state])
       else
         available_moves = info[:available_moves]
       end
