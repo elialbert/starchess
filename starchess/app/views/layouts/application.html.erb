@@ -4,7 +4,6 @@
   <title>StarChess Online</title>
   <%= stylesheet_link_tag    'application', media: 'all' %>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
   <%= javascript_include_tag 'application' %>
 
   <script src="https://www.gstatic.com/firebasejs/3.2.0/firebase.js"></script>
@@ -19,6 +18,7 @@
     firebase.initializeApp(config);
   </script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angularFire/2.0.1/angularfire.js"></script>
+
   <%= favicon_link_tag 'favicon.ico' %>
   <%= csrf_meta_tags %>
 </head>

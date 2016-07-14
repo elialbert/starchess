@@ -11,7 +11,7 @@ class StarchessGamesController < ApiController
   def show
     game = StarchessGame.find(params[:id])
     # quick hack to make it easy to join an open game
-    if game.player2_id == 0 and current_user.id != game.player1_id 
+    if game.player2_id == 0 and current_user.id != game.player1_id
       game.player2_id = current_user.id
       game.save!
       push_to_firebase(game) if not Rails.env.test?
@@ -24,13 +24,27 @@ class StarchessGamesController < ApiController
     game.current_user_player = (current_user.id == game.player1_id) ? 'white' : 'black'
     expose game
   end
-  
+
+  def new_ai_ai_game
+    game = StarchessGame.create(player1_id: -1, player2_id: -1,
+                                ai_mode: "both")
+    expose(game, {:include => [:available_moves,:extra_state], :status => :created})
+  end
+
   def create
     params = game_create_params
+    if !current_user
+      if params[:player1_id] > 0 || params[:player2_id] > 0
+        error!(:forbidden)
+      else
+        return params[:ai_mode] == 'both' ? new_ai_ai_game : error!(:forbidden)
+      end
+    end
+
     if params[:join]
       begin
         game = StarchessGame.find(params[:join])
-      rescue 
+      rescue
         error!(:forbidden)
       end
       if game.player1_id != 0 and game.player2_id == 0
@@ -54,13 +68,19 @@ class StarchessGamesController < ApiController
     expose(@game, {:include => [:available_moves,:extra_state], :status => :created})
   end
 
+  def run_ai_ai_move(game)
+    game.update_ai_ai(game_update_params)
+    expose game
+  end
+
   def update
     game = StarchessGame.find(params[:id])
+    return run_ai_ai_move(game) if game.player1_id == -1
     player_id_field = (game.turn == 'white') ? 'player1_id' : 'player2_id'
     if current_user.id != game[player_id_field]
       error!(:forbidden)
     end
-    begin 
+    begin
       game.update(game_update_params)
     rescue Exception => e
       if not e.class.to_s.include? "StarChess"
@@ -70,7 +90,7 @@ class StarchessGamesController < ApiController
     end
     game.current_user_player = (current_user.id == game.player1_id) ? 'white' : 'black'
     push_to_firebase(game) if not Rails.env.test?
-    expose game 
+    expose game
   end
 
   private

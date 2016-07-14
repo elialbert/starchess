@@ -26,17 +26,17 @@ module StarChess
 
     def check_move_validity(selected_move, available_moves, old_board_state, color)
       return true if @mode.to_sym == :choose_mode or selected_move[0] == 'just_switched_modes'
-      step_1 = (available_moves[selected_move[0].to_s] || []).include? selected_move[1].to_i 
+      step_1 = (available_moves[selected_move[0].to_s] || []).include? selected_move[1].to_i
       if @game_variant_type != 'starcraft'
         return step_1
       else
         return false unless step_1
         @board.check_move_validity selected_move, available_moves, old_board_state, color
-      end 
+      end
     end
 
     def get_choose_moves color, board_state
-      return StarChess::CHOSEN_SPACES[color] - board_state[color].keys
+      return StarChess::CHOSEN_SPACES[color.to_sym] - board_state[color].keys
     end
 
     def do_pawn_promotion color, chosen_piece
@@ -48,9 +48,9 @@ module StarChess
     end
 
     def add_piece color, piece_type, space_id
-      raise StarChess::PieceError, "#{piece_type} is not allowed" unless 
+      raise StarChess::PieceError, "#{piece_type} is not allowed" unless
         StarChess::CHOSEN_PIECE_TYPES.include? piece_type
-      raise StarChess::PieceError, "#{piece_type} has already been chosen" if 
+      raise StarChess::PieceError, "#{piece_type} has already been chosen" if
         @chosen_pieces[color].include? piece_type
       @board.add_chosen_piece color, piece_type, space_id
       @chosen_pieces[color] << piece_type

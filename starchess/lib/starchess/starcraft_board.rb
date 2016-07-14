@@ -34,14 +34,14 @@ module StarChess
       end
       result
     end
-    
+
     def get_available_moves(color, recursed = nil)
-      result = super 
-      if recursed.nil? and @special_state != :check
+      result = super
+      if recursed.nil? && ![:check,:checkmate].include?(@special_state)
         result = result.merge get_pawn_creation_moves color
       end
       return result
-    end 
+    end
 
     def get_promotion piece_type
       return StarChess::STARCRAFT_PROMOTIONS[piece_type]
@@ -49,9 +49,9 @@ module StarChess
 
     def check_move_validity selected_move, available_moves, old_board_state, color
       # check pawn creation
-      new_state = self.get_state  
+      new_state = self.get_state
       return new_state[color][selected_move[1]] == :pawn if selected_move[0] == selected_move[1]
-      
+
       # check if moving piece was pawn and taken piece was own color
       # if so, check if promotion was correct
       if old_board_state[color] and old_board_state[color].keys()[0].class == String

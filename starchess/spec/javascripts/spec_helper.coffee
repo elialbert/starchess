@@ -8,8 +8,9 @@
 
 beforeEach(module('strollz'))
 
-beforeEach inject (_$httpBackend_, _$compile_, $rootScope, $templateCache, $controller, $location, $injector, $timeout, $interval, $route, $routeParams, $uibModal, boardService) ->
+beforeEach inject (_$httpBackend_, _$compile_, $rootScope, $templateCache, $controller, $location, $injector, $timeout, $interval, $route, $routeParams, $uibModal, boardService, gameService) ->
   @scope = $rootScope.$new()
+  @scope2 = $rootScope.$new()
   @http = _$httpBackend_
   @compile = _$compile_
   @location = $location
@@ -21,6 +22,7 @@ beforeEach inject (_$httpBackend_, _$compile_, $rootScope, $templateCache, $cont
   @routeParams = $routeParams
   @uibModal = $uibModal
   @boardService = boardService
+  @gameService = gameService
   $templateCache.put('../templates/starchess_games.html', '<div>test</div>')
   $templateCache.put('templates/chooseModeModalTemplate.html', '<div>test</div>')
 

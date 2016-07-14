@@ -1,37 +1,27 @@
 <div id="gameinfo_container" class="container">
-  <div id="gameinfo"><b>{{game.extra_state.player1}}</b> vs <b>{{game.extra_state.player2}}</b></div>
-  <div id="gameinfo">{{game_status}}</div>
-  <div id="gameinfo">Your color: <b>{{game.extra_state.current_user_player}}</b></div>
-  <div id="gameinfo">current turn: <b>{{game.turn}}</b></div>
-  <div id="gameinfo" ng-if="game.player2_id == 0">
+  <div id="gameinfo"><b>{{game_data.game.extra_state.player1}}</b> vs <b>{{game_data.game.extra_state.player2}}</b></div>
+  <div id="gameinfo">{{game_data.game.game_status}}</div>
+  <div id="gameinfo">Your color: <b>{{game_data.game.extra_state.current_user_player}}</b></div>
+  <div id="gameinfo">current turn: <b>{{game_data.game.turn}}</b></div>
+  <div id="gameinfo" ng-if="game_data.game.player2_id == 0">
     <button ng-click="aiMode()" type="button" class="btn btn-default">Play the computer</button>
   </div>
-  <div id="gameinfo" ng-if="game.player2_id == 0">
+  <div id="gameinfo" ng-if="game_data.game.player2_id == 0">
     <div class="fb-share-button" data-href={{get_game_url()}} data-layout="button">
     </div> <i>(If you share this page's URL with a friend, they can join the game.)</i>
   </div>
 
 </div>
-<div id="gamewrapper" class="container">
-
-<div class="gamerow" ng-repeat="row in row_range">
-    <div class="outerclip" ng-repeat="col in col_range" ng-class='need_to_remove_space(row,col)'>
-        <div class="innerclip" ng-class='hex_classes[row][col]' ng-click='do_click(row,col)'>
-            <span class="space_id">{{get_debug_text(row,col)}}</span>
-            <img src="{{get_piece_image(row,col)}}"></img>
-        </div>
-    </div>
-</div>
-
-
+<div id="gamewrapper" class="container" ng-if="game_data.game">
+  <starchess-board></starchess-board>
 </div>
 
 <div id="gameinfo_container" class="container">
   <div id="gameinfo">
   <b>In-game Chat:</b>
   </div>
-  <in-game-chat-box author='{{game.extra_state.current_user_player}}'
-    gameid='{{game.id}}'
-    player2='{{game.extra_state.player2}}'
+  <in-game-chat-box author='{{game_data.game.extra_state.current_user_player}}'
+    gameid='{{game_data.game.id}}'
+    player2='{{game_data.game.extra_state.player2}}'
     ></in-game-chat-box>
-</div>  
+</div>
