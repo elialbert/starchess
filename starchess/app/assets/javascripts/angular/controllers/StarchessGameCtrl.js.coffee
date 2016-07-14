@@ -1,4 +1,4 @@
-@strollz.controller 'StarchessGameCtrl', ['$scope','$interval','$route','game','$routeParams','Restangular','boardService','$uibModal', ($scope, $interval, $route, game, $routeParams, Restangular, boardService, $uibModal) ->
+@strollz.controller 'StarchessGameCtrl', ['$scope','$interval','$route','game','$routeParams','Restangular','boardService','$uibModal','$firebaseObject', ($scope, $interval, $route, game, $routeParams, Restangular, boardService, $uibModal, $firebaseObject) ->
   $scope.row_range = boardService.row_range
   $scope.col_range = boardService.col_range
   $scope.hex_classes = boardService.get_empty_hex_classes()
@@ -36,9 +36,9 @@
           return "available "
     return ''
 
-  @firebaseRef = new Firebase("https://starchess.firebaseio.com/games/"+game.id)
-  @firebaseRef.on 'value', (data) =>
-    data = data.val()
+  firebaseRef = firebase.database().ref("games/"+game.id)
+  data = $firebaseObject(firebaseRef)
+  data.$watch () =>
     if not data or not $scope.game
       return
     $scope.game.turn = data.turn
@@ -56,7 +56,6 @@
       console.log "SET LAST STATE ERROR"
       console.log err.message
     @run_hex_classes()
-    $scope.$apply()
 
   @setState = (game) =>
     $scope.game = game

@@ -6,8 +6,19 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
   <%= javascript_include_tag 'application' %>
-  <script src="https://cdn.firebase.com/js/client/2.3.0/firebase.js"></script>
-  <script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/3.2.0/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCMrbcKWJ2-HWzbUKf16mcKJLKbpwRUWIs",
+      authDomain: "starchess.firebaseapp.com",
+      databaseURL: "https://starchess.firebaseio.com",
+      storageBucket: "firebase-starchess.appspot.com",
+    };
+    firebase.initializeApp(config);
+  </script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angularFire/2.0.1/angularfire.js"></script>
   <%= favicon_link_tag 'favicon.ico' %>
   <%= csrf_meta_tags %>
 </head>
@@ -30,6 +41,7 @@
   js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=157204547802342";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
+
   <nav class="navbar navbar-inverse">
     <div class="container">
       <div class="navbar-header">
@@ -39,9 +51,9 @@
           <span class="navbar-text">Logged in as: <%= current_user.email %></span>
           <span class="navbar-text" id="logoutlink"><%= link_to "Log out", destroy_user_session_path %></span>
         <% else %>
-          <span class="navbar-text"><%= link_to "Sign in with Facebook", user_omniauth_authorize_path(:facebook) %></span>
+          <span class="navbar-text"><%= link_to "Sign in with Facebook", user_facebook_omniauth_authorize_path %></span>
           <span class="navbar-text">OR</span>
-          <span class="navbar-text"><%= link_to "Sign in with Github", user_omniauth_authorize_path(:github) %></span>
+          <span class="navbar-text"><%= link_to "Sign in with Github", user_github_omniauth_authorize_path %></span>
         <% end %>
 
       </div>
