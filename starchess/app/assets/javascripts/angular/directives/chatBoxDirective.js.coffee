@@ -15,7 +15,7 @@
     $scope.chats.$add
       author: $scope.author
       message: message,
-      timestamp: Firebase.ServerValue.TIMESTAMP
+      timestamp: firebase.database.ServerValue.TIMESTAMP
     if $scope.player2 == 'AI' and not ai_responded
       $timeout(ai_response, 1100)
     $scope.message=''
@@ -24,5 +24,5 @@
     $scope.chats.$add
       author: 'black'
       message: 'shush, puny human'
-      timestamp: Firebase.ServerValue.TIMESTAMP
+      timestamp: firebase.database.ServerValue.TIMESTAMP
     ai_responded = true

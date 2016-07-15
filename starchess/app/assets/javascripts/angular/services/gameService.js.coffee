@@ -2,11 +2,11 @@
   game = null
   game_data = {game: game}
   run_firebase = (game_id) ->
-    firebaseRef = firebase.database().ref("games/"+game_id)
+    firebaseRef = firebase.database().ref("dev_games/"+game_id)
     data = $firebaseObject(firebaseRef)
-    data.$watch () =>
-      if not data 
-        return
+    data.$watch (event) =>
+      if not data.extra_state
+        return game
       game_data.game.turn = data.turn
       game_data.game.mode = data.mode
       game_data.game.game_status = boardService.get_game_status data
