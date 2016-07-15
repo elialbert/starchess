@@ -5,7 +5,7 @@
     firebaseRef = firebase.database().ref("games/"+game_id)
     data = $firebaseObject(firebaseRef)
     data.$watch (event) =>
-      if not data
+      if not data.extra_state
         return game
       game_data.game.turn = data.turn
       game_data.game.mode = data.mode
