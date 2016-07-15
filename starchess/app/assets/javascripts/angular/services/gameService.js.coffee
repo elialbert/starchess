@@ -2,7 +2,7 @@
   game = null
   game_data = {game: game}
   run_firebase = (game_id) ->
-    firebaseRef = firebase.database().ref("dev_games/"+game_id)
+    firebaseRef = firebase.database().ref("games/"+game_id)
     data = $firebaseObject(firebaseRef)
     data.$watch (event) =>
       if not data.extra_state
