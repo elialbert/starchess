@@ -6,13 +6,13 @@ require 'starchess/piece_defs'
 module StarChess
   class Board
     attr_accessor :spaces, :pieces, :special_state
-    def initialize(board_state = nil)
+    def initialize(board_state = nil, mode = :choose_mode, random_pieces = false)
       @piece_class = StarChess::Piece
       @spaces = {}.with_indifferent_access # int ID to Space instance
       @pieces = {:white => [], :black => []}.with_indifferent_access
       @special_state = nil
       self.construct_spaces
-      board_state ? self.reconstruct(board_state) : self.setup_pawns
+      board_state ? self.reconstruct(board_state) : self.setup_board(mode, random_pieces)
     end
 
     def inspect
@@ -158,6 +158,24 @@ module StarChess
           pawn = @piece_class.new self, :pawn, color, space
           space.piece = pawn
           @pieces[color] << pawn
+        end
+      end
+    end
+
+    def setup_board(mode, random_pieces = false)
+      setup_pawns
+      return if mode == :choose_mode
+      StarChess::NO_CHOOSE_SETUP.each do |color, piece_map|
+        pieces_list = StarChess::CHOSEN_PIECE_TYPES.deep_dup
+        piece_map.each do |space_id, piece_type|
+          space = @spaces[space_id]
+          if random_pieces
+            piece_type = pieces_list.sample
+            pieces_list.delete(piece_type)
+          end
+          piece = @piece_class.new self, piece_type, color, space
+          space.piece = piece
+          @pieces[color] << piece
         end
       end
     end

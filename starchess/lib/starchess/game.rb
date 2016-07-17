@@ -8,7 +8,8 @@ module StarChess
     attr_accessor :mode, :game_variant_type
     def initialize(game_mode, board_state = nil, chosen_pieces = nil, game_variant_type=nil)
       @game_variant_type = game_variant_type
-      @board = (game_variant_type == "starcraft") ? StarChess::StarcraftBoard.new(board_state) : StarChess::Board.new(board_state)
+      random_pieces = (game_variant_type == "starchess_chooserandom")
+      @board = (game_variant_type == "starcraft") ? StarChess::StarcraftBoard.new(board_state, game_mode, random_pieces) : StarChess::Board.new(board_state, game_mode, random_pieces)
       @mode = game_mode
       @chosen_pieces = chosen_pieces || {:white => [], :black => []}.with_indifferent_access
     end

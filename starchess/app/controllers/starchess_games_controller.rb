@@ -27,7 +27,7 @@ class StarchessGamesController < ApiController
 
   def new_ai_ai_game
     game = StarchessGame.create(player1_id: -1, player2_id: -1,
-                                ai_mode: "both")
+                                ai_mode: "both", game_variant_type: "starchess_chooserandom")
     expose(game, {:include => [:available_moves,:extra_state], :status => :created})
   end
 

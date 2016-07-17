@@ -7,7 +7,7 @@ require 'starchess/starcraft_piece'
 
 module StarChess
   class StarcraftBoard < StarChess::Board
-    def initialize(board_state = nil)
+    def initialize(board_state = nil, mode = :play_mode, random_pieces = false)
       @piece_class = StarChess::StarcraftPiece
       @spaces = {}.with_indifferent_access # int ID to Space instance
       @pieces = {:white => [], :black => []}.with_indifferent_access

@@ -5,6 +5,10 @@ module StarChess
   STARCRAFT_SETUP = {:white => 11, :black => 27}
   CHOSEN_SPACES = {:white => [4, 11, 17, 22, 28],
     :black => [10, 16, 21, 27, 34]}
+  NO_CHOOSE_SETUP = {:white => {4 => :king, 11 => :queen, 
+                       17 => :rook, 22 => :bishop, 28 => :knight}, 
+                     :black => {10 => :knight, 16 => :bishop,
+                       21 => :rook, 27 => :queen, 34 => :king}}
 
   PIECE_TYPES = [:pawn, :king, :queen, :bishop, :rook, :knight]
   CHOSEN_PIECE_TYPES = [:king, :queen, :bishop, :rook, :knight]

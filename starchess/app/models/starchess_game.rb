@@ -19,7 +19,11 @@ class StarchessGame < ActiveRecord::Base
   end
 
   def set_board_attrs
-    mode = (game_variant_type != "starcraft") ? :choose_mode : :play_mode
+    if game_variant_type == "starchess"
+      mode = :choose_mode
+    elsif ["starchess_nochoose", "starchess_chooserandom", "starcraft"].include?(game_variant_type)
+      mode = :play_mode
+    end    
     @logic = StarChess::Game.new mode, nil, nil, game_variant_type
     self.turn = "white" # next move's color
     self.mode = mode.to_s

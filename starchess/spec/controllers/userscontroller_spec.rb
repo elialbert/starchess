@@ -29,11 +29,6 @@ describe UsersController, :type => :controller do
     })
   end
 
-  it "mostly has authentication" do
-    sign_out u1
-    expect { get :index, :version => 1 }.to raise_error
-  end
-
   it "can get users" do
 
     response = get :index, :version => 1
