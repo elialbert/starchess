@@ -38,7 +38,7 @@ describe "StarChess AI" do
     board_state = '{"white":{"11":"pawn","12":"rook","17":"king","18":"bishop"},"black":{"3":"knight","15":"pawn","16":"pawn","20":"pawn","21":"king","26":"pawn","27":"knight","32":"pawn"}}'
     info, ai = get_info(board_state, ai)
     ai_result = ai.run_ai :black, info[:available_moves], info[:state], "recursive"
-    expect(ai_result[3]).to eq([19])
+    expect(ai_result[3]).to eq([10])
   end
 
   it "shouldnt crash" do

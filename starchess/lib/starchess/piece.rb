@@ -72,6 +72,7 @@ module StarChess
     def get_knight_moves
       result = []
       StarChess::DIRECTIONS.each do |direction|
+        # two up one over
         if @space.get_adjacent(direction) &&
           @space.get_adjacent(direction).get_adjacent(direction)
           new_directions = StarChess::KNIGHT_MOVES[direction]
@@ -83,8 +84,21 @@ module StarChess
             end
           end
         end
+        # one up two over
+        if @space.get_adjacent(direction)
+          new_directions = StarChess::KNIGHT_MOVES[direction]
+          new_directions.each do |new_direction|
+            if @space.get_adjacent(direction).get_adjacent(new_direction)
+              new_space = @space.get_adjacent(direction).get_adjacent(new_direction).get_adjacent(new_direction)
+              next unless new_space
+              if new_space.piece.nil? || new_space.piece.color != @color
+                result << new_space.id
+              end
+            end
+          end
+        end
       end
-      result
+      result.uniq
     end
 
     def get_bishop_moves
