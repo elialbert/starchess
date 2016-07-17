@@ -17,11 +17,13 @@ module StarChess
     end
 
     def setup_starcraft_board
-      StarChess::STARCRAFT_SETUP.each do |color, space_id|
-        space = @spaces[space_id]
-        king = StarChess::Piece.new self, :king, color, space
-        space.piece = king
-        @pieces[color] << king
+      StarChess::STARCRAFT_SETUP.each do |color, piece_map|
+        piece_map.each do |space_id, piece_type|
+          space = @spaces[space_id]
+          piece = @piece_class.new self, piece_type, color, space
+          space.piece = piece
+          @pieces[color] << piece
+        end
       end
     end
 

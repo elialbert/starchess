@@ -102,7 +102,7 @@
     game_data.game.boardState[game_data.game.turn][game_data.game.selected] = piece_to_move
     game_data.game.board_state = JSON.stringify(game_data.game.boardState)
     game_data.game.selected_move = JSON.stringify([original_selected,game_data.game.selected])
-    if game_data.game.game_variant_type != "starcraft" and check_pawn_promotion piece_to_move, game_data.game.selected, game_data.game.turn
+    if check_pawn_promotion piece_to_move, game_data.game.selected, game_data.game.turn
       handle_choose_mode_choice(game_data.game.selected)
       game_data.game.selected = null
       return

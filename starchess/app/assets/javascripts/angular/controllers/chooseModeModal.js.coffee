@@ -2,7 +2,10 @@
   $scope.selected = {}
   $scope.piece_images = boardService.piece_type_to_image[game.turn]
   if game.mode == "play_mode"
-    $scope.pieces = ["queen","knight"]
+    if game.game_variant_type == "starcraft"
+      $scope.pieces = ["rook","bishop","knight"]
+    else
+      $scope.pieces = ["queen","knight"]
   else
     $scope.pieces = ["queen","rook","bishop","knight","king"]
     $scope.chosen_pieces = []
