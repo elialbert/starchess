@@ -4,8 +4,13 @@
       <h3 class="panel-title">StarChess</h3>
     </div>
     <div class="panel-body">
-      <p>StarChess is a chess variant on a star-shaped board, and very easy to pick up if you know chess. <b>Original rules <a href="http://www.polgarstarchess.com/Rules/ENRules.html">here</a>.</b></p>
-      <button ng-click="newStarchessGame()" type="button" class="btn btn-success">New StarChess Game</button>
+      <p>StarChess is a chess variant on a star-shaped board, and very easy to pick up if you know chess. <b>Original rules <a href="http://www.polgarstarchess.com/Rules/ENRules.html">here</a>.</b>
+      <br/> Note that I've changed the rules slightly - rooks can now move 1 non-taking square diagonally as well as their normal up and down.
+      <br/> Advanced choose mode allows you to each choose the home row piece placement before game start.
+      </p>
+
+      <button ng-click="newStarchessGame('starchess_nochoose')" type="button" class="btn btn-success">New StarChess Game</button>
+      <button ng-click="newStarchessGame('starchess')" type="button" class="btn btn-info">New StarChess Game (Advanced choose mode)</button>
     </div>
   </div>
   <div class="panel panel-default">
@@ -15,7 +20,7 @@
     <div class="panel-body">
       <p>Starcraft Chess is way different than chess, and has more of a resource creation / RTS feel. <b>Original rules <a href="https://unorthodox-engineers.blogspot.com/2014/02/starchess-rules.html">here</a>.</b>
       <br/> Note that I've changed the rules slightly - rooks can now move 1 non-taking square diagonally as well as their normal up and down.</p>
-      <button ng-click="newStarcraftGame()" type="button" class="btn btn-success">New Starcraft Chess Game</button>
+      <button ng-click="newStarchessGame('starcraft')" type="button" class="btn btn-success">New Starcraft Chess Game</button>
     </div>
   </div>
 </div>
