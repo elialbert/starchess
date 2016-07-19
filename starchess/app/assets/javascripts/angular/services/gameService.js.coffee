@@ -30,6 +30,10 @@
     game_data.game.available_moves = JSON.parse(game_data.game.available_moves)
     game_data.game.boardState = JSON.parse(game_data.game.board_state)
 
+    # console.log "saved: " + parseInt(JSON.parse(game_data.game.extra_state.saved_selected_move)) 
+    # console.log "avail: "
+    # console.dir game_data.game.available_moves
+    
     game_data.game.selected = null # space_id of selected hex
     if game_data.game.extra_state.player2 == "AI" or game_data.game.player1_id == -1
       set_last_move(game_data.game.extra_state)
@@ -53,7 +57,6 @@
   put_to_server = () ->
     game_data.loading = "loading"
     $rootScope.$broadcast("loading")
-    console.log "putting with game id #{game_data.game.id}"
     game_data.game.put().then( (response) =>
       game_data.loading = ""
       $rootScope.$broadcast("loading")

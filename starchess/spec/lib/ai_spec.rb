@@ -7,10 +7,10 @@ describe "StarChess AI" do
     ai = StarChess::AI.new 'single_mode'
   end
 
-  def get_info(board_state, ai)
+  def get_info(board_state, ai, color=:black)
     board_state = ActiveSupport::JSON.decode(board_state)
     ai.game = StarChess::Game.new :play_mode, board_state, nil
-    info = ai.game.get_game_info :black
+    info = ai.game.get_game_info color
     return info, ai
   end
 
@@ -60,6 +60,4 @@ describe "StarChess AI" do
     ai_result = ai.run_ai :black, info[:available_moves], info[:state], "recursive"
     expect(ai_result[34]).to eq([27])
   end
-
-
 end

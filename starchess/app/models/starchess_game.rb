@@ -112,8 +112,13 @@ class StarchessGame < ActiveRecord::Base
   end
 
   def run_ai_mode attributes, info
+    attributes = do_special_state attributes
+    if self.mode == "done"
+      return attributes, info
+    end
     gameAI = StarChess::AI.new 'single_mode'
     gameAI.run_single_move info, @logic, attributes[:turn].to_sym
+
     if self.mode == 'choose_mode'
       attributes[:chosen_pieces] = ActiveSupport::JSON.encode(gameAI.game.chosen_pieces)
       if gameAI.game.mode == :play_mode
@@ -121,12 +126,11 @@ class StarchessGame < ActiveRecord::Base
         attributes[:selected_move] = '["just_switched_modes"]'
       end
     end
-    # switch back to human player - new turn should always be white for now
     attributes[:turn] = (attributes[:turn].to_sym == :black) ? :white : :black
-    # raise "turn problems" unless attributes[:turn] == :white
     info = gameAI.game.get_game_info attributes[:turn]
     @logic.board.special_state = info[:special_state]
     attributes = do_special_state attributes
+
     @saved_selected_move = ActiveSupport::JSON.encode(gameAI.saved_selected_move)
     attributes.delete :chosen_piece
     attributes.delete :selected_move
