@@ -236,7 +236,7 @@ Devise.setup do |config|
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
   config.omniauth :github, 'fce65407ec0f201cf6f5', ENV['GITHUB_CLIENT_SECRET'], scope: 'user:email',
-    callback_url: 'http://starchess.upchicago.org/users/auth/github/callback'
+    callback_url: 'http://starchess.elialbert.com/users/auth/github/callback'
   config.omniauth :facebook, "1658636474379508", ENV['FACEBOOK_CLIENT_SECRET'], scope: "email", info_fields: 'email, name',
     callback_url: ENV['FACEBOOK_CALLBACK_URL']
     # 'http://localhost:3000/users/auth/facebook/callback'

@@ -76,5 +76,5 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
-  ENV['FACEBOOK_CALLBACK_URL'] = 'http://starchess.upchicago.org/users/auth/facebook/callback'
+  ENV['FACEBOOK_CALLBACK_URL'] = 'http://starchess.elialbert.com/users/auth/facebook/callback'
 end

@@ -10,6 +10,6 @@
       gameService.game_data.game.player2_id = -1
 
   $scope.get_game_url = () ->
-    "http://starchess.upchicago.org/#/StarchessGames/#{gameService.game_data.game.id}"
+    "http://starchess.elialbert.com/#/StarchessGames/#{gameService.game_data.game.id}"
   @
 ]

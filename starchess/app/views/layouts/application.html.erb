@@ -46,16 +46,8 @@
     <div class="container">
       <div class="navbar-header">
         <a class="navbar-brand" href="/">StarChess Online!</a>
-        <span class="navbar-text" id="byline">a <a href="http://zap.sexy">crumble</a> production</span>
-        <% if current_user %>
-          <span class="navbar-text">Logged in as: <%= current_user.email %></span>
-          <span class="navbar-text" id="logoutlink"><%= link_to "Log out", destroy_user_session_path %></span>
-        <% else %>
-          <span class="navbar-text"><%= link_to "Sign in with Facebook", user_facebook_omniauth_authorize_path %></span>
-          <span class="navbar-text">OR</span>
-          <span class="navbar-text"><%= link_to "Sign in with Github", user_github_omniauth_authorize_path %></span>
-        <% end %>
-
+        <span class="navbar-text" id="byline">a <a href="http://elialbert.com">crumble</a> production</span>
+        <span class="navbar-text">Note: Sign-in disabled. This project is now unsupported...</span>
       </div>
     </div>
   </nav>
