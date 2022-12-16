@@ -1,4 +1,4 @@
-class CreateAttendrequests < ActiveRecord::Migration
+class CreateAttendrequests < ActiveRecord::Migration[4.2]
   def change
     create_table :attendrequests do |t|
 

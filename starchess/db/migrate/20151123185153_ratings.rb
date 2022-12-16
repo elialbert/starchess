@@ -1,4 +1,4 @@
-class Ratings < ActiveRecord::Migration
+class Ratings < ActiveRecord::Migration[4.2]
   def change
     change_table(:ratings) do |t|
       t.belongs_to :user_from, index: true

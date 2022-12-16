@@ -16,8 +16,8 @@ development:
   database: strollz_development
   pool: 5
   username: elialbert
-  password: 
-  
+  password:
+
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
@@ -28,14 +28,14 @@ test:
   database: strollz_test
   pool: 5
   username: elialbert
-  password: 
-  
+  password:
+
 production:
   <<: *default
   adapter: postgresql
   encoding: unicode
-  database: starchess_production
+  database: starchess
   pool: 5
   host: localhost
-  username: pguser
-  password: <%= ENV['PROD_DB_PASSWORD'] %>
+  username: elialbert
+  password: password

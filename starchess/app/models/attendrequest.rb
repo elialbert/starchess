@@ -1,14 +1,14 @@
 class Attendrequest < ActiveRecord::Base
-  include RocketPants::Cacheable
+  # include RocketPants::Cacheable
 
   def self.responses
     {
       :UNREPLIED => 0,
-      :ACCEPTED => 1,  
+      :ACCEPTED => 1,
       :REJECTED => 2
     }
   end
-   
+
   belongs_to :user
   belongs_to :event
 

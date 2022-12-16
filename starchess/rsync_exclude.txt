@@ -1,0 +1,9 @@
+tmp/
+log/
+node_modules/
+.git/
+shared/pids/
+shared/sockets/
+config/master.key
+config/credentials.yml.enc
+public/assets/

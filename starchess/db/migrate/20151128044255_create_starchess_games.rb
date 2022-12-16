@@ -1,4 +1,4 @@
-class CreateStarchessGames < ActiveRecord::Migration
+class CreateStarchessGames < ActiveRecord::Migration[4.2]
   def change
     create_table :starchess_games do |t|
       t.string :turn

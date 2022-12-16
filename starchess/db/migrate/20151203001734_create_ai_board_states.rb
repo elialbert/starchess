@@ -1,4 +1,4 @@
-class CreateAiBoardStates < ActiveRecord::Migration
+class CreateAiBoardStates < ActiveRecord::Migration[4.2]
   def change
     create_table :ai_board_states do |t|
       t.string :state, :limit => 1000

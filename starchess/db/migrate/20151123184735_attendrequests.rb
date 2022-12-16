@@ -1,4 +1,4 @@
-class Attendrequests < ActiveRecord::Migration
+class Attendrequests < ActiveRecord::Migration[4.2]
   def change
       change_table(:attendrequests) do |t|
         t.datetime :timestamp_requested

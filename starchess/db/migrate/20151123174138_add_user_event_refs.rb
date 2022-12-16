@@ -1,4 +1,4 @@
-class AddUserEventRefs < ActiveRecord::Migration
+class AddUserEventRefs < ActiveRecord::Migration[4.2]
   def change
     add_reference :events, :creator, references: :users, index: true
     create_table :events_users, id: false do |t|
