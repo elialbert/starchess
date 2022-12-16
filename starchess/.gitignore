@@ -1,0 +1,6 @@
+public/assets/
+config/credentials.yml.enc
+config/master.key
+tmp/
+.byebug_history
+log/
