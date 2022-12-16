@@ -27,11 +27,11 @@ require 'support/omniauth'
 
 RSpec.configure do |config|
 
-  config.include RocketPants::TestHelper,    :type => :controller
-  config.include RocketPants::RSpecMatchers, :type => :controller
+  # config.include RocketPants::TestHelper,    :type => :controller
+  # config.include RocketPants::RSpecMatchers, :type => :controller
   config.include Devise::TestHelpers, type: :controller
   config.include Rails.application.routes.url_helpers
-  config.include SpecAuthHelper 
+  config.include SpecAuthHelper
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.

@@ -2,15 +2,18 @@
 @strollz = angular.module('strollz', ['ngRoute','restangular','ui.bootstrap','firebase','ngCookies'])
 
 @strollz.config(['RestangularProvider','$windowProvider', (RestangularProvider, $windowProvider) ->
-  RestangularProvider.setBaseUrl('/1')
+  RestangularProvider.setBaseUrl('')
   # add a response intereceptor
   RestangularProvider.addResponseInterceptor( (data, operation, what, url, response, deferred) ->
     if operation == "getList"
-      extractedData = data.response
-      extractedData.count = data.count
-      extractedData.pagination = data.pagination
+      if data.count
+        extractedData = data
+        extractedData.count = data.count
+        extractedData.pagination = data.pagination
+      else
+        extractedData = []
     else
-      extractedData = data.response
+      extractedData = data
     return extractedData
   )
   RestangularProvider.addRequestInterceptor( (element, operation, what, url) ->

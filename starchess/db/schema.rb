@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -21,9 +20,8 @@ ActiveRecord::Schema.define(version: 20151204153746) do
     t.integer  "score",                   default: 0
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
+    t.index ["state"], name: "index_ai_board_states_on_state", using: :btree
   end
-
-  add_index "ai_board_states", ["state"], name: "index_ai_board_states_on_state", using: :btree
 
   create_table "attendrequests", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -47,18 +45,16 @@ ActiveRecord::Schema.define(version: 20151204153746) do
     t.integer  "creator_id"
     t.float    "lat"
     t.float    "lng"
+    t.index ["creator_id"], name: "index_events_on_creator_id", using: :btree
   end
-
-  add_index "events", ["creator_id"], name: "index_events_on_creator_id", using: :btree
 
   create_table "events_users", id: false, force: :cascade do |t|
     t.integer "event_id"
     t.integer "user_id"
+    t.index ["event_id", "user_id"], name: "by event and user", unique: true, using: :btree
+    t.index ["event_id"], name: "index_events_users_on_event_id", using: :btree
+    t.index ["user_id"], name: "index_events_users_on_user_id", using: :btree
   end
-
-  add_index "events_users", ["event_id", "user_id"], name: "by event and user", unique: true, using: :btree
-  add_index "events_users", ["event_id"], name: "index_events_users_on_event_id", using: :btree
-  add_index "events_users", ["user_id"], name: "index_events_users_on_user_id", using: :btree
 
   create_table "ratings", force: :cascade do |t|
     t.datetime "created_at",   null: false
@@ -69,10 +65,9 @@ ActiveRecord::Schema.define(version: 20151204153746) do
     t.string   "blurb"
     t.integer  "event_id"
     t.boolean  "from_creator"
+    t.index ["user_from_id"], name: "index_ratings_on_user_from_id", using: :btree
+    t.index ["user_to_id"], name: "index_ratings_on_user_to_id", using: :btree
   end
-
-  add_index "ratings", ["user_from_id"], name: "index_ratings_on_user_from_id", using: :btree
-  add_index "ratings", ["user_to_id"], name: "index_ratings_on_user_to_id", using: :btree
 
   create_table "starchess_games", force: :cascade do |t|
     t.string   "turn"
@@ -87,11 +82,10 @@ ActiveRecord::Schema.define(version: 20151204153746) do
     t.string   "available_moves",   limit: 700
     t.string   "ai_mode"
     t.string   "game_variant_type"
+    t.index ["player1_id"], name: "index_starchess_games_on_player1_id", using: :btree
+    t.index ["player2_id"], name: "index_starchess_games_on_player2_id", using: :btree
+    t.index ["winner_id"], name: "index_starchess_games_on_winner_id", using: :btree
   end
-
-  add_index "starchess_games", ["player1_id"], name: "index_starchess_games_on_player1_id", using: :btree
-  add_index "starchess_games", ["player2_id"], name: "index_starchess_games_on_player2_id", using: :btree
-  add_index "starchess_games", ["winner_id"], name: "index_starchess_games_on_winner_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email"
@@ -113,11 +107,10 @@ ActiveRecord::Schema.define(version: 20151204153746) do
     t.inet     "last_sign_in_ip"
     t.string   "provider"
     t.string   "uid"
+    t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
+    t.index ["provider"], name: "index_users_on_provider", using: :btree
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+    t.index ["uid"], name: "index_users_on_uid", using: :btree
   end
-
-  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
-  add_index "users", ["provider"], name: "index_users_on_provider", using: :btree
-  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
-  add_index "users", ["uid"], name: "index_users_on_uid", using: :btree
 
 end

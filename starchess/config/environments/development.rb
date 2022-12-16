@@ -39,5 +39,5 @@ Rails.application.configure do
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
   ENV['FACEBOOK_CALLBACK_URL'] = 'http://localhost:3000/users/auth/facebook/callback'
-
+  config.log_level = :debug
 end

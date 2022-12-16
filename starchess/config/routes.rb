@@ -15,13 +15,11 @@ Rails.application.routes.draw do
   root 'welcome#index'
   get '/administrivia', :to => redirect('/templates/privacy_policy.html')
 
-  api :version => 1 do
-    resources :users
-    resources :events
-    resources :ratings
-    resources :attendrequests
-    resources :starchess_games
-  end
+  resources :users
+  resources :events
+  resources :ratings
+  resources :attendrequests
+  resources :starchess_games
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

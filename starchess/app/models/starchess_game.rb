@@ -2,7 +2,7 @@ require 'starchess/game'
 require 'starchess/ai/ai'
 
 class StarchessGame < ActiveRecord::Base
-  include RocketPants::Cacheable
+  # include RocketPants::Cacheable
   belongs_to :player1, class_name: "User", foreign_key: "player1_id"
   belongs_to :player2, class_name: "User", foreign_key: "player2_id"
 
@@ -23,7 +23,7 @@ class StarchessGame < ActiveRecord::Base
       mode = :choose_mode
     elsif ["starchess_nochoose", "starchess_chooserandom", "starcraft"].include?(game_variant_type)
       mode = :play_mode
-    end    
+    end
     @logic = StarChess::Game.new mode, nil, nil, game_variant_type
     self.turn = "white" # next move's color
     self.mode = mode.to_s

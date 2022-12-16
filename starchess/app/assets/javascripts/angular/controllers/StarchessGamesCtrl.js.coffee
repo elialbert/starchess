@@ -9,7 +9,8 @@
       $location.path('StarchessGames/'+game.id)
   @starchessGames.getList().then(
     ((games) ->
-      $scope.games = games),
+      $scope.games = games
+      new_ai_ai_game()),
     (=>
       new_ai_ai_game())
   )

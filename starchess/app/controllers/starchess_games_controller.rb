@@ -5,7 +5,8 @@ class StarchessGamesController < ApiController
     games =  StarchessGame.where("player1_id = ? or player2_id = ?", current_user.id, current_user.id).
       paginate(:page => params[:page]).
         order('updated_at desc')
-    expose games
+    # render json: games
+    head :ok
   end
 
   def show
@@ -22,13 +23,14 @@ class StarchessGamesController < ApiController
     end
     game.get_available_moves
     game.current_user_player = (current_user.id == game.player1_id) ? 'white' : 'black'
-    expose game
+    # render json: game
+    head :ok
   end
 
   def new_ai_ai_game
     game = StarchessGame.create(player1_id: -1, player2_id: -1,
                                 ai_mode: "both", game_variant_type: "starchess_chooserandom")
-    expose(game, {:include => [:available_moves,:extra_state], :status => :created})
+    render json: game, :include => [:available_moves,:extra_state], :status => :created
   end
 
   def create
@@ -56,7 +58,7 @@ class StarchessGamesController < ApiController
           push_to_firebase(game) if not Rails.env.test?
         end
         game.save
-        return expose(game)
+        return render json:(game)
       else
         error!(:forbidden)
       end
@@ -65,12 +67,14 @@ class StarchessGamesController < ApiController
     params[:player2_id] = 0
     params[:game_variant_type] ||= "starchess"
     @game = StarchessGame.create(params)
-    expose(@game, {:include => [:available_moves,:extra_state], :status => :created})
+    bybug
+    # render json: @game, {:include => [:available_moves,:extra_state], :status => :created}
+
   end
 
   def run_ai_ai_move(game)
     game.update_ai_ai(game_update_params)
-    expose game
+    render json: game
   end
 
   def update
@@ -90,7 +94,8 @@ class StarchessGamesController < ApiController
     end
     game.current_user_player = (current_user.id == game.player1_id) ? 'white' : 'black'
     push_to_firebase(game) if not Rails.env.test?
-    expose game
+    # render json: game
+    head :ok
   end
 
   private
