@@ -2,9 +2,9 @@ require "starchess/game"
 
 class StarchessGamesController < ApiController
   def index
-    games =  StarchessGame.where("player1_id = ? or player2_id = ?", current_user.id, current_user.id).
-      paginate(:page => params[:page]).
-        order('updated_at desc')
+    # games =  StarchessGame.where("player1_id = ? or player2_id = ?", current_user.id, current_user.id).
+    #   paginate(:page => params[:page]).
+    #     order('updated_at desc')
     # render json: games
     head :ok
   end

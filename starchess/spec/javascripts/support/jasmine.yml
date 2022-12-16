@@ -17,9 +17,7 @@ css_dir: "app/assets/stylesheets"
 # list of file expressions to include as source files
 # relative path from src_dir
 src_files:
-  - "firebase.js"
   - "application.{js.coffee,js,coffee}"
-  - "../../../vendor/assets/javascripts/firebase.js"
 
 # list of file expressions to include as css files
 # relative path from css_dir

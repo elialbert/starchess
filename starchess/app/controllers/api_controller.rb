@@ -14,6 +14,6 @@ class ApiController < ApplicationController
     #   request.method == 'POST' &&
     #   return
     # end
-    request.env['warden'].authenticate! :scope => :user, :except => [:create]
+    # request.env['warden'].authenticate! :scope => :user, :except => [:create]
   end
 end
